@@ -89,7 +89,7 @@ export default function DesignPage() {
       try {
         let accumulated = "";
         for await (const chunk of streamGenerate({
-          action: "regenerate-section",
+          action: "regenerate-design-section",
           sectionName,
           phaseContext,
         })) {
@@ -116,7 +116,7 @@ export default function DesignPage() {
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
 
-      {!requirementsReviewed && (
+      {project && !requirementsReviewed && (
         <div
           className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
           role="status"

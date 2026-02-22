@@ -141,3 +141,42 @@ describe("POST /api/generate — generate-design", () => {
     expect(doneEvents).toHaveLength(1);
   });
 });
+
+describe("POST /api/generate — regenerate-design-section", () => {
+  it("accepts regenerate-design-section as a valid action", async () => {
+    process.env.ANTHROPIC_API_KEY = "test-key";
+    mockCreate.mockReturnValue(mockStreamEvents());
+
+    const { POST } = await import("@/app/api/generate/route");
+    const response = await POST(
+      makeRequest({
+        action: "regenerate-design-section",
+        sectionName: "Architecture",
+        phaseContext: "## Architecture\nExisting content",
+      }),
+    );
+
+    expect(response.status).not.toBe(400);
+  });
+
+  it("forwards to Anthropic SDK with design regeneration prompt", async () => {
+    process.env.ANTHROPIC_API_KEY = "test-key";
+    mockCreate.mockReturnValue(mockStreamEvents());
+
+    const { POST } = await import("@/app/api/generate/route");
+    await POST(
+      makeRequest({
+        action: "regenerate-design-section",
+        sectionName: "Architecture",
+        phaseContext: "## Architecture\nExisting content",
+      }),
+    );
+
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stream: true,
+        system: expect.stringContaining("software architect"),
+      }),
+    );
+  });
+});
