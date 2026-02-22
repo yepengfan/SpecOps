@@ -5,8 +5,9 @@ import {
 } from "@/lib/prompts/spec";
 import { getPlanSystemPrompt, getRegeneratePlanSectionPrompt } from "@/lib/prompts/plan";
 import { getTasksSystemPrompt, getRegenerateTaskSectionPrompt } from "@/lib/prompts/tasks";
+import { getReanalyzeMappingsPrompt } from "@/lib/prompts/traceability";
 
-const VALID_ACTIONS = ["generate-spec", "regenerate-spec-section", "generate-plan", "regenerate-plan-section", "generate-tasks", "regenerate-task-section"] as const;
+const VALID_ACTIONS = ["generate-spec", "regenerate-spec-section", "generate-plan", "regenerate-plan-section", "generate-tasks", "regenerate-task-section", "reanalyze-mappings"] as const;
 type ValidAction = (typeof VALID_ACTIONS)[number];
 
 interface GenerateRequest {
@@ -14,6 +15,7 @@ interface GenerateRequest {
   projectDescription?: string;
   specContent?: string;
   planContent?: string;
+  tasksContent?: string;
   sectionName?: string;
   phaseContext?: string;
   instruction?: string;
@@ -57,6 +59,11 @@ function buildPrompt(action: ValidAction, body: GenerateRequest): {
       return {
         system: getRegenerateTaskSectionPrompt(body.sectionName || "", body.instruction),
         userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
+      };
+    case "reanalyze-mappings":
+      return {
+        system: getReanalyzeMappingsPrompt(),
+        userMessage: `Analyze traceability between the following spec, plan, and tasks:\n\nSpec:\n${body.specContent || ""}\n\nPlan:\n${body.planContent || ""}\n\nTasks:\n${body.tasksContent || ""}`,
       };
   }
 }

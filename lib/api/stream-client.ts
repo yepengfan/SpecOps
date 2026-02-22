@@ -10,6 +10,7 @@ export interface GenerateParams {
   projectDescription?: string;
   specContent?: string;
   planContent?: string;
+  tasksContent?: string;
   sectionName?: string;
   phaseContext?: string;
   instruction?: string;

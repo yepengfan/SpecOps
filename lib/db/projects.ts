@@ -54,6 +54,7 @@ export async function createProject(name: string): Promise<Project> {
           sections: getSectionsForPhase("tasks"),
         },
       },
+      traceabilityMappings: [],
     };
     await db.projects.add(project);
     return project;

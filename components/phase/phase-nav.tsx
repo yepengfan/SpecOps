@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, GitBranch } from "lucide-react";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { PHASE_TYPES, type PhaseType } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -64,6 +64,23 @@ export function PhaseNav({ projectId }: PhaseNavProps) {
             </Link>
           );
         })}
+
+        <span className="mx-1 text-muted-foreground/40">|</span>
+
+        <Link
+          href={`/project/${projectId}/traceability`}
+          role="tab"
+          aria-selected={pathname === `/project/${projectId}/traceability`}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition-colors",
+            pathname === `/project/${projectId}/traceability`
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          <GitBranch className="size-3.5" />
+          Traceability
+        </Link>
       </div>
     </nav>
   );

@@ -24,7 +24,11 @@ Technology choices and their rationale. Cover frameworks, libraries, infrastruct
 ## Security & Edge Cases
 Security considerations, authentication/authorization approach, input validation, error handling, and edge cases to address.
 
-Use the approved spec as the basis for all plan decisions. Output ONLY the markdown content with the five headings above. Do not include any preamble or closing remarks.`;
+Use the approved spec as the basis for all plan decisions. Output ONLY the markdown content with the five headings above. Do not include any preamble or closing remarks.
+
+After the five sections, output a traceability comment in this exact format:
+<!-- TRACEABILITY: [{"sectionId":"architecture","requirementIds":["req-1"]},{"sectionId":"api-contracts","requirementIds":["req-2"]},...] -->
+Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Derive IDs from "**REQ-N**:" items in the spec (e.g., **REQ-1** becomes "req-1").`;
 }
 
 export function getRegeneratePlanSectionPrompt(sectionName: string, instruction?: string): string {

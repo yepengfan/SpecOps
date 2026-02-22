@@ -37,6 +37,7 @@ function makeProject(overrides?: Partial<{
         sections: [],
       },
     },
+    traceabilityMappings: [],
   };
 }
 
@@ -46,12 +47,12 @@ beforeEach(() => {
 });
 
 describe("PhaseNav", () => {
-  it("renders three tabs", () => {
+  it("renders phase tabs plus traceability link", () => {
     useProjectStore.getState().setProject(makeProject());
     render(<PhaseNav projectId="proj-1" />);
 
     const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(3);
+    expect(tabs).toHaveLength(4); // 3 phases + traceability
   });
 
   it("locked tabs show lock icon and are not links", () => {

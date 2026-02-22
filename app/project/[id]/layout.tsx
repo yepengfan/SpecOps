@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getProject } from "@/lib/db/projects";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { PhaseNav } from "@/components/phase/phase-nav";
+import { ExportPanel } from "@/components/phase/export-panel";
 
 export default function ProjectLayout({
   params,
@@ -49,6 +50,7 @@ export default function ProjectLayout({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{project?.name}</h1>
+        <ExportPanel />
       </div>
       <PhaseNav projectId={id} />
       <div role="tabpanel">{children}</div>
