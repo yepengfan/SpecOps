@@ -16,6 +16,7 @@ The top-level entity representing one SDD workflow.
 | createdAt | number (timestamp) | Set on creation, immutable | Req 1 |
 | updatedAt | number (timestamp) | Updated on any save, indexed for sorting | Req 2 |
 | phases | Record<PhaseType, Phase> | Three phases: requirements, design, tasks | Req 1, 7 |
+| traceabilityMappings | TraceabilityMapping[] | Bidirectional mappings between requirements, design sections, and tasks | Req 10 |
 
 **Indexes**: `id` (primary), `updatedAt` (for sort by most recent)
 
@@ -38,6 +39,22 @@ One section within a phase. Content is editable markdown text.
 | id | string | Unique within the phase (e.g., "problem-statement") | Req 6 |
 | title | string | Display name (e.g., "Problem Statement") | Req 6 |
 | content | string | Markdown content, auto-saved on edit | Req 6 |
+
+### TraceabilityMapping
+
+Represents a link between a requirement and a design section or task. Embedded within a Project.
+
+| Field | Type | Constraints | Source |
+|-------|------|-------------|--------|
+| id | string (UUID v4) | Primary key, generated via `crypto.randomUUID()` | Req 10 |
+| sourceType | "requirement" | Always a requirement row | Req 10 |
+| sourceId | string | Section id of the requirement (e.g., "ears-requirements") | Req 10 |
+| sourceLabel | string | Human-readable label (e.g., "Req 1: Create New Project") | Req 10 |
+| targetType | "design" \| "task" | Which phase the target belongs to | Req 10 |
+| targetId | string | Section id or task identifier in the target phase | Req 10 |
+| targetLabel | string | Human-readable label (e.g., "Architecture", "T001") | Req 10 |
+| origin | "ai" \| "manual" | Whether this mapping was AI-generated or manually added | Req 10 |
+| createdAt | number (timestamp) | Set on creation | Req 10 |
 
 ### API Key (server-side only)
 
@@ -82,6 +99,7 @@ Fixed sections per phase type (from README):
 ```
 Project (1) ──── (3) Phase (requirements, design, tasks)
 Phase   (1) ──── (N) Section (fixed set per phase type)
+Project (1) ──── (N) TraceabilityMapping (requirement → design/task links)
 ```
 
 ## State Transitions

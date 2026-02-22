@@ -18,7 +18,7 @@ Build a Next.js web application that guides developers through the Spec-Driven D
 **Project Type**: Web application (Next.js with API routes)
 **Performance Goals**: Project list <1s, creation <500ms, navigation <500ms, export <2s, auto-save debounced within 1s
 **Constraints**: API key server-side only, WCAG 2.1 AA
-**Scale/Scope**: Single user, ~5 screens, 9 requirements
+**Scale/Scope**: Single user, ~6 screens, 10 requirements
 
 ## Constitution Check
 
@@ -79,8 +79,10 @@ app/
 │       │   └── page.tsx    # Requirements phase editor
 │       ├── design/
 │       │   └── page.tsx    # Design phase editor
-│       └── tasks/
-│           └── page.tsx    # Tasks phase editor
+│       ├── tasks/
+│       │   └── page.tsx    # Tasks phase editor
+│       └── traceability/
+│           └── page.tsx    # Traceability matrix view
 └── api/
     ├── generate/
     │   └── route.ts        # LLM proxy: POST /api/generate (streaming)
@@ -90,7 +92,8 @@ app/
 components/
 ├── ui/                     # shadcn/ui components (Button, Dialog, Tabs, etc.)
 ├── editor/                 # Section editor, markdown preview
-└── phase/                  # Phase gate UI, status indicators
+├── phase/                  # Phase gate UI, status indicators
+└── traceability/           # Traceability matrix table, cell detail view
 
 lib/
 ├── db/                     # Dexie database, schema, CRUD operations

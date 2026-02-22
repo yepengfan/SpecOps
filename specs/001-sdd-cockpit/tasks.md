@@ -26,6 +26,7 @@
 | US5   | Req 4, 6     | AI-assisted design generation                        | Critical |
 | US6   | Req 5, 6     | AI-assisted task breakdown generation                | Critical |
 | US7   | Req 8        | Export specs as markdown/zip                          | High     |
+| US8   | Req 10       | Traceability matrix (requirement → design/task mapping) | High     |
 
 ---
 
@@ -237,7 +238,35 @@
 
 ---
 
-## Phase 10: Polish & Cross-Cutting Concerns
+## Phase 10: User Story 8 - Traceability Matrix (Priority: High)
+
+**Goal**: Developers can see a visual matrix showing how requirements map to design sections and tasks. AI generates mappings during phase generation; developers can also add/remove mappings manually. Coverage gaps are highlighted.
+
+**Independent Test**: Generate design from approved requirements, verify AI mappings appear. Open traceability matrix view, verify requirements as rows and design sections as columns. Click a cell to see linked content. Manually add a mapping, verify it persists. Click "Re-analyze Mappings", verify AI-generated mappings refresh while manual ones are preserved.
+
+### Tests for User Story 8
+
+> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+
+- [ ] T063 [P] [US8] Unit tests for traceability mapping CRUD in `__tests__/unit/traceability.test.ts`: test `addMapping()`, `removeMapping()`, `getMappingsForProject()`, `clearAiMappings()` (preserves manual), coverage percentage calculation
+- [ ] T064 [P] [US8] Unit tests for traceability matrix component in `__tests__/unit/traceability-matrix.test.ts`: renders requirements as rows, renders design/task columns, highlights gap rows, displays coverage percentage, distinguishes AI vs manual mappings, cell click shows detail view
+
+### Implementation for User Story 8
+
+- [ ] T065 [US8] Add `TraceabilityMapping` type to `lib/types/index.ts` and `traceabilityMappings` field to `Project` interface: `{ id, sourceType, sourceId, sourceLabel, targetType, targetId, targetLabel, origin: "ai" | "manual", createdAt }`
+- [ ] T066 [US8] Create traceability mapping operations in `lib/db/traceability.ts`: `addMapping()`, `removeMapping()`, `getMappingsForProject()`, `clearAiMappings(projectId)` (preserves manual mappings), `getCoverageStats(project)` returning `{ designCoverage: { covered, total }, taskCoverage: { covered, total } }`
+- [ ] T067 [US8] Update design and tasks LLM prompts in `lib/prompts/design.ts` and `lib/prompts/tasks.ts`: add instructions for AI to output traceability metadata (JSON mapping of section → requirement IDs) alongside generated content
+- [ ] T068 [US8] Parse and persist AI-generated mappings in design and tasks generation flows: extract mapping metadata from LLM response, create `TraceabilityMapping` records with `origin: "ai"`, persist to project record in IndexedDB
+- [ ] T069 [US8] Create traceability matrix page in `app/project/[id]/traceability/page.tsx`: load project and mappings, render matrix table component, "Re-analyze Mappings" button that calls LLM API to regenerate AI mappings
+- [ ] T070 [US8] Create traceability matrix table component in `components/traceability/matrix-table.tsx`: requirements as rows, design sections + tasks as columns, cell indicators (linked/gap), gap row highlighting (amber/red), coverage percentage display, AI vs manual mapping distinction (icon/label)
+- [ ] T071 [US8] Create cell detail view in `components/traceability/cell-detail.tsx`: clicking a cell shows linked content from both phases side by side in a dialog, manual add/remove mapping toggle, immediate persist to IndexedDB
+- [ ] T072 [US8] Add "Traceability" navigation link to project workspace in `components/phase/phase-nav.tsx`: accessible at any time (not gated by phase status), links to `/project/[id]/traceability`
+
+**Checkpoint**: At this point, User Story 8 should be fully functional and testable independently
+
+---
+
+## Phase 11: Polish & Cross-Cutting Concerns
 
 **Purpose**: Improvements that affect multiple user stories
 
@@ -264,14 +293,15 @@
 - **US5 - Design Gen (Phase 7)**: Depends on US3 (reuses streaming infra). Can run in parallel with US6 and US7.
 - **US6 - Tasks Gen (Phase 8)**: Depends on US3 (reuses streaming infra). Can run in parallel with US5 and US7.
 - **US7 - Export (Phase 9)**: Depends on US4 only (needs phase pages and "all phases reviewed" check). Does NOT need AI generation. Can run in parallel with US3, US5, US6.
-- **Polish (Phase 10)**: Depends on all user stories being complete.
+- **US8 - Traceability Matrix (Phase 10)**: Depends on US3 (reuses streaming infra + needs generation flows to hook into), US5, and US6 (needs design and task generation to produce mappings). Can run in parallel with US7.
+- **Polish (Phase 11)**: Depends on all user stories being complete.
 
 ### Critical Path
 
 ```text
-Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Req Gen) → US5 (AI Design Gen) → Polish
-                         ↘ US2 (API Key) ──────────────↗       ↘ US6 (AI Tasks Gen) ↗
-                                            US4 ──────────────→ US7 (Export) ──────────↗
+Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Req Gen) → US5 (AI Design Gen) ─┬→ US8 (Traceability) → Polish
+                         ↘ US2 (API Key) ──────────────↗       ↘ US6 (AI Tasks Gen) ─────────────┘
+                                            US4 ──────────────→ US7 (Export) ──────────────────────────────────────────→↗
 ```
 
 ### Parallel Opportunities
@@ -285,12 +315,14 @@ Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Req Gen)
 - T051, T052 test tasks can run in parallel within US7
 - T045, T045b test tasks can run in parallel within US5
 - T048, T048b test tasks can run in parallel within US6
-- T056, T057, T058, T059, T060 can all run in parallel (Phase 10)
+- T063, T064 test tasks can run in parallel within US8
+- T056, T057, T058, T059, T060 can all run in parallel (Phase 11)
 
 **Across phases:**
 - US2 (API Key) can run in parallel with US1 and US4 — independent concern, only needs Foundational
 - US5 (Design Gen) and US6 (Tasks Gen) can run in parallel — both depend on US3 but not on each other
-- US7 (Export) can run in parallel with US3, US5, US6 — only depends on US4
+- US7 (Export) can run in parallel with US3, US5, US6, US8 — only depends on US4
+- US8 (Traceability) can run in parallel with US7 — both depend on AI generation stories but not on each other
 
 ---
 
@@ -316,7 +348,8 @@ Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Req Gen)
 4. US4 → Phase gates work with manual content (core value!)
 5. US3 → AI generation added to requirements (MVP!)
 6. US5 + US6 + US7 (parallel) → Design gen, tasks gen, and export
-7. Polish → Accessibility, performance, final validation
+7. US8 → Traceability matrix (after AI generation stories)
+8. Polish → Accessibility, performance, final validation
 
 ---
 
