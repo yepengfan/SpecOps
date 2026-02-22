@@ -9,8 +9,10 @@ Auto-generated from all feature plans. Last updated: 2026-02-22
 ## Project Structure
 
 ```text
-src/
-tests/
+app/          # Next.js App Router pages and API routes
+components/   # UI components (ui/, editor/, phase/)
+lib/          # Shared logic (db/, stores/, prompts/, types/)
+__tests__/    # Jest unit/integration tests, Playwright E2E
 ```
 
 ## Commands
