@@ -30,7 +30,11 @@ Define the expected tests for each task. Use the format:
 
 Include unit tests, integration tests, and E2E tests as appropriate.
 
-Use the approved spec and plan document as the basis for all task decisions. Output ONLY the markdown content with the four headings above. Do not include any preamble or closing remarks.`;
+Use the approved spec and plan document as the basis for all task decisions. Output ONLY the markdown content with the four headings above. Do not include any preamble or closing remarks.
+
+After the four sections, output a traceability comment in this exact format:
+<!-- TRACEABILITY: [{"sectionId":"task-list","requirementIds":["req-1","req-2"]},{"sectionId":"dependencies","requirementIds":["req-1"]},...] -->
+Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Use the "## Req N:" headings in the spec to identify requirement IDs.`;
 }
 
 export function getRegenerateTaskSectionPrompt(sectionName: string, instruction?: string): string {
