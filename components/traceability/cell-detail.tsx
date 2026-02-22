@@ -57,19 +57,30 @@ export function CellDetailDialog({
       .map((s) => s.content)
       .join("\n");
     // Extract number from requirement ID (supports fr-NNN, nfr-NNN, and legacy req-N)
+    const isNfr = cell.requirementId.startsWith("nfr-");
     const reqNum = cell.requirementId.replace(/^(?:fr|nfr|req)-0*/, "");
-    // Match **FR-NNN**: or **REQ-N**: description format (primary)
+    if (isNfr) {
+      // Match **NFR-NNN**: format first for NFR requirements
+      const nfrRegex = new RegExp(
+        `\\*\\*NFR-0*${reqNum}\\*\\*:\\s*(.+)`,
+      );
+      const nfrMatch = specContent.match(nfrRegex);
+      if (nfrMatch) return nfrMatch[0].trim();
+    }
+    // Match **FR-NNN**: or **REQ-N**: description format
     const boldRegex = new RegExp(
       `\\*\\*(?:FR|REQ)-0*${reqNum}\\*\\*:\\s*(.+)`,
     );
     const boldMatch = specContent.match(boldRegex);
     if (boldMatch) return boldMatch[0].trim();
-    // Match **NFR-NNN**: format
-    const nfrRegex = new RegExp(
-      `\\*\\*NFR-0*${reqNum}\\*\\*:\\s*(.+)`,
-    );
-    const nfrMatch = specContent.match(nfrRegex);
-    if (nfrMatch) return nfrMatch[0].trim();
+    if (!isNfr) {
+      // Match **NFR-NNN**: format as fallback for non-NFR IDs
+      const nfrRegex = new RegExp(
+        `\\*\\*NFR-0*${reqNum}\\*\\*:\\s*(.+)`,
+      );
+      const nfrMatch = specContent.match(nfrRegex);
+      if (nfrMatch) return nfrMatch[0].trim();
+    }
     // Fallback: ## FR-NNN: or ## Req N: heading format
     const headingRegex = new RegExp(
       `## (?:FR-0*${reqNum}|Req ${reqNum}):[^]*?(?=## (?:FR-|Req )\\d|$)`,

@@ -6,7 +6,7 @@ function makeMapping(overrides?: Partial<TraceabilityMapping>): TraceabilityMapp
   return {
     id: "mapping-1",
     requirementId: "fr-001",
-    requirementLabel: "Req 1: Create Project",
+    requirementLabel: "FR-001: Create Project",
     targetType: "plan",
     targetId: "architecture",
     targetLabel: "Architecture",
