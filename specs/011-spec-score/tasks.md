@@ -20,7 +20,7 @@
 **Purpose**: Type definitions and Project schema extension required by all downstream tasks
 
 - [ ] T001 Create evaluation type definitions (RuleCheckResult, DimensionScore, Suggestion, CrossPhaseFindings, DeepAnalysisResult, PhaseEvaluation) per data-model.md in `lib/eval/types.ts`
-- [ ] T002 [P] Extend Project interface with optional `evaluations` field (`{ spec?: PhaseEvaluation; plan?: PhaseEvaluation; tasks?: PhaseEvaluation }`) in `lib/types/index.ts`
+- [ ] T002 Extend Project interface with optional `evaluations` field (`{ spec?: PhaseEvaluation; plan?: PhaseEvaluation; tasks?: PhaseEvaluation }`) in `lib/types/index.ts`
 
 ---
 
@@ -138,7 +138,6 @@
 
 ### Parallel Opportunities
 
-- T001 and T002 can run in parallel (different files)
 - T003 and T004 can run in parallel (different files)
 - T005 and T006 can run in parallel (different test files)
 - T010 and T011 can run in parallel (store vs component, different files)

@@ -53,7 +53,7 @@ Complete output from a single AI deep analysis invocation.
 | ------------------ | ----------------------- | -------------------------------------------- |
 | dimensions         | DimensionScore[]        | Scores for all 5 quality dimensions          |
 | suggestions        | Suggestion[]            | Actionable improvement suggestions           |
-| crossPhaseFindings | CrossPhaseFindings null | Present only when upstream content was available |
+| crossPhaseFindings | CrossPhaseFindings \| null | Present only when upstream content was available |
 | analyzedAt         | number                  | Timestamp (Date.now()) when analysis completed |
 
 ### PhaseEvaluation

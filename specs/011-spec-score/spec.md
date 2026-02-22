@@ -10,7 +10,7 @@
 ### Session 2026-02-22
 
 - Q: Where should evaluation UI (buttons + results) appear in the phase view? → A: In a collapsible panel between the section editors and the Approve button
-- Q: When should evaluation results be invalidated after content changes? → A: On debounced save (~1 second after user stops typing)
+- Q: When should evaluation results be invalidated after content changes? → A: On debounced save (1000ms after user stops typing)
 
 ## User Scenarios & Testing *(mandatory)*
 
