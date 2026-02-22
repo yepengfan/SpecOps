@@ -4,7 +4,7 @@
 
 ## Summary
 
-No new entities or schema changes are introduced by this feature. The IndexedDB database name remains `"sdd-cockpit"` internally for backwards compatibility (see [research.md](./research.md) for rationale). The only data-related change is renaming the TypeScript class from `SddCockpitDatabase` to `SpecOpsDatabase`.
+No new entities or schema changes are introduced by this feature. The IndexedDB database name is changed from `"sdd-cockpit"` to `"spec-ops"` to align with the project rename. Existing local data is not preserved (acceptable — see [research.md](./research.md) for rationale). The TypeScript class is renamed from `SddCockpitDatabase` to `SpecOpsDatabase`.
 
 ## Existing Entities (Unchanged)
 
@@ -16,11 +16,11 @@ No new entities or schema changes are introduced by this feature. The IndexedDB 
 ## Schema (Unchanged)
 
 ```
-Database: sdd-cockpit (internal name preserved for data continuity)
+Database: spec-ops (renamed from sdd-cockpit)
 
 Version 4 (current):
   projects:     id, updatedAt
   chatMessages: ++id, projectId, timestamp
 ```
 
-No migrations needed. No version bump needed.
+No migrations needed. No version bump needed. Existing data under the old "sdd-cockpit" database name becomes inaccessible.

@@ -4,17 +4,15 @@
 
 ## Research Question 1: How does Dexie.js handle database name changes?
 
-**Decision**: Keep the existing database name (`"sdd-cockpit"`) in the Dexie constructor.
+**Decision**: Rename the database from `"sdd-cockpit"` to `"spec-ops"` in the Dexie constructor. Accept data loss.
 
-**Rationale**: Dexie.js (and the underlying IndexedDB API) uses the database name string as the unique identifier for a database. Changing `super("sdd-cockpit")` to `super("spec-ops")` would create a completely new, empty database. The old database with all user data would still exist in the browser but would be invisible to the application.
+**Rationale**: Dexie.js (and the underlying IndexedDB API) uses the database name string as the unique identifier for a database. Changing `super("sdd-cockpit")` to `super("spec-ops")` creates a new, empty database. The old database still exists in the browser but is invisible to the application. Since the app is only running locally in development with no production users, data loss is acceptable and a clean rename is preferred over carrying legacy naming internally.
 
 **Alternatives considered**:
 
-1. **Manual migration via Dexie API**: Open old database, read all records, write to new database, delete old database. This is fragile — if the user closes the browser mid-migration, data could be lost. It also adds ~50 lines of one-time migration code that provides zero user value.
+1. **Manual migration via Dexie API**: Open old database, read all records, write to new database, delete old database. Adds complexity for no value since data loss is acceptable.
 
-2. **IndexedDB `IDBFactory.databases()` detection**: Use the browser API to detect if the old database exists, then migrate. This API is not supported in all browsers (Firefox added support only recently). Too fragile for a rename.
-
-3. **Keep old name internally** (chosen): The database name is an internal implementation detail. Users never see it. Renaming the TypeScript class and keeping `super("sdd-cockpit")` with a comment explaining why is the simplest, safest approach.
+2. **Keep old name internally**: Rename only the TypeScript class, keep `super("sdd-cockpit")`. Avoids data loss but leaves a legacy name in the codebase — rejected because aligning all names is preferred when data loss is acceptable.
 
 ## Research Question 2: What is the scope of "sdd-cockpit" references in the codebase?
 

@@ -15,7 +15,7 @@ This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, conf
 
 ### Source Code (2 files)
 - `app/layout.tsx` — Page title and nav header text
-- `lib/db/database.ts` — TypeScript class name (DB name preserved internally)
+- `lib/db/database.ts` — TypeScript class name and database name (changed to "spec-ops")
 
 ### Configuration (1 file + auto-generated)
 - `package.json` — Package name field
@@ -37,7 +37,6 @@ This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, conf
 ## What Does NOT Change
 
 - `specs/001-sdd-cockpit/` directory name (preserved as historical record)
-- IndexedDB database name in the Dexie constructor (preserved for data continuity)
 - Any application logic, phase gates, or feature behavior
 - The constitution (already updated prior to this feature)
 
@@ -63,5 +62,5 @@ grep -rn "SDD Cockpit" --include="*.ts" --include="*.tsx" --include="*.md" . \
 
 grep -rn "sdd-cockpit" --include="*.ts" --include="*.tsx" --include="*.json" . \
   | grep -v node_modules | grep -v .next | grep -v package-lock.json | grep -v "specs/014-rename-to-specops"
-# Expected: only lib/db/database.ts:super("sdd-cockpit") with explanatory comment
+# Expected: zero matches in source code
 ```

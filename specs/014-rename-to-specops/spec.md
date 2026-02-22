@@ -23,19 +23,18 @@ A user opens the application and sees "SpecOps" as the app name everywhere — i
 
 ---
 
-### User Story 2 — Existing Data Preservation (Priority: P1)
+### User Story 2 — Database Name Alignment (Priority: P1)
 
-A user who has existing projects stored in the browser upgrades to the renamed version. All their projects, chat history, and settings are preserved without any action required. The data migration happens silently on first load.
+The IndexedDB database name is updated from "sdd-cockpit" to "spec-ops" to align with the new project identity. Existing local data is not preserved — this is acceptable as the application is only running locally in development.
 
-**Why this priority**: Co-priority with US1 because losing user data during a rename would be a critical regression. Existing users must not lose their work.
+**Why this priority**: Co-priority with US1 because the database name is part of the project identity. A clean rename avoids carrying legacy naming internally.
 
-**Independent Test**: Create projects in the current version, upgrade to the renamed version, verify all projects and their content are intact and accessible.
+**Independent Test**: Open the application after the rename, verify the app loads with a fresh empty database named "spec-ops".
 
 **Acceptance Scenarios**:
 
-1. **Given** a user has existing projects stored in the browser, **When** they load the renamed application for the first time, **Then** all existing projects appear in the project list with their original content intact
-2. **Given** a user has chat history for a project, **When** they open the chat panel after the rename, **Then** all previous chat messages are visible
-3. **Given** a user has phases in various states (draft, reviewed, locked), **When** they open a project after the rename, **Then** all phase statuses are preserved exactly as they were
+1. **Given** a user opens the renamed application, **When** the database initializes, **Then** it uses the name "spec-ops"
+2. **Given** a user creates new projects after the rename, **When** they inspect browser storage, **Then** the database is listed as "spec-ops"
 
 ---
 
@@ -74,8 +73,8 @@ A developer working on the project sees the correct package name in configuratio
 
 ### Edge Cases
 
-- What happens if a user has no existing data (fresh install)? The application works normally — the data migration is a no-op.
-- What happens if the browser storage migration fails mid-process? The migration must be atomic — either all data is migrated or none is. If it fails, the application should still load with the user's original data accessible under the old storage name.
+- What happens if a user has no existing data (fresh install)? The application works normally with a fresh "spec-ops" database.
+- What happens to existing data under the old "sdd-cockpit" database name? It becomes inaccessible. This is acceptable as the app is only running locally in development.
 - What happens if a developer searches for "sdd-cockpit" in the codebase? They should find matches only in the `specs/001-sdd-cockpit/` directory path and not in any file content, configuration, or source code.
 - What happens to the constitution document? The constitution has already been updated to reference "SpecOps" — no further changes needed.
 
@@ -86,8 +85,8 @@ A developer working on the project sees the correct package name in configuratio
 - **FR-001**: The browser tab title MUST display "SpecOps" on all pages
 - **FR-002**: The navigation header MUST display "SpecOps" as the application name
 - **FR-003**: The package configuration name MUST be "spec-ops"
-- **FR-004**: The browser storage MUST migrate existing data transparently so all projects, chat messages, phase statuses, and evaluations are preserved after the rename
-- **FR-005**: The storage migration MUST be atomic — either all data is migrated successfully or the original data remains accessible
+- **FR-004**: The browser storage database name MUST be updated from "sdd-cockpit" to "spec-ops"
+- **FR-005**: (Removed — data migration not required; data loss is acceptable at this stage)
 - **FR-006**: The README MUST reference "SpecOps" consistently and describe the project in alignment with the spec-kit development methodology
 - **FR-007**: The development guidelines file MUST reference "SpecOps" or "spec-ops" in all name references
 - **FR-008**: All spec document titles and text references in the specs/ directory MUST use "SpecOps" instead of "SDD Cockpit"
@@ -97,7 +96,6 @@ A developer working on the project sees the correct package name in configuratio
 
 ### Key Entities
 
-- **Storage Migration**: A one-time process that copies data from the old-named storage location to the new-named storage location, preserving all records including projects, chat messages, and evaluation results
 - **Name Reference**: Any occurrence of the old name ("SDD Cockpit", "sdd-cockpit") in source code, configuration, documentation, or UI text that must be updated to the new name ("SpecOps", "spec-ops")
 
 ## Success Criteria *(mandatory)*
@@ -105,7 +103,7 @@ A developer working on the project sees the correct package name in configuratio
 ### Measurable Outcomes
 
 - **SC-001**: 100% of visible UI text references display "SpecOps" with zero occurrences of "SDD Cockpit"
-- **SC-002**: All existing user data (projects, chat history, phase statuses, evaluations) is accessible after the rename with zero data loss
+- **SC-002**: The IndexedDB database is named "spec-ops" in the running application
 - **SC-003**: A full-text search of the repository for "sdd-cockpit" returns matches only in the `specs/001-sdd-cockpit/` directory path, not in any file content
 - **SC-004**: A full-text search of the repository for "SDD Cockpit" returns zero matches across all files
 - **SC-005**: All automated tests pass after the rename with zero regressions
@@ -117,4 +115,4 @@ A developer working on the project sees the correct package name in configuratio
 - The constitution has already been updated to reference "SpecOps" — no constitution changes are in scope
 - The `specs/001-sdd-cockpit/` directory name is preserved as a historical record of the original feature branch name — this is intentional, not an oversight
 - "SpecOps" is the display name (title case), "spec-ops" is the kebab-case identifier used in package names and configuration
-- The storage migration needs to handle the case where no old data exists (fresh installs) gracefully
+- Data loss from the database rename is acceptable — the application is only running locally in development with no production users

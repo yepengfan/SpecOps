@@ -23,9 +23,9 @@
 
 ### Implementation
 
-- [ ] T001 [P] [US1] Update page title to "SpecOps" and description in `app/layout.tsx`
-- [ ] T002 [P] [US1] Update navigation header text from "SDD Cockpit" to "SpecOps" in `app/layout.tsx`
-- [ ] T003 [P] [US2] Rename class `SddCockpitDatabase` to `SpecOpsDatabase`, keep `super("sdd-cockpit")` with explanatory comment, rename export in `lib/db/database.ts`
+- [X] T001 [P] [US1] Update page title to "SpecOps" and description in `app/layout.tsx`
+- [X] T002 [P] [US1] Update navigation header text from "SDD Cockpit" to "SpecOps" in `app/layout.tsx`
+- [X] T003 [P] [US2] Rename class `SddCockpitDatabase` to `SpecOpsDatabase`, change `super("sdd-cockpit")` to `super("spec-ops")`, rename export in `lib/db/database.ts`
 
 **Checkpoint**: App shows "SpecOps" in browser tab and nav header. All existing data accessible (DB name unchanged internally).
 
@@ -39,8 +39,8 @@
 
 ### Implementation
 
-- [ ] T004 [US4] Update `name` field from "sdd-cockpit" to "spec-ops" in `package.json`
-- [ ] T005 [US4] Run `npm install` to regenerate `package-lock.json` with updated name
+- [X] T004 [US4] Update `name` field from "sdd-cockpit" to "spec-ops" in `package.json`
+- [X] T005 [US4] Run `npm install` to regenerate `package-lock.json` with updated name
 
 **Checkpoint**: `package.json` name is "spec-ops", lock file regenerated, `npm run build` succeeds.
 
@@ -54,15 +54,15 @@
 
 ### Implementation
 
-- [ ] T006 [P] [US3] Update project name, header, and references in `README.md` — replace "SDD Cockpit" / "SDD Workflow App" with "SpecOps", align content with spec-kit methodology
-- [ ] T007 [P] [US3] Update guidelines header and feature references in `CLAUDE.md` — header to "spec-ops Development Guidelines", update `(001-sdd-cockpit)` references
-- [ ] T008 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/plan.md`
-- [ ] T009 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/data-model.md`
-- [ ] T010 [P] [US3] Update document title, text references, and clone example in `specs/001-sdd-cockpit/quickstart.md`
-- [ ] T011 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/research.md`
-- [ ] T012 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/tasks.md`
-- [ ] T013 [P] [US3] Update DB name reference text in `specs/001-sdd-cockpit/contracts/indexeddb-schema.md`
-- [ ] T014 [P] [US3] Update "SDD Cockpit" text reference in `specs/011-spec-score/quickstart.md`
+- [X] T006 [P] [US3] Update project name, header, and references in `README.md` — replace "SDD Cockpit" / "SDD Workflow App" with "SpecOps", align content with spec-kit methodology
+- [X] T007 [P] [US3] Update guidelines header and feature references in `CLAUDE.md` — header to "spec-ops Development Guidelines", update `(001-sdd-cockpit)` references
+- [X] T008 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/plan.md`
+- [X] T009 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/data-model.md`
+- [X] T010 [P] [US3] Update document title, text references, and clone example in `specs/001-sdd-cockpit/quickstart.md`
+- [X] T011 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/research.md`
+- [X] T012 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/tasks.md`
+- [X] T013 [P] [US3] Update DB name reference text in `specs/001-sdd-cockpit/contracts/indexeddb-schema.md`
+- [X] T014 [P] [US3] Update "SDD Cockpit" text reference in `specs/011-spec-score/quickstart.md`
 
 **Checkpoint**: All documentation references updated. Directory name `specs/001-sdd-cockpit/` preserved.
 
@@ -72,10 +72,10 @@
 
 **Purpose**: Validate the rename is complete and no stale references remain
 
-- [ ] T015 Run `npm test` — all existing tests must pass with zero regressions
-- [ ] T016 Run `npm run lint` — zero errors
-- [ ] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-sdd-cockpit/` directory paths and `lib/db/database.ts` super() call
-- [ ] T018 Run `npm run build` — successful build with no old-name references in output
+- [X] T015 Run `npm test` — all existing tests must pass with zero regressions
+- [X] T016 Run `npm run lint` — zero errors
+- [X] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-sdd-cockpit/` directory paths and `lib/db/database.ts` super() call
+- [X] T018 Run `npm run build` — successful build with no old-name references in output
 
 ---
 
@@ -138,6 +138,6 @@ Since this is a simple text-replacement feature with no logic changes:
 
 - [P] tasks = different files, no dependencies
 - T001 and T002 target the same file — combine into a single edit
-- The DB name `"sdd-cockpit"` in `super()` is intentionally preserved (see research.md)
+- The DB name is changed from `"sdd-cockpit"` to `"spec-ops"` — data loss is acceptable (see research.md)
 - The directory `specs/001-sdd-cockpit/` is intentionally preserved (historical record)
 - Total files modified: 12 source/doc files + 1 auto-generated (package-lock.json)
