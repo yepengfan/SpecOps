@@ -59,13 +59,14 @@ export const useProjectStore = create<ProjectState>()((set, get) => ({
     if (!currentProject) return;
 
     const phase = currentProject.phases[phaseType];
+    if (!phase.sections.some((s) => s.id === sectionId)) return;
+
     const updatedSections = phase.sections.map((s) =>
       s.id === sectionId ? { ...s, content } : s,
     );
 
     const updatedProject: Project = {
       ...currentProject,
-      updatedAt: Date.now(),
       phases: {
         ...currentProject.phases,
         [phaseType]: {

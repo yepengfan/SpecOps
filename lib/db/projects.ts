@@ -1,3 +1,4 @@
+import Dexie from "dexie";
 import { db } from "@/lib/db/database";
 import type { Project } from "@/lib/types";
 import { getSectionsForPhase } from "@/lib/types/sections";
@@ -13,16 +14,10 @@ async function withErrorHandling<T>(fn: () => Promise<T>): Promise<T> {
   try {
     return await fn();
   } catch (error: unknown) {
-    if (
-      error instanceof Error &&
-      error.name === "QuotaExceededError"
-    ) {
+    if (error instanceof Dexie.QuotaExceededError) {
       throw new StorageError("Storage is full");
     }
-    if (
-      error instanceof Error &&
-      error.name === "OpenFailedError"
-    ) {
+    if (error instanceof Dexie.OpenFailedError) {
       throw new StorageError("Unable to load");
     }
     throw error;

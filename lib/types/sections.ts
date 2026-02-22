@@ -8,7 +8,7 @@ export const REQUIREMENTS_SECTIONS: readonly Section[] = [
     title: "Non-Functional Requirements",
     content: "",
   },
-] as const;
+];
 
 export const DESIGN_SECTIONS: readonly Section[] = [
   { id: "architecture", title: "Architecture", content: "" },
@@ -16,14 +16,14 @@ export const DESIGN_SECTIONS: readonly Section[] = [
   { id: "data-model", title: "Data Model", content: "" },
   { id: "tech-decisions", title: "Tech Decisions", content: "" },
   { id: "security-edge-cases", title: "Security & Edge Cases", content: "" },
-] as const;
+];
 
 export const TASKS_SECTIONS: readonly Section[] = [
   { id: "task-list", title: "Task List", content: "" },
   { id: "dependencies", title: "Dependencies", content: "" },
   { id: "file-mapping", title: "File Mapping", content: "" },
   { id: "test-expectations", title: "Test Expectations", content: "" },
-] as const;
+];
 
 const SECTIONS_BY_PHASE: Record<PhaseType, readonly Section[]> = {
   requirements: REQUIREMENTS_SECTIONS,

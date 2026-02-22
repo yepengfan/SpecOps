@@ -1,3 +1,4 @@
+import Dexie from "dexie";
 import { db } from "@/lib/db/database";
 import {
   createProject,
@@ -5,6 +6,7 @@ import {
   getProject,
   updateProject,
   deleteProject,
+  StorageError,
 } from "@/lib/db/projects";
 
 beforeEach(async () => {
@@ -137,5 +139,39 @@ describe("deleteProject", () => {
 
   it("is a no-op on nonexistent id", async () => {
     await expect(deleteProject("nonexistent")).resolves.not.toThrow();
+  });
+});
+
+describe("withErrorHandling", () => {
+  it("wraps QuotaExceededError into StorageError", async () => {
+    const spy = jest
+      .spyOn(db.projects, "add")
+      .mockRejectedValueOnce(new Dexie.QuotaExceededError());
+    const error = await createProject("Test").catch((e) => e);
+    expect(error).toBeInstanceOf(StorageError);
+    expect(error.message).toBe("Storage is full");
+    spy.mockRestore();
+  });
+
+  it("wraps OpenFailedError into StorageError", async () => {
+    const spy = jest
+      .spyOn(db.projects, "orderBy")
+      .mockImplementationOnce(() => {
+        throw new Dexie.OpenFailedError();
+      });
+    const error = await listProjects().catch((e) => e);
+    expect(error).toBeInstanceOf(StorageError);
+    expect(error.message).toBe("Unable to load");
+    spy.mockRestore();
+  });
+
+  it("re-throws unknown errors without wrapping", async () => {
+    const spy = jest
+      .spyOn(db.projects, "add")
+      .mockRejectedValueOnce(new Error("unexpected"));
+    const error = await createProject("Test").catch((e) => e);
+    expect(error).not.toBeInstanceOf(StorageError);
+    expect(error.message).toBe("unexpected");
+    spy.mockRestore();
   });
 });
