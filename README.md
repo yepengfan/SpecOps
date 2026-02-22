@@ -79,16 +79,20 @@ The developer takes the exported spec documents, commits them to their project r
 
 ## Spec Document Plan
 
-The following design documents define how this app itself is built, following the same SDD methodology:
+The following design documents define how this app itself is built, following the same SDD methodology via [Spec-Kit](https://github.com/github/spec-kit):
 
 ```
-specs/
-├── requirements.md          # App requirements and user stories
-├── design.md                # Frontend architecture, state management, UI/UX
-└── tasks.md                 # Implementation task breakdown
+specs/001-sdd-cockpit/
+├── spec.md                  # EARS-format requirements specification
+├── plan.md                  # Implementation plan with tech context and constitution check
+├── research.md              # Technology research decisions
+├── data-model.md            # Entity definitions and schema
+├── tasks.md                 # TDD task breakdown (64 tasks, 10 phases)
+├── quickstart.md            # Setup guide and project structure
+└── contracts/
+    ├── llm-api.md           # Claude API proxy interface contract
+    └── indexeddb-schema.md  # IndexedDB schema contract
 ```
-
-> These spec documents will be added in subsequent commits as part of the SDD workflow.
 
 ## Key Decisions
 
