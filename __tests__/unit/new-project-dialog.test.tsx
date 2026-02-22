@@ -64,11 +64,11 @@ describe("NewProjectDialog", () => {
       const projects = await db.projects.toArray();
       expect(projects).toHaveLength(1);
       expect(projects[0].id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-    );
-    expect(mockPush).toHaveBeenCalledWith(
-      expect.stringMatching(/\/project\/[a-f0-9-]+\/requirements/)
-    );
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      );
+      expect(mockPush).toHaveBeenCalledWith(
+        expect.stringMatching(/\/project\/[a-f0-9-]+\/requirements/)
+      );
     });
   });
 });

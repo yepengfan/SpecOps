@@ -22,11 +22,10 @@ import {
 
 export function ProjectCard({ project }: { project: Project }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const status = getProjectDisplayStatus(project);
   const activePhase = getActivePhase(project);
-
-  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function handleDelete() {
     try {
@@ -59,7 +58,10 @@ export function ProjectCard({ project }: { project: Project }) {
             size="icon-xs"
             className="relative z-10"
             aria-label={`Delete ${project.name}`}
-            onClick={() => setDeleteOpen(true)}
+            onClick={() => {
+              setDeleteError(null);
+              setDeleteOpen(true);
+            }}
           >
             <Trash2 />
           </Button>
