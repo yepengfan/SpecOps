@@ -14,9 +14,9 @@ describe("getTasksSystemPrompt", () => {
     expect(prompt).toContain("## Test Expectations");
   });
 
-  it("references requirements and design input", () => {
-    expect(prompt).toMatch(/requirements/i);
-    expect(prompt).toMatch(/design/i);
+  it("references spec and plan input", () => {
+    expect(prompt).toMatch(/spec/i);
+    expect(prompt).toMatch(/plan/i);
   });
 });
 

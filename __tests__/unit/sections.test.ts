@@ -1,17 +1,17 @@
 import {
-  REQUIREMENTS_SECTIONS,
-  DESIGN_SECTIONS,
+  SPEC_SECTIONS,
+  PLAN_SECTIONS,
   TASKS_SECTIONS,
   getSectionsForPhase,
 } from "@/lib/types/sections";
 
-describe("REQUIREMENTS_SECTIONS", () => {
+describe("SPEC_SECTIONS", () => {
   it("has 3 sections", () => {
-    expect(REQUIREMENTS_SECTIONS).toHaveLength(3);
+    expect(SPEC_SECTIONS).toHaveLength(3);
   });
 
   it("contains expected section ids", () => {
-    const ids = REQUIREMENTS_SECTIONS.map((s) => s.id);
+    const ids = SPEC_SECTIONS.map((s) => s.id);
     expect(ids).toEqual([
       "problem-statement",
       "ears-requirements",
@@ -20,7 +20,7 @@ describe("REQUIREMENTS_SECTIONS", () => {
   });
 
   it("all sections have id, title, and empty content", () => {
-    for (const section of REQUIREMENTS_SECTIONS) {
+    for (const section of SPEC_SECTIONS) {
       expect(section.id).toBeTruthy();
       expect(section.title).toBeTruthy();
       expect(section.content).toBe("");
@@ -28,13 +28,13 @@ describe("REQUIREMENTS_SECTIONS", () => {
   });
 });
 
-describe("DESIGN_SECTIONS", () => {
+describe("PLAN_SECTIONS", () => {
   it("has 5 sections", () => {
-    expect(DESIGN_SECTIONS).toHaveLength(5);
+    expect(PLAN_SECTIONS).toHaveLength(5);
   });
 
   it("contains expected section ids", () => {
-    const ids = DESIGN_SECTIONS.map((s) => s.id);
+    const ids = PLAN_SECTIONS.map((s) => s.id);
     expect(ids).toEqual([
       "architecture",
       "api-contracts",
@@ -45,7 +45,7 @@ describe("DESIGN_SECTIONS", () => {
   });
 
   it("all sections have id, title, and empty content", () => {
-    for (const section of DESIGN_SECTIONS) {
+    for (const section of PLAN_SECTIONS) {
       expect(section.id).toBeTruthy();
       expect(section.title).toBeTruthy();
       expect(section.content).toBe("");
@@ -78,14 +78,14 @@ describe("TASKS_SECTIONS", () => {
 });
 
 describe("getSectionsForPhase", () => {
-  it("returns sections for requirements phase", () => {
-    const sections = getSectionsForPhase("requirements");
+  it("returns sections for spec phase", () => {
+    const sections = getSectionsForPhase("spec");
     expect(sections).toHaveLength(3);
     expect(sections[0].id).toBe("problem-statement");
   });
 
-  it("returns sections for design phase", () => {
-    const sections = getSectionsForPhase("design");
+  it("returns sections for plan phase", () => {
+    const sections = getSectionsForPhase("plan");
     expect(sections).toHaveLength(5);
     expect(sections[0].id).toBe("architecture");
   });
@@ -97,9 +97,9 @@ describe("getSectionsForPhase", () => {
   });
 
   it("returns deep copies (mutations do not affect templates)", () => {
-    const sections = getSectionsForPhase("requirements");
+    const sections = getSectionsForPhase("spec");
     sections[0].content = "mutated";
-    const fresh = getSectionsForPhase("requirements");
+    const fresh = getSectionsForPhase("spec");
     expect(fresh[0].content).toBe("");
   });
 });

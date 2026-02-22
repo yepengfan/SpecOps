@@ -31,16 +31,16 @@ describe("approvePhase", () => {
     jest.useRealTimers();
   });
 
-  it("sets requirements to reviewed and unlocks design", async () => {
+  it("sets spec to reviewed and unlocks plan", async () => {
     const project = await createProject("Test");
-    // Fill all requirement sections with content
+    // Fill all spec sections with content
     const filledProject = {
       ...project,
       phases: {
         ...project.phases,
-        requirements: {
-          ...project.phases.requirements,
-          sections: project.phases.requirements.sections.map((s) => ({
+        spec: {
+          ...project.phases.spec,
+          sections: project.phases.spec.sections.map((s) => ({
             ...s,
             content: "filled",
           })),
@@ -49,28 +49,28 @@ describe("approvePhase", () => {
     };
     useProjectStore.getState().setProject(filledProject);
 
-    useProjectStore.getState().approvePhase("requirements");
+    useProjectStore.getState().approvePhase("spec");
 
     const current = useProjectStore.getState().currentProject!;
-    expect(current.phases.requirements.status).toBe("reviewed");
-    expect(current.phases.design.status).toBe("draft");
+    expect(current.phases.spec.status).toBe("reviewed");
+    expect(current.phases.plan.status).toBe("draft");
     expect(current.phases.tasks.status).toBe("locked");
   });
 
-  it("sets design to reviewed and unlocks tasks", async () => {
+  it("sets plan to reviewed and unlocks tasks", async () => {
     const project = await createProject("Test");
     const filledProject = {
       ...project,
       phases: {
         ...project.phases,
-        requirements: {
-          ...project.phases.requirements,
+        spec: {
+          ...project.phases.spec,
           status: "reviewed" as const,
         },
-        design: {
-          ...project.phases.design,
+        plan: {
+          ...project.phases.plan,
           status: "draft" as const,
-          sections: project.phases.design.sections.map((s) => ({
+          sections: project.phases.plan.sections.map((s) => ({
             ...s,
             content: "filled",
           })),
@@ -79,10 +79,10 @@ describe("approvePhase", () => {
     };
     useProjectStore.getState().setProject(filledProject);
 
-    useProjectStore.getState().approvePhase("design");
+    useProjectStore.getState().approvePhase("plan");
 
     const current = useProjectStore.getState().currentProject!;
-    expect(current.phases.design.status).toBe("reviewed");
+    expect(current.phases.plan.status).toBe("reviewed");
     expect(current.phases.tasks.status).toBe("draft");
   });
 
@@ -91,10 +91,10 @@ describe("approvePhase", () => {
     // Leave sections empty (default)
     useProjectStore.getState().setProject(project);
 
-    useProjectStore.getState().approvePhase("requirements");
+    useProjectStore.getState().approvePhase("spec");
 
     const current = useProjectStore.getState().currentProject!;
-    expect(current.phases.requirements.status).toBe("draft");
+    expect(current.phases.spec.status).toBe("draft");
     expect(mockUpdateProject).not.toHaveBeenCalled();
   });
 
@@ -104,9 +104,9 @@ describe("approvePhase", () => {
       ...project,
       phases: {
         ...project.phases,
-        requirements: {
-          ...project.phases.requirements,
-          sections: project.phases.requirements.sections.map((s) => ({
+        spec: {
+          ...project.phases.spec,
+          sections: project.phases.spec.sections.map((s) => ({
             ...s,
             content: "filled",
           })),
@@ -115,7 +115,7 @@ describe("approvePhase", () => {
     };
     useProjectStore.getState().setProject(filledProject);
 
-    useProjectStore.getState().approvePhase("requirements");
+    useProjectStore.getState().approvePhase("spec");
 
     // Should be called immediately, before any timer advancement
     expect(mockUpdateProject).toHaveBeenCalledTimes(1);
@@ -138,22 +138,22 @@ describe("editReviewedPhase", () => {
       ...project,
       phases: {
         ...project.phases,
-        requirements: {
-          ...project.phases.requirements,
+        spec: {
+          ...project.phases.spec,
           status: "reviewed" as const,
         },
-        design: {
-          ...project.phases.design,
+        plan: {
+          ...project.phases.plan,
           status: "draft" as const,
         },
       },
     };
     useProjectStore.getState().setProject(reviewedProject);
 
-    useProjectStore.getState().editReviewedPhase("requirements");
+    useProjectStore.getState().editReviewedPhase("spec");
 
     const current = useProjectStore.getState().currentProject!;
-    expect(current.phases.requirements.status).toBe("draft");
+    expect(current.phases.spec.status).toBe("draft");
   });
 
   it("cascades: resets all downstream phases to draft, preserves content", async () => {
@@ -161,20 +161,20 @@ describe("editReviewedPhase", () => {
     const allReviewedProject = {
       ...project,
       phases: {
-        requirements: {
-          ...project.phases.requirements,
+        spec: {
+          ...project.phases.spec,
           status: "reviewed" as const,
-          sections: project.phases.requirements.sections.map((s) => ({
+          sections: project.phases.spec.sections.map((s) => ({
             ...s,
-            content: "req content",
+            content: "spec content",
           })),
         },
-        design: {
-          ...project.phases.design,
+        plan: {
+          ...project.phases.plan,
           status: "reviewed" as const,
-          sections: project.phases.design.sections.map((s) => ({
+          sections: project.phases.plan.sections.map((s) => ({
             ...s,
-            content: "design content",
+            content: "plan content",
           })),
         },
         tasks: {
@@ -189,14 +189,14 @@ describe("editReviewedPhase", () => {
     };
     useProjectStore.getState().setProject(allReviewedProject);
 
-    useProjectStore.getState().editReviewedPhase("requirements");
+    useProjectStore.getState().editReviewedPhase("spec");
 
     const current = useProjectStore.getState().currentProject!;
-    expect(current.phases.requirements.status).toBe("draft");
-    expect(current.phases.design.status).toBe("draft");
+    expect(current.phases.spec.status).toBe("draft");
+    expect(current.phases.plan.status).toBe("draft");
     expect(current.phases.tasks.status).toBe("draft");
     // Content preserved
-    expect(current.phases.design.sections[0].content).toBe("design content");
+    expect(current.phases.plan.sections[0].content).toBe("plan content");
     expect(current.phases.tasks.sections[0].content).toBe("task content");
   });
 });
@@ -208,10 +208,10 @@ describe("updateSection guards", () => {
       ...project,
       phases: {
         ...project.phases,
-        requirements: {
-          ...project.phases.requirements,
+        spec: {
+          ...project.phases.spec,
           status: "reviewed" as const,
-          sections: project.phases.requirements.sections.map((s) => ({
+          sections: project.phases.spec.sections.map((s) => ({
             ...s,
             content: "original",
           })),
@@ -220,10 +220,10 @@ describe("updateSection guards", () => {
     };
     useProjectStore.getState().setProject(reviewedProject);
 
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "changed");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "changed");
 
     const current = useProjectStore.getState().currentProject!;
-    const section = current.phases.requirements.sections.find(
+    const section = current.phases.spec.sections.find(
       (s) => s.id === "problem-statement",
     );
     expect(section!.content).toBe("original");

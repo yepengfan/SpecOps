@@ -37,18 +37,18 @@ describe("ProjectList", () => {
     expect(cards[1]).toHaveTextContent("First");
   });
 
-  it('shows "Requirements" status for new project', async () => {
+  it('shows "Spec" status for new project', async () => {
     await createProject("My Project");
 
     render(<ProjectList />);
     const card = await screen.findByRole("article");
-    expect(card).toHaveTextContent("Requirements");
+    expect(card).toHaveTextContent("Spec");
   });
 
   it('shows "Complete" status when all phases reviewed', async () => {
     const project = await createProject("Done Project");
-    project.phases.requirements.status = "reviewed";
-    project.phases.design.status = "reviewed";
+    project.phases.spec.status = "reviewed";
+    project.phases.plan.status = "reviewed";
     project.phases.tasks.status = "reviewed";
     await db.projects.put(project);
 

@@ -26,11 +26,11 @@ describe("updateSection", () => {
     const project = await createProject("Test");
     useProjectStore.getState().setProject(project);
 
-    useProjectStore.getState().updateSection("requirements", "nonexistent-section", "content");
+    useProjectStore.getState().updateSection("spec", "nonexistent-section", "content");
 
     const current = useProjectStore.getState().currentProject;
     // Sections should be unchanged — all still have empty content
-    for (const section of current!.phases.requirements.sections) {
+    for (const section of current!.phases.spec.sections) {
       expect(section.content).toBe("");
     }
   });
@@ -39,10 +39,10 @@ describe("updateSection", () => {
     const project = await createProject("Test");
     useProjectStore.getState().setProject(project);
 
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "New content");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "New content");
 
     const current = useProjectStore.getState().currentProject;
-    const section = current!.phases.requirements.sections.find(
+    const section = current!.phases.spec.sections.find(
       (s) => s.id === "problem-statement",
     );
     expect(section!.content).toBe("New content");
@@ -50,7 +50,7 @@ describe("updateSection", () => {
 
   it("is a no-op when no project is set", () => {
     // Should not throw
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "content");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "content");
     expect(useProjectStore.getState().currentProject).toBeNull();
   });
 });
@@ -69,12 +69,12 @@ describe("debounced save", () => {
     const project = await createProject("Test");
     useProjectStore.getState().setProject(project);
 
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "hello");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "hello");
     expect(useProjectStore.getState().isSaving).toBe(false); // debounce not fired yet
 
     await jest.runAllTimersAsync();
     expect(mockUpdateProject).toHaveBeenCalledTimes(1);
-    expect(mockUpdateProject.mock.calls[0][0].phases.requirements.sections[0].content).toBe("hello");
+    expect(mockUpdateProject.mock.calls[0][0].phases.spec.sections[0].content).toBe("hello");
     expect(useProjectStore.getState().isSaving).toBe(false);
   });
 
@@ -83,7 +83,7 @@ describe("debounced save", () => {
     useProjectStore.getState().setProject(project);
     mockUpdateProject.mockRejectedValueOnce(new Error("DB write failed"));
 
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "hello");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "hello");
     await jest.runAllTimersAsync();
 
     expect(mockUpdateProject).toHaveBeenCalledTimes(1);
@@ -95,20 +95,20 @@ describe("debounced save", () => {
     const project = await createProject("Test");
     useProjectStore.getState().setProject(project);
 
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "a");
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "ab");
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "abc");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "a");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "ab");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "abc");
 
     await jest.runAllTimersAsync();
     expect(mockUpdateProject).toHaveBeenCalledTimes(1);
-    expect(mockUpdateProject.mock.calls[0][0].phases.requirements.sections[0].content).toBe("abc");
+    expect(mockUpdateProject.mock.calls[0][0].phases.spec.sections[0].content).toBe("abc");
   });
 
   it("cancelPendingSave prevents the debounced save from firing", async () => {
     const project = await createProject("Test");
     useProjectStore.getState().setProject(project);
 
-    useProjectStore.getState().updateSection("requirements", "problem-statement", "hello");
+    useProjectStore.getState().updateSection("spec", "problem-statement", "hello");
     useProjectStore.getState().cancelPendingSave();
 
     await jest.runAllTimersAsync();

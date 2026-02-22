@@ -94,7 +94,7 @@ describe("POST /api/generate", () => {
 
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
-      makeRequest({ action: "generate-requirements" }),
+      makeRequest({ action: "generate-spec" }),
     );
 
     expect(response.status).toBe(401);
@@ -120,7 +120,7 @@ describe("POST /api/generate", () => {
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "generate-requirements",
+        action: "generate-spec",
         projectDescription: "A todo app",
       }),
     );
@@ -138,7 +138,7 @@ describe("POST /api/generate", () => {
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "generate-requirements",
+        action: "generate-spec",
         projectDescription: "A todo app",
       }),
     );
@@ -165,7 +165,7 @@ describe("POST /api/generate", () => {
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "generate-requirements",
+        action: "generate-spec",
         projectDescription: "test",
       }),
     );
@@ -186,7 +186,7 @@ describe("POST /api/generate", () => {
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "generate-requirements",
+        action: "generate-spec",
         projectDescription: "test",
       }),
     );
@@ -205,7 +205,7 @@ describe("POST /api/generate", () => {
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "generate-requirements",
+        action: "generate-spec",
         projectDescription: "test",
       }),
     );
