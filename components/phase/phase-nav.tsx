@@ -29,7 +29,6 @@ export function PhaseNav({ projectId }: PhaseNavProps) {
   const pathname = usePathname();
   const router = useRouter();
   const tablistRef = useRef<HTMLDivElement>(null);
-  const focusedIndexRef = useRef<number>(-1);
 
   // Build full tab list (phases + traceability)
   const allTabs: TabEntry[] = project
@@ -99,7 +98,6 @@ export function PhaseNav({ projectId }: PhaseNavProps) {
       }
 
       tabElements[nextIdx]?.focus();
-      focusedIndexRef.current = nextIdx;
     },
     [focusableTabs.length, router],
   );
