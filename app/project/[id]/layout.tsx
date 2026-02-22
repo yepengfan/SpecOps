@@ -7,6 +7,7 @@ import { useProjectStore } from "@/lib/stores/project-store";
 import { PhaseNav } from "@/components/phase/phase-nav";
 import { ExportPanel } from "@/components/phase/export-panel";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EditableProjectName } from "@/components/ui/editable-project-name";
 
 export default function ProjectLayout({
   params,
@@ -17,7 +18,6 @@ export default function ProjectLayout({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const project = useProjectStore((s) => s.currentProject);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function ProjectLayout({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{project?.name}</h1>
+        <EditableProjectName />
         <ExportPanel />
       </div>
       <PhaseNav projectId={id} />
