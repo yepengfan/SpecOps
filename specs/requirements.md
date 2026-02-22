@@ -8,7 +8,7 @@ Last updated: 2026-02-22
 Context:
 Spec-Driven Development (SDD) is one of the most effective methodologies for working with AI coding agents — structured specs lead to predictable, high-quality implementations. However, adopting SDD in practice is difficult due to four core pain points: (1) high learning curve with no guided tooling, (2) phase skipping that undermines the methodology, (3) inconsistent spec quality leading to unpredictable AI agent output, and (4) poor reproducibility without structured templates and validation.
 
-This app provides a guided, gate-enforced workflow that produces consistent, AI-agent-optimized spec documents. It is a pure frontend SPA for local development only — no backend, no deployment, API key stored in `.env`.
+This app provides a guided, gate-enforced workflow that produces consistent, AI-agent-optimized spec documents. It is a pure frontend SPA — no backend, no user authentication. The API key is entered at runtime and stored in IndexedDB (never bundled into the JS build).
 
 ---
 
@@ -115,6 +115,11 @@ IF API rate limit is exceeded THEN:
 - Display error message: "Rate limit exceeded. Please wait and try again."
 - Preserve existing content
 
+IF LLM response does not conform to the expected section structure THEN:
+- Display the raw response in the editor with a warning banner: "Generated content may not follow the expected format. Please review and edit manually."
+- Do NOT block phase approval — the developer can manually correct the content
+- Allow the developer to retry generation
+
 ---
 
 ## Req 4: AI-Assisted Design Generation
@@ -141,6 +146,10 @@ IF API call fails THEN:
 - Display error message describing the failure
 - Preserve any previously generated content
 - Allow the developer to retry
+
+IF LLM response does not conform to the expected section structure THEN:
+- Display the raw response with a warning banner: "Generated content may not follow the expected format. Please review and edit manually."
+- Allow the developer to retry generation
 
 ---
 
@@ -169,6 +178,10 @@ IF API call fails THEN:
 - Display error message describing the failure
 - Preserve any previously generated content
 - Allow the developer to retry
+
+IF LLM response does not conform to the expected section structure THEN:
+- Display the raw response with a warning banner: "Generated content may not follow the expected format. Please review and edit manually."
+- Allow the developer to retry generation
 
 ---
 
@@ -272,30 +285,31 @@ IF zip generation fails THEN:
 ## Req 9: API Key Configuration
 
 Priority: High
-Rationale: The app requires a valid LLM API key for all AI generation features. Since this is a local-only app, the key is loaded from .env — but the app must validate it and guide the user through setup.
+Rationale: The app requires a valid LLM API key for all AI generation features. To avoid embedding the key in the JS bundle (which would make it extractable in any deployment), the key is entered at runtime through a settings UI and stored in IndexedDB.
 
 Main Flow:
-WHEN a developer opens the app and no valid API key is detected
+WHEN a developer opens the app and no valid API key is stored in IndexedDB
 THEN the system SHALL:
 - Display a setup screen explaining that an API key is required
-- Provide instructions for configuring the API key in `.env`
-- Block access to all workflow features until a valid key is configured
+- Provide a text input for the developer to paste their API key
+- On submit, validate the key with a lightweight API call (list models endpoint or a minimal completion with `max_tokens: 1`)
+- IF valid: store the key in IndexedDB and proceed to the project list
+- IF invalid: display an inline error: "API key is invalid. Please check and try again."
+- Block access to all workflow features until a valid key is stored
 
-Alternative Flow — Validation:
-WHEN the app loads with an API key configured in `.env`
+Alternative Flow — Update Key:
+WHEN a developer opens the settings screen
 THEN the system SHALL:
-- Make a lightweight validation call to verify the key is active
-- IF valid: proceed to the project list
-- IF invalid: display the setup screen with error: "API key is invalid. Please check your .env configuration."
+- Display the current key status (configured / not configured) without revealing the full key (show last 4 characters only)
+- Allow the developer to replace the key by pasting a new one
+- Validate the new key before saving (same validation as Main Flow)
 
 Validation Rules:
 WHERE API key configuration:
-- The API key MUST be loaded from environment variable via `.env` file (never hardcoded)
-- `.env` MUST be listed in `.gitignore` to prevent accidental commits
+- The API key MUST be entered at runtime and stored in IndexedDB — never bundled into the JS build or committed to version control
 - The app MUST NOT function without a valid API key — all AI generation features are blocked
-- This architecture is intentionally local-only — the key is embedded in the JS bundle and MUST never be deployed to a public-facing host
-- IF `NODE_ENV=production` is set at build time, the build MUST emit a console warning: "WARNING: This app contains an embedded API key and is intended for local development only."
-- The app MUST display a persistent "Local Development Only" indicator in the UI (e.g., footer or badge)
+- The key MUST NOT be logged, displayed in full, or included in error messages
+- Key validation result MUST be cached for the current session — do not re-validate on every page navigation
 
 ---
 
@@ -323,6 +337,6 @@ Storage:
 - No data sent to any server other than LLM API calls
 
 Security:
-- API key loaded from `.env` only — never committed to version control
-- No user authentication required (local-only app)
-- This app MUST NOT be deployed to a public host (API key would be exposed in JS bundle)
+- API key entered at runtime and stored in IndexedDB — never bundled into the JS build or committed to version control
+- No user authentication required
+- API key MUST NOT be logged, displayed in full, or included in error messages

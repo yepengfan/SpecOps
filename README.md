@@ -38,12 +38,11 @@ graph LR
 
 Define **what** you're building and **why**. This is the problem space, not the solution space.
 
-| Section            | Purpose                                                    |
-| ------------------ | ---------------------------------------------------------- |
-| Problem Statement  | What pain point or opportunity are we addressing?          |
-| User Stories       | Who are the users and what do they need?                   |
-| Acceptance Criteria| Concrete, testable conditions for "done"                   |
-| Scope & Non-Goals  | What's explicitly in and out of scope for this iteration?  |
+| Section                      | Purpose                                                    |
+| ---------------------------- | ---------------------------------------------------------- |
+| Problem Statement            | What pain point or opportunity are we addressing?          |
+| EARS-format Requirements     | Structured requirements using WHEN/THEN/WHERE/IF keywords  |
+| Non-Functional Requirements  | Performance, accessibility, browser support, security      |
 
 **Gate:** Requirements must be reviewed before proceeding to Design. The app enforces this — you can't skip ahead.
 
@@ -93,7 +92,7 @@ specs/
 
 ## Key Decisions
 
-- **Pure frontend SPA** — No backend. All data stored in browser (localStorage / IndexedDB). Zero deployment cost, zero auth complexity.
+- **Pure frontend SPA** — No backend. All data stored in browser (IndexedDB). API key entered at runtime, never bundled. Zero auth complexity.
 - **Export-oriented** — Specs are exported as markdown files. Users place them in their own Git repos. No GitHub integration in v1.
 - **AI-agent-optimized output** — Exported specs follow conventions that AI coding agents can parse and implement against reliably.
 
