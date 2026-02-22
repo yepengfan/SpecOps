@@ -5,6 +5,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/database";
 import { listProjects, StorageError } from "@/lib/db/projects";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectCard } from "@/components/ui/project-card";
 import { NewProjectDialog } from "@/components/ui/new-project-dialog";
 
@@ -44,7 +45,19 @@ export function ProjectList() {
   }
 
   if (projects === undefined) {
-    return <p className="py-8 text-muted-foreground">Loading projects...</p>;
+    return (
+      <div className="py-8">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }, (_, i) => (
+            <div key={i} className="rounded-lg border p-4 space-y-3">
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-3 w-1/3" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (projects.length === 0) {

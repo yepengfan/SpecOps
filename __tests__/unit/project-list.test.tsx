@@ -45,6 +45,12 @@ describe("ProjectList", () => {
     expect(card).toHaveTextContent("Spec");
   });
 
+  it("shows skeleton elements during loading state", () => {
+    const { container } = render(<ProjectList />);
+    const skeletons = container.querySelectorAll('[data-slot="skeleton"]');
+    expect(skeletons.length).toBeGreaterThan(0);
+  });
+
   it('shows "Complete" status when all phases reviewed', async () => {
     const project = await createProject("Done Project");
     project.phases.spec.status = "reviewed";
