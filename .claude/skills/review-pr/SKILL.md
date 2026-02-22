@@ -1,6 +1,8 @@
 ---
 name: review-pr
 description: Review a GitHub pull request and post review comments directly on the PR. Usage: /review-pr <number>
+user-invokable: true
+argument-hint: "<pr-number>"
 ---
 
 ## GitHub PR Review
@@ -57,5 +59,5 @@ The review body should follow this format:
 
 If the diff is large, also add inline comments on specific lines using:
 ```
-gh api repos/{owner}/{repo}/pulls/$ARGUMENTS/comments -f body="<comment>" -f path="<file>" -f side="RIGHT" -F line=<line_number> -f commit_id="$(gh pr view $ARGUMENTS --json headRefOid -q .headRefOid)"
+gh api "repos/$(gh repo view --json nameWithOwner -q .nameWithOwner)/pulls/$ARGUMENTS/comments" -f body="<comment>" -f path="<file>" -f side="RIGHT" -F line=<line_number> -f commit_id="$(gh pr view $ARGUMENTS --json headRefOid -q .headRefOid)"
 ```

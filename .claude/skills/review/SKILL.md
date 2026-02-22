@@ -1,6 +1,7 @@
 ---
 name: review
 description: Review local changes (staged and unstaged) before pushing. Analyzes code quality, security, and correctness.
+user-invokable: true
 ---
 
 ## Local Code Review
