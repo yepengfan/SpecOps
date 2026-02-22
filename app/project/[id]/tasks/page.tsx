@@ -6,6 +6,9 @@ import { GatedPhasePage } from "@/components/phase/gated-phase-page";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { streamGenerate, StreamError } from "@/lib/api/stream-client";
 import { parseTaskSections } from "@/lib/prompts/tasks";
+import { parseTraceabilityComment } from "@/lib/prompts/traceability";
+import { clearAiMappings } from "@/lib/db/traceability";
+import { updateProject } from "@/lib/db/projects";
 
 export default function TasksPage() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -50,7 +53,11 @@ export default function TasksPage() {
         accumulated += chunk;
       }
 
-      const parsed = parseTaskSections(accumulated);
+      // Extract traceability mappings before parsing sections
+      const newMappings = parseTraceabilityComment(accumulated);
+      const cleanContent = accumulated.replace(/<!--\s*TRACEABILITY:[\s\S]*?-->/g, "").trim();
+
+      const parsed = parseTaskSections(cleanContent);
 
       // Transition back to draft if phase was reviewed, so updateSection writes aren't dropped
       if (project.phases.tasks.status === "reviewed") {
@@ -59,12 +66,25 @@ export default function TasksPage() {
 
       if (parsed.malformed) {
         setMalformedWarning(true);
-        updateSection("tasks", "task-list", accumulated);
+        updateSection("tasks", "task-list", cleanContent);
       } else {
         updateSection("tasks", "task-list", parsed.taskList);
         updateSection("tasks", "dependencies", parsed.dependencies);
         updateSection("tasks", "file-mapping", parsed.fileMapping);
         updateSection("tasks", "test-expectations", parsed.testExpectations);
+      }
+
+      // Persist traceability mappings
+      if (newMappings.length > 0 && project) {
+        const cleared = clearAiMappings(project);
+        const withMappings = {
+          ...cleared,
+          traceabilityMappings: [
+            ...cleared.traceabilityMappings,
+            ...newMappings,
+          ],
+        };
+        await updateProject(withMappings);
       }
       setGenerationKey((k) => k + 1);
     } catch (err: unknown) {

@@ -6,6 +6,9 @@ import { GatedPhasePage } from "@/components/phase/gated-phase-page";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { streamGenerate, StreamError } from "@/lib/api/stream-client";
 import { parsePlanSections } from "@/lib/prompts/plan";
+import { parseTraceabilityComment } from "@/lib/prompts/traceability";
+import { clearAiMappings } from "@/lib/db/traceability";
+import { updateProject } from "@/lib/db/projects";
 
 export default function PlanPage() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -45,12 +48,17 @@ export default function PlanPage() {
         accumulated += chunk;
       }
 
-      const parsed = parsePlanSections(accumulated);
+      // Extract traceability mappings before parsing sections
+      const newMappings = parseTraceabilityComment(accumulated);
+      // Strip traceability comment from content
+      const cleanContent = accumulated.replace(/<!--\s*TRACEABILITY:[\s\S]*?-->/g, "").trim();
+
+      const parsed = parsePlanSections(cleanContent);
 
       if (parsed.malformed) {
         setMalformedWarning(true);
         // Fallback: put raw text in first section
-        updateSection("plan", "architecture", accumulated);
+        updateSection("plan", "architecture", cleanContent);
       } else {
         updateSection("plan", "architecture", parsed.architecture);
         updateSection("plan", "api-contracts", parsed.apiContracts);
@@ -61,6 +69,19 @@ export default function PlanPage() {
           "security-edge-cases",
           parsed.securityEdgeCases,
         );
+      }
+
+      // Persist traceability mappings
+      if (newMappings.length > 0 && project) {
+        const cleared = clearAiMappings(project);
+        const withMappings = {
+          ...cleared,
+          traceabilityMappings: [
+            ...cleared.traceabilityMappings,
+            ...newMappings,
+          ],
+        };
+        await updateProject(withMappings);
       }
       setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
