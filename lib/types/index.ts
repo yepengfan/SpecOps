@@ -13,6 +13,17 @@ export interface Phase {
   sections: Section[];
 }
 
+export interface TraceabilityMapping {
+  id: string;
+  requirementId: string;
+  requirementLabel: string;
+  targetType: "plan" | "task";
+  targetId: string;
+  targetLabel: string;
+  origin: "ai" | "manual";
+  createdAt: number;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -24,6 +35,7 @@ export interface Project {
     plan: Phase;
     tasks: Phase;
   };
+  traceabilityMappings: TraceabilityMapping[];
 }
 
 export const PHASE_TYPES: readonly PhaseType[] = [

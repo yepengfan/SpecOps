@@ -25,6 +25,13 @@ export class SddCockpitDatabase extends Dexie {
         }
       });
     });
+    this.version(3).stores({ projects: "id, updatedAt" }).upgrade((tx) => {
+      return tx.table("projects").toCollection().modify((project: Record<string, unknown>) => {
+        if (!project.traceabilityMappings) {
+          project.traceabilityMappings = [];
+        }
+      });
+    });
   }
 }
 
