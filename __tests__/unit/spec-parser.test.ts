@@ -1,4 +1,22 @@
-import { parseSpecSections } from "@/lib/prompts/spec";
+import { getRegenerateSpecSectionPrompt, parseSpecSections } from "@/lib/prompts/spec";
+
+describe("getRegenerateSpecSectionPrompt", () => {
+  it("includes the section name", () => {
+    const prompt = getRegenerateSpecSectionPrompt("EARS Requirements");
+    expect(prompt).toContain("EARS Requirements");
+  });
+
+  it("includes instruction when provided", () => {
+    const prompt = getRegenerateSpecSectionPrompt("EARS Requirements", "Focus on authentication");
+    expect(prompt).toContain("Architect's advice");
+    expect(prompt).toContain("Focus on authentication");
+  });
+
+  it("does not include instruction block when not provided", () => {
+    const prompt = getRegenerateSpecSectionPrompt("EARS Requirements");
+    expect(prompt).not.toContain("Architect's advice");
+  });
+});
 
 describe("parseSpecSections", () => {
   const validInput = [

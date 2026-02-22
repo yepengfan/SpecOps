@@ -25,6 +25,17 @@ describe("getRegenerateTaskSectionPrompt", () => {
     const prompt = getRegenerateTaskSectionPrompt("Task List");
     expect(prompt).toContain("Task List");
   });
+
+  it("includes instruction when provided", () => {
+    const prompt = getRegenerateTaskSectionPrompt("Task List", "Break into smaller tasks");
+    expect(prompt).toContain("Architect's advice");
+    expect(prompt).toContain("Break into smaller tasks");
+  });
+
+  it("does not include instruction block when not provided", () => {
+    const prompt = getRegenerateTaskSectionPrompt("Task List");
+    expect(prompt).not.toContain("Architect's advice");
+  });
 });
 
 describe("parseTaskSections", () => {
