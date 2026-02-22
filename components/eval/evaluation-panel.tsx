@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { RuleChecklist } from "@/components/eval/rule-checklist";
 import { DeepAnalysisResults } from "@/components/eval/deep-analysis-results";
 import { useProjectStore } from "@/lib/stores/project-store";
-import { useEvaluationStore } from "@/lib/stores/evaluation-store";
 import { evaluateSpec, evaluatePlan, evaluateTasks } from "@/lib/eval/rules";
 import { computePhaseHash } from "@/lib/eval/hash";
 import { setEvaluation } from "@/lib/db/evaluations";
@@ -34,14 +33,11 @@ const UPSTREAM_PHASE: Record<PhaseType, PhaseType | null> = {
 
 export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isEvaluating, setEvaluating] = useState(false);
+  const [isAnalyzing, setAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
   const project = useProjectStore((s) => s.currentProject);
   const setProject = useProjectStore((s) => s.setProject);
-  const isEvaluating = useEvaluationStore((s) => s.isEvaluating);
-  const setEvaluating = useEvaluationStore((s) => s.setEvaluating);
-  const isAnalyzing = useEvaluationStore((s) => s.isAnalyzing);
-  const setAnalyzing = useEvaluationStore((s) => s.setAnalyzing);
-  const analysisError = useEvaluationStore((s) => s.analysisError);
-  const setAnalysisError = useEvaluationStore((s) => s.setAnalysisError);
 
   const phase = project?.phases[phaseType];
   const evaluation = project?.evaluations?.[phaseType];
@@ -73,7 +69,7 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
     } finally {
       setEvaluating(false);
     }
-  }, [project, phase, phaseType, evaluation, setEvaluating, setProject]);
+  }, [project, phase, phaseType, evaluation, setProject]);
 
   const handleDeepAnalysis = useCallback(async () => {
     if (!project || !phase || !evaluation) return;
@@ -86,7 +82,7 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
         .map((s) => `## ${s.title}\n${s.content}`)
         .join("\n\n");
 
-      // Gather upstream content for cross-phase analysis (T022)
+      // Gather upstream content for cross-phase analysis
       const upstreamPhaseType = UPSTREAM_PHASE[phaseType];
       let upstreamContent: string | undefined;
       if (upstreamPhaseType) {
@@ -136,17 +132,17 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
     } finally {
       setAnalyzing(false);
     }
-  }, [project, phase, phaseType, evaluation, setAnalyzing, setAnalysisError, setProject]);
+  }, [project, phase, phaseType, evaluation, setProject]);
 
   return (
     <div className="rounded-lg border bg-card">
-      <button
-        type="button"
-        className="flex w-full items-center justify-between p-3 text-sm font-medium hover:bg-accent/50 rounded-lg transition-colors"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-      >
-        <span className="flex items-center gap-2">
+      <div className="flex w-full items-center justify-between p-3 text-sm font-medium">
+        <button
+          type="button"
+          className="flex items-center gap-2 hover:bg-accent/50 rounded-md px-2 py-1 -ml-2 transition-colors"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+        >
           {isOpen ? (
             <ChevronDown className="size-4" />
           ) : (
@@ -159,16 +155,13 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
               {evaluation.ruleResults.length} passing)
             </span>
           )}
-        </span>
-        <span className="flex items-center gap-2">
+        </button>
+        <div className="flex items-center gap-2">
           <Button
             size="sm"
             variant="outline"
             disabled={!hasContent || isEvaluating}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEvaluate();
-            }}
+            onClick={handleEvaluate}
           >
             {isEvaluating ? "Evaluating…" : "Evaluate"}
           </Button>
@@ -176,10 +169,7 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
             size="sm"
             variant="outline"
             disabled={!evaluation || isAnalyzing}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeepAnalysis();
-            }}
+            onClick={handleDeepAnalysis}
           >
             {isAnalyzing ? (
               <>
@@ -190,8 +180,8 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
               "Deep Analysis"
             )}
           </Button>
-        </span>
-      </button>
+        </div>
+      </div>
 
       {isOpen && (
         <div className="border-t px-3 pb-3 pt-2 space-y-4">

@@ -31,7 +31,7 @@ describe("Evaluation persistence and invalidation", () => {
       .updateSection(
         "spec",
         "problem-statement",
-        "## Requirements\n- **FR-001**: System SHALL display login WHEN user navigates\n\n## Priority\nHigh\n\n## Rationale\nNeeded\n\n## Main Flow\n1. Login\n\n## Validation Rules\n- Valid\n\n## Error Handling\n- Error\n\n## Performance\n- 2 seconds"
+        "## Problem Statement\nUsers need a login system.\n\n## EARS Requirements\n- **REQ-1**: System SHALL display a login form WHEN the user navigates to /login\n\n## Non-Functional Requirements\n- **NFR-1**: The login page SHALL load in under 2 seconds (performance)"
       );
     await jest.runAllTimersAsync();
 

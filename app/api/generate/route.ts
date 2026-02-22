@@ -97,6 +97,10 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ error: "Invalid action" }, { status: 400 });
   }
 
+  if (body.action === "deep-analysis" && body.phaseType && !["spec", "plan", "tasks"].includes(body.phaseType)) {
+    return Response.json({ error: "Invalid phaseType" }, { status: 400 });
+  }
+
   const { system, userMessage } = buildPrompt(body.action, body);
   const client = new Anthropic({ apiKey });
 

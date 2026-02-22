@@ -14,7 +14,7 @@ function Progress({
   max = 100,
   ...props
 }: ProgressProps) {
-  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+  const percentage = max === 0 ? 0 : Math.min(100, Math.max(0, (value / max) * 100));
 
   return (
     <div
