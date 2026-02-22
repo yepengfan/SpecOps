@@ -9,6 +9,7 @@ export interface GenerateParams {
   action: string;
   projectDescription?: string;
   requirementsContent?: string;
+  designContent?: string;
   sectionName?: string;
   phaseContext?: string;
 }
