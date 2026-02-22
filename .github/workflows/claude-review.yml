@@ -32,11 +32,14 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_args: |
-            --model claude-sonnet-4-6 --max-turns 10 --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh:*)"
+            --model claude-sonnet-4-6 --max-turns 10 --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh:*),Write"
           prompt: |
             Review this PR. Use `gh pr diff` to get the diff, then analyze it for
             code quality, correctness, security, and consistency with project conventions.
-            Post your review as a PR comment using `gh pr comment` with a structured
-            review covering any critical issues, warnings, and suggestions.
-            You can also use the mcp__github_inline_comment__create_inline_comment tool
-            to leave inline comments on specific files and lines.
+
+            IMPORTANT: To post your review comment, you MUST:
+            1. Use the Write tool to write your review to /tmp/review.md
+            2. Run: gh pr comment <number> --body-file /tmp/review.md
+
+            Do NOT use heredocs or $(cat <<EOF) in gh commands — they will be blocked.
+            You can also use mcp__github_inline_comment__create_inline_comment for inline comments.
