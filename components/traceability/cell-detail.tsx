@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { Project } from "@/lib/types";
-import { addMapping, removeMapping } from "@/lib/db/traceability";
+import { addMapping, removeMapping, parseRequirementIds } from "@/lib/db/traceability";
 import { PLAN_SECTIONS, TASKS_SECTIONS } from "@/lib/types/sections";
 
 interface CellDetailDialogProps {
@@ -80,7 +80,7 @@ export function CellDetailDialog({
       const newMapping = {
         id: `manual-${cell.targetType}-${cell.targetId}-${cell.requirementId}-${Date.now()}`,
         requirementId: cell.requirementId,
-        requirementLabel: cell.requirementId,
+        requirementLabel: parseRequirementIds(project).find((r) => r.id === cell.requirementId)?.label || cell.requirementId,
         targetType: cell.targetType,
         targetId: cell.targetId,
         targetLabel: targetSection?.title || cell.targetId,
