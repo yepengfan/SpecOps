@@ -28,6 +28,14 @@ describe("createProject", () => {
     expect(project.name).toBe("My Project");
   });
 
+  it("rejects empty project name", async () => {
+    await expect(createProject("")).rejects.toThrow("Project name cannot be empty");
+  });
+
+  it("rejects whitespace-only project name", async () => {
+    await expect(createProject("   ")).rejects.toThrow("Project name cannot be empty");
+  });
+
   it("initializes requirements phase as draft", async () => {
     const project = await createProject("Test");
     expect(project.phases.requirements.status).toBe("draft");
@@ -56,7 +64,7 @@ describe("createProject", () => {
     expect(fromDb!.name).toBe("Test");
   });
 
-  it("initializes sections as empty arrays for each phase", async () => {
+  it("initializes phases with non-empty template sections with empty content", async () => {
     const project = await createProject("Test");
     expect(project.phases.requirements.sections.length).toBeGreaterThan(0);
     expect(project.phases.design.sections.length).toBeGreaterThan(0);
@@ -107,6 +115,15 @@ describe("updateProject", () => {
     await updateProject(project);
     const updated = await getProject(project.id);
     expect(updated!.name).toBe("Updated");
+  });
+
+  it("auto-stamps updatedAt", async () => {
+    const project = await createProject("Test");
+    const originalUpdatedAt = project.updatedAt;
+    await new Promise((r) => setTimeout(r, 10));
+    await updateProject(project);
+    const updated = await getProject(project.id);
+    expect(updated!.updatedAt).toBeGreaterThan(originalUpdatedAt);
   });
 });
 

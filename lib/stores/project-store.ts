@@ -15,6 +15,9 @@ interface ProjectState {
   ) => void;
 }
 
+// Module-level timeout ID: safe in production (singleton store) but shared
+// across store instances in tests. Tests that exercise updateSection should
+// call clearProject() in afterEach to cancel any pending debounced save.
 let saveTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 function debouncedSave(project: Project, set: (partial: Partial<ProjectState>) => void) {

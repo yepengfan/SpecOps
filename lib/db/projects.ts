@@ -31,10 +31,14 @@ async function withErrorHandling<T>(fn: () => Promise<T>): Promise<T> {
 
 export async function createProject(name: string): Promise<Project> {
   return withErrorHandling(async () => {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      throw new Error("Project name cannot be empty");
+    }
     const now = Date.now();
     const project: Project = {
       id: crypto.randomUUID(),
-      name: name.trim(),
+      name: trimmed,
       description: "",
       createdAt: now,
       updatedAt: now,
@@ -75,7 +79,7 @@ export async function getProject(id: string): Promise<Project | undefined> {
 
 export async function updateProject(project: Project): Promise<void> {
   return withErrorHandling(async () => {
-    await db.projects.put(project);
+    await db.projects.put({ ...project, updatedAt: Date.now() });
   });
 }
 
