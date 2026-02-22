@@ -1,6 +1,6 @@
 # SDD Workflow App
 
-A pure frontend web application that guides developers through the [Spec-Driven Development (SDD)](https://github.com/github/spec-kit) workflow — from idea to implementation-ready specs — with structured templates, phase gate enforcement, and markdown export for AI coding agents.
+A Next.js web application that guides developers through the [Spec-Driven Development (SDD)](https://github.com/github/spec-kit) workflow — from idea to implementation-ready specs — with structured templates, phase gate enforcement, and markdown export for AI coding agents.
 
 ## Problem
 
@@ -79,20 +79,24 @@ The developer takes the exported spec documents, commits them to their project r
 
 ## Spec Document Plan
 
-The following design documents define how this app itself is built, following the same SDD methodology:
+The following design documents define how this app itself is built, following the same SDD methodology via [Spec-Kit](https://github.com/github/spec-kit):
 
 ```
-specs/
-├── requirements.md          # App requirements and user stories
-├── design.md                # Frontend architecture, state management, UI/UX
-└── tasks.md                 # Implementation task breakdown
+specs/001-sdd-cockpit/
+├── spec.md                  # EARS-format requirements specification
+├── plan.md                  # Implementation plan with tech context and constitution check
+├── research.md              # Technology research decisions
+├── data-model.md            # Entity definitions and schema
+├── tasks.md                 # TDD task breakdown (64 tasks, 10 phases)
+├── quickstart.md            # Setup guide and project structure
+└── contracts/
+    ├── llm-api.md           # Claude API proxy interface contract
+    └── indexeddb-schema.md  # IndexedDB schema contract
 ```
-
-> These spec documents will be added in subsequent commits as part of the SDD workflow.
 
 ## Key Decisions
 
-- **Pure frontend SPA** — No backend. All data stored in browser (IndexedDB). API key entered at runtime, never bundled. Zero auth complexity.
+- **Next.js with API routes** — Lightweight server proxies LLM API calls. API key stored server-side in `.env.local`, never sent to browser. Project data stored in browser (IndexedDB). Zero auth complexity.
 - **Export-oriented** — Specs are exported as markdown files. Users place them in their own Git repos. No GitHub integration in v1.
 - **AI-agent-optimized output** — Exported specs follow conventions that AI coding agents can parse and implement against reliably.
 
