@@ -282,6 +282,18 @@
 
 ---
 
+## Phase 12: Markdown Rendering (Cross-Cutting)
+
+**Purpose**: Render AI-generated markdown content properly across all phase editors
+
+- [ ] T075 [P] Install `remark-gfm` and `mermaid` packages via npm
+- [ ] T076 [P] Create MermaidDiagram component in `components/editor/mermaid-diagram.tsx`: client component using `mermaid.render()` in useEffect, renders mermaid code string to SVG, error fallback shows raw code with error message
+- [ ] T077 Create MarkdownRenderer component in `components/editor/markdown-renderer.tsx`: wraps ReactMarkdown with remarkGfm plugin, custom code component (detects `language-mermaid` → MermaidDiagram, other fenced blocks → `<pre><code>`), custom table/th/td components for styled GFM tables, prose classes for typography
+- [ ] T078 Add edit/preview toggle to section editor in `components/editor/section-editor.tsx`: viewMode state ("edit"/"preview"), Edit/Preview toggle buttons in section header (visible when editable + content exists), reviewed phases always render MarkdownRenderer, empty sections always show textarea
+- [ ] T079 [P] Unit tests for MarkdownRenderer in `__tests__/unit/markdown-renderer.test.tsx`: mock react-markdown (ESM workaround), test basic rendering, headings, GFM tables, mermaid code block detection, non-mermaid code blocks, inline code, lists
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -296,6 +308,7 @@
 - **US6 - Tasks Gen (Phase 8)**: Depends on US3 (reuses streaming infra). Can run in parallel with US5 and US7.
 - **US7 - Export (Phase 9)**: Depends on US4 only (needs phase pages and "all phases reviewed" check). Does NOT need AI generation. Can run in parallel with US3, US5, US6.
 - **US8 - Traceability Matrix (Phase 10)**: Depends on US3 (reuses streaming infra + needs generation flows to hook into), US5, and US6 (needs plan and task generation to produce mappings). Can run in parallel with US7.
+- **Markdown Rendering (Phase 12)**: Depends on Foundational (T014 section editor). Can run in parallel with US3–US8.
 - **Polish (Phase 11)**: Depends on all user stories being complete.
 
 ### Critical Path
@@ -367,4 +380,5 @@ Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Spec Gen
 - Stop at any checkpoint to validate story independently
 - The section editor (T014) is built in Foundational and reused by all phases
 - The streaming infrastructure (T039, T041) is built in US3 and reused by US5 and US6
+- The MarkdownRenderer (T077) is built in Phase 12 and used by all phase editors via SectionEditor
 - Phase pages (T030–T032) are built in US4; AI generation is added to them in US3/US5/US6

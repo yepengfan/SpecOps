@@ -11,7 +11,7 @@ Build a Next.js web application that guides developers through the Spec-Driven D
 
 **Language/Version**: TypeScript 5.x
 **Framework**: Next.js (App Router) with React
-**Primary Dependencies**: Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), react-markdown, client-zip, Anthropic SDK (server-side)
+**Primary Dependencies**: Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), react-markdown, remark-gfm, mermaid, client-zip, Anthropic SDK (server-side)
 **Storage**: IndexedDB via Dexie.js (client), `.env.local` for API key (server)
 **Testing**: Jest + fake-indexeddb (E2E: Playwright)
 **Target Platform**: Web browser (last 2 versions of Chrome, Firefox, Safari, Edge)
@@ -92,6 +92,8 @@ app/
 components/
 ├── ui/                     # shadcn/ui components (Button, Dialog, Tabs, etc.)
 ├── editor/                 # Section editor, markdown preview
+│   ├── markdown-renderer.tsx  # ReactMarkdown + GFM + mermaid rendering
+│   └── mermaid-diagram.tsx    # Client-side mermaid SVG renderer
 ├── phase/                  # Phase gate UI, status indicators
 └── traceability/           # Traceability matrix table, cell detail view
 
@@ -107,7 +109,8 @@ __tests__/
 │   ├── phase-gate.test.ts  # Phase status state machine
 │   ├── export.test.ts      # Markdown export logic
 │   ├── traceability.test.ts       # Traceability mapping CRUD
-│   └── traceability-matrix.test.ts # Matrix component rendering
+│   ├── traceability-matrix.test.ts # Matrix component rendering
+│   └── markdown-renderer.test.tsx  # Markdown rendering + mermaid detection
 ├── integration/
 │   ├── project-crud.test.ts
 │   └── phase-workflow.test.ts

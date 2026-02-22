@@ -197,6 +197,17 @@ THEN the system SHALL:
 - Allow the developer to edit any section's content directly
 - Auto-save edits to IndexedDB on change (debounced, within 1 second of last keystroke)
 
+Alternative Flow — Markdown Preview:
+WHEN a section contains markdown content (generated or manually entered)
+THEN the system SHALL:
+- Provide an Edit/Preview toggle in each section header (visible when section is editable and has content)
+- In Preview mode: render markdown with full GFM support (headings, bold, italic, lists, tables, inline code, fenced code blocks)
+- Render mermaid fenced code blocks (```mermaid) as rendered diagrams using a client-side mermaid renderer
+- When a phase has status "reviewed": always display rendered markdown instead of the raw textarea
+- Default to Edit mode when the section is editable
+- Empty sections MUST always show the textarea regardless of view mode
+- This applies to ALL phases (Spec, Plan, Tasks) — not limited to a single phase
+
 Alternative Flow — Regenerate Section:
 WHEN a developer clicks "Regenerate" on a specific section
 THEN the system SHALL:
