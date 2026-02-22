@@ -46,16 +46,25 @@ Developers and tech leads who use AI coding agents (Claude Code, GitHub Copilot,
 - **US-15:** As a developer, I can re-trigger AI generation for a specific section if the initial draft isn't satisfactory.
 - **US-16:** As a developer, I can mark the Tasks phase as "reviewed" to finalize the workflow.
 
+### Configuration
+
+- **US-17:** As a developer, I can configure my AI API key through a setup screen so that the app can make AI calls on my behalf.
+
+### Error Handling
+
+- **US-18:** As a developer, if an AI generation call fails (network error, rate limit, invalid key), I see a clear error message and can retry without losing my existing content.
+- **US-19:** As a developer, I see a loading indicator while AI generation is in progress so I know the app is working.
+
 ### Export
 
-- **US-17:** As a developer, I can export the finalized specs as individual markdown files (`requirements.md`, `design.md`, `tasks.md`) ready to be placed in my project's `specs/` directory.
-- **US-18:** As a developer, I can export all three spec files as a single zip archive for convenience.
+- **US-20:** As a developer, I can export the finalized specs as individual markdown files (`requirements.md`, `design.md`, `tasks.md`) ready to be placed in my project's `specs/` directory.
+- **US-21:** As a developer, I can export all three spec files as a single zip archive for convenience.
 
 ### Phase Gate Enforcement
 
-- **US-19:** As a developer, I cannot access the Design phase until Requirements are marked as reviewed.
-- **US-20:** As a developer, I cannot access the Tasks phase until Design is marked as reviewed.
-- **US-21:** As a developer, if I go back and edit a previously approved phase, downstream phases are invalidated and must be re-reviewed.
+- **US-22:** As a developer, I cannot access the Design phase until Requirements are marked as reviewed.
+- **US-23:** As a developer, I cannot access the Tasks phase until Design is marked as reviewed.
+- **US-24:** As a developer, if I go back and edit a previously approved phase, the app warns me that downstream phases will need re-review. Downstream approval status is reset but their content is preserved, allowing me to re-review rather than regenerate from scratch.
 
 ## Acceptance Criteria
 
@@ -66,19 +75,24 @@ Developers and tech leads who use AI coding agents (Claude Code, GitHub Copilot,
 
 ### AI-Assisted Spec Generation
 - AI generates spec drafts from user's natural language input and previously approved specs.
-- Each section can be individually regenerated without affecting other sections.
-- AI calls are made from the frontend using an API key loaded from `.env` (local development only).
+- Regenerating a section does not alter the content or approval state of other sections in the same phase.
+- AI calls are made from the frontend using an API key loaded from `.env`. This architecture is intentionally local-only — the key is embedded in the JS bundle and must never be deployed to a public-facing host.
 - The app requires a valid API key to function — if not configured, the app displays a setup prompt and blocks workflow access.
+
+### Error Handling
+- When an AI call fails (network error, timeout, rate limit, invalid API key), the app displays a clear error message describing the failure.
+- The user can retry a failed generation. Previously generated content is preserved on failure.
+- A loading/progress indicator is visible during AI generation.
 
 ### Phase Gates
 - Phase transitions are strictly enforced in the UI — locked phases are visually disabled and non-navigable.
-- Editing an approved phase triggers a warning and invalidates downstream phases.
+- Editing an approved phase displays a confirmation warning, then resets the approval status of all downstream phases. Downstream content is preserved (not deleted).
 
 ### Export
-- Exported markdown files follow a consistent structure that AI coding agents can parse.
+- Exported markdown files follow the fixed section templates defined for each phase.
 - Export is available only after all three phases are marked as reviewed.
 
-## Scope
+## Scope & Non-Goals
 
 ### In Scope (v1)
 - Guided three-phase SDD workflow (Requirements → Design → Tasks)
@@ -89,6 +103,8 @@ Developers and tech leads who use AI coding agents (Claude Code, GitHub Copilot,
 - Multi-project management
 - Browser local storage persistence
 - Local development only (no deployment, API key in `.env`)
+- Target browsers: last 2 versions of Chrome, Firefox, Safari, and Edge
+- Basic keyboard navigation accessibility (WCAG 2.1 AA for interactive elements)
 
 ### Out of Scope (v1)
 - Backend / user authentication
@@ -96,5 +112,5 @@ Developers and tech leads who use AI coding agents (Claude Code, GitHub Copilot,
 - Team collaboration / multi-user editing
 - Customizable section templates
 - Spec version history / diff tracking
-- Deployment / hosting
+- Deployment / hosting (this architecture is local-only; deploying would expose the API key in the JS bundle)
 - Mobile-optimized UI
