@@ -1,5 +1,29 @@
 import { PHASE_TYPES, type PhaseType, type Project } from "@/lib/types";
 
+export interface HealthScore {
+  passed: number;
+  total: number;
+}
+
+export function computeHealthScore(project: Project): HealthScore | null {
+  if (!project.evaluations) return null;
+
+  let passed = 0;
+  let total = 0;
+
+  for (const phase of PHASE_TYPES) {
+    const evaluation = project.evaluations[phase];
+    if (evaluation) {
+      for (const result of evaluation.ruleResults) {
+        total++;
+        if (result.passed) passed++;
+      }
+    }
+  }
+
+  return total > 0 ? { passed, total } : null;
+}
+
 const PHASE_LABELS: Record<PhaseType, string> = {
   spec: "Spec",
   plan: "Plan",
