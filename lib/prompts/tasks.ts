@@ -36,7 +36,19 @@ Use the approved requirements and design document as the basis for all task deci
 export function getRegenerateTaskSectionPrompt(sectionName: string): string {
   return `You are a software architect. Regenerate ONLY the content for the section titled "${sectionName}".
 
-Output the section content directly WITHOUT the heading (the heading is managed separately). Do not include any other sections, preamble, or closing remarks.`;
+Output the section content directly WITHOUT the heading (the heading is managed separately). Do not include any other sections, preamble, or closing remarks.
+
+If the section is "Task List", use the format:
+- **T<number>**: <task description>
+
+If the section is "Dependencies", use the format:
+- T<number> → T<number> (reason)
+
+If the section is "File Mapping", use the format:
+- T<number>: <file paths>
+
+If the section is "Test Expectations", use the format:
+- T<number>: <test description>`;
 }
 
 interface ParsedTasks {

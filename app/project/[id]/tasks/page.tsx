@@ -16,6 +16,7 @@ export default function TasksPage() {
   );
 
   const updateSection = useProjectStore((s) => s.updateSection);
+  const editReviewedPhase = useProjectStore((s) => s.editReviewedPhase);
   const project = useProjectStore((s) => s.currentProject);
 
   const isBusy = isGenerating || regeneratingSection !== null;
@@ -49,6 +50,11 @@ export default function TasksPage() {
 
       const parsed = parseTaskSections(accumulated);
 
+      // Transition back to draft if phase was reviewed, so updateSection writes aren't dropped
+      if (project.phases.tasks.status === "reviewed") {
+        editReviewedPhase("tasks");
+      }
+
       if (parsed.malformed) {
         setMalformedWarning(true);
         updateSection("tasks", "task-list", accumulated);
@@ -67,7 +73,7 @@ export default function TasksPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [project, updateSection]);
+  }, [project, updateSection, editReviewedPhase]);
 
   const handleRegenerate = useCallback(
     async (sectionId: string) => {
@@ -75,6 +81,7 @@ export default function TasksPage() {
 
       setRegeneratingSection(sectionId);
       setError(null);
+      setMalformedWarning(false);
 
       const phase = project.phases.tasks;
       const phaseContext = phase.sections
@@ -94,6 +101,9 @@ export default function TasksPage() {
           accumulated += chunk;
         }
 
+        if (project.phases.tasks.status === "reviewed") {
+          editReviewedPhase("tasks");
+        }
         updateSection("tasks", sectionId, accumulated);
       } catch (err: unknown) {
         const message =
@@ -105,7 +115,7 @@ export default function TasksPage() {
         setRegeneratingSection(null);
       }
     },
-    [project, updateSection, isGenerating],
+    [project, updateSection, editReviewedPhase, isGenerating],
   );
 
   return (
