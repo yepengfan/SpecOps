@@ -42,8 +42,8 @@ interface Section {
 
 interface TraceabilityMapping {
   id: string;                          // UUID v4
-  requirementId: string;               // Slug, e.g., "req-1", "req-10"
-  requirementLabel: string;            // e.g., "Req 1: Create New Project"
+  requirementId: string;               // Slug, e.g., "fr-001", "fr-010"
+  requirementLabel: string;            // e.g., "FR-001: Create New Project"
   targetType: "design" | "task";       // Which phase the target belongs to
   targetId: string;                    // Section id, e.g., "architecture"
   targetLabel: string;                 // e.g., "Architecture"
