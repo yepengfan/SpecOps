@@ -3,8 +3,9 @@ export function getChatSystemPrompt(projectContext: string, phaseType: string): 
 
 Current phase: ${phaseType}
 
-Project content:
+<project-content>
 ${projectContext}
+</project-content>
 
 Instructions:
 - Reference specific sections, requirements, or decisions from the project content in your responses.
