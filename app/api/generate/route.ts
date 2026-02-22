@@ -4,14 +4,16 @@ import {
   getRegenerateSectionPrompt,
 } from "@/lib/prompts/requirements";
 import { getDesignSystemPrompt, getRegenerateDesignSectionPrompt } from "@/lib/prompts/design";
+import { getTasksSystemPrompt, getRegenerateTaskSectionPrompt } from "@/lib/prompts/tasks";
 
-const VALID_ACTIONS = ["generate-requirements", "regenerate-section", "generate-design", "regenerate-design-section"] as const;
+const VALID_ACTIONS = ["generate-requirements", "regenerate-section", "generate-design", "regenerate-design-section", "generate-tasks", "regenerate-task-section"] as const;
 type ValidAction = (typeof VALID_ACTIONS)[number];
 
 interface GenerateRequest {
   action: string;
   projectDescription?: string;
   requirementsContent?: string;
+  designContent?: string;
   sectionName?: string;
   phaseContext?: string;
 }
@@ -43,6 +45,16 @@ function buildPrompt(action: ValidAction, body: GenerateRequest): {
     case "regenerate-design-section":
       return {
         system: getRegenerateDesignSectionPrompt(body.sectionName || ""),
+        userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
+      };
+    case "generate-tasks":
+      return {
+        system: getTasksSystemPrompt(),
+        userMessage: `Generate a task breakdown based on these approved requirements:\n\n${body.requirementsContent || ""}\n\nAnd this design document:\n\n${body.designContent || ""}`,
+      };
+    case "regenerate-task-section":
+      return {
+        system: getRegenerateTaskSectionPrompt(body.sectionName || ""),
         userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
       };
   }
