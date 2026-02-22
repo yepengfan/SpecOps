@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { useProjectStore } from "@/lib/stores/project-store";
 import type { PhaseType } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface SectionEditorProps {
   phaseType: PhaseType;
@@ -11,6 +12,7 @@ interface SectionEditorProps {
   title: string;
   content: string;
   readOnly?: boolean;
+  onRequestEdit?: () => void;
 }
 
 export function SectionEditor({
@@ -19,9 +21,16 @@ export function SectionEditor({
   title,
   content,
   readOnly,
+  onRequestEdit,
 }: SectionEditorProps) {
   const updateSection = useProjectStore((s) => s.updateSection);
   const isSaving = useProjectStore((s) => s.isSaving);
+  const phaseStatus = useProjectStore(
+    (s) => s.currentProject?.phases[phaseType]?.status,
+  );
+
+  const isReviewed = phaseStatus === "reviewed";
+  const effectiveReadOnly = readOnly || isReviewed;
 
   const headingId = `section-heading-${sectionId}`;
 
@@ -31,6 +40,12 @@ export function SectionEditor({
     },
     [updateSection, phaseType, sectionId],
   );
+
+  const handleTextareaClick = useCallback(() => {
+    if (isReviewed && onRequestEdit) {
+      onRequestEdit();
+    }
+  }, [isReviewed, onRequestEdit]);
 
   return (
     <div className="space-y-2">
@@ -51,8 +66,12 @@ export function SectionEditor({
         aria-labelledby={headingId}
         value={content}
         onChange={handleChange}
-        readOnly={readOnly}
-        className="min-h-32 font-mono"
+        readOnly={effectiveReadOnly}
+        onClick={handleTextareaClick}
+        className={cn(
+          "min-h-32 font-mono",
+          isReviewed && "opacity-75 cursor-pointer",
+        )}
       />
     </div>
   );
