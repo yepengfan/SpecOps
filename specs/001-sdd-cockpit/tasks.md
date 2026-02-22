@@ -255,13 +255,14 @@
 
 - [ ] T065 [US8] Add `TraceabilityMapping` type to `lib/types/index.ts` and `traceabilityMappings` field to `Project` interface: `{ id, requirementId, requirementLabel, targetType, targetId, targetLabel, origin: "ai" | "manual", createdAt }`. Requirement IDs are slugs parsed from EARS headings (e.g., `"req-1"`, `"req-10"`).
 - [ ] T066 [US8] Create traceability mapping operations in `lib/db/traceability.ts`: `addMapping()`, `removeMapping()`, `getMappingsForProject()`, `clearAiMappings(projectId)` (preserves manual mappings), `getCoverageStats(project)` returning `{ designCoverage: { covered, total }, taskCoverage: { covered, total } }`
-- [ ] T067 [US8] Update design and tasks LLM prompts in `lib/prompts/design.ts` and `lib/prompts/tasks.ts` (requires T046 and T049 to be complete): add instructions for AI to output traceability metadata (JSON mapping of section → requirement IDs) alongside generated content
+- [ ] T067 [US8] Update design and tasks LLM prompts in `lib/prompts/design.ts` and `lib/prompts/tasks.ts` (requires T046 and T049 to be complete): add instructions for AI to output traceability metadata (JSON mapping of section → requirement IDs) alongside generated content. Note: requirement slugs (e.g., `"req-1"`) are derived from the positional heading number, not the full title — this maximizes slug stability if requirement titles are renamed. Known limitation: if requirements are reordered or deleted, previously stored mappings may reference stale slugs.
 - [ ] T068a [US8] Parse and persist AI-generated mappings in design generation flow (`app/project/[id]/design/page.tsx`): extract mapping metadata from LLM response, create `TraceabilityMapping` records with `origin: "ai"`, persist to project record in IndexedDB
 - [ ] T068b [US8] Parse and persist AI-generated mappings in tasks generation flow (`app/project/[id]/tasks/page.tsx`): extract mapping metadata from LLM response, create `TraceabilityMapping` records with `origin: "ai"`, persist to project record in IndexedDB
 - [ ] T069 [US8] Create traceability matrix page in `app/project/[id]/traceability/page.tsx`: load project and mappings, render matrix table component, "Re-analyze Mappings" button that calls LLM API to regenerate AI mappings
 - [ ] T070 [US8] Create traceability matrix table component in `components/traceability/matrix-table.tsx`: requirements as rows, design sections + tasks as columns, cell indicators (linked/gap), gap row highlighting (amber/red), coverage percentage display, AI vs manual mapping distinction (icon/label)
 - [ ] T071 [US8] Create cell detail view in `components/traceability/cell-detail.tsx`: clicking a cell shows linked content from both phases side by side in a dialog, manual add/remove mapping toggle, immediate persist to IndexedDB
 - [ ] T072 [US8] Add "Traceability" navigation link to project workspace in `components/phase/phase-nav.tsx`: accessible at any time (not gated by phase status), links to `/project/[id]/traceability`
+- [ ] T073 [US8] Integration test for re-analyze mappings flow in `__tests__/integration/traceability-reanalyze.test.ts`: mock LLM response → call "Re-analyze Mappings" → verify AI-generated mappings are replaced → verify manual mappings are preserved → verify coverage stats update → verify matrix UI refreshes
 
 **Checkpoint**: At this point, User Story 8 should be fully functional and testable independently
 
@@ -358,6 +359,7 @@ Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Req Gen)
 
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
+- Task IDs are assigned in the order phases were defined. Phase 11 (Polish, T056–T062) was defined before Phase 10 (US8, T063–T072), so its IDs are numerically lower. Task IDs are stable identifiers — they are not renumbered when new phases are inserted.
 - TDD: Write tests first, ensure they fail, then implement
 - Unit tests are part of code review — all PRs must include passing tests
 - Each user story should be independently completable and testable

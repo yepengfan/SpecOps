@@ -149,8 +149,8 @@ GET /api/key-status
 //
 // Example mapping output from AI:
 // {"traceability": [
-//   {"targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
-//   {"targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-4", "req-5"]}
+//   {"targetType": "design", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
+//   {"targetType": "design", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-4", "req-5"]}
 // ]}
 ```
 

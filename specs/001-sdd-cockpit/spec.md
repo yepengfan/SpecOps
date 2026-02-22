@@ -320,7 +320,7 @@ WHERE API key configuration:
 ## Req 10: Traceability Matrix
 
 Priority: High
-Rationale: In text-based SDD workflows (CLI tools like spec-kit and ai-sdd), developers cannot easily see how requirements map to design decisions and implementation tasks. A visual traceability matrix solves this by showing the bidirectional mapping between phases — making gaps visible at a glance ("this requirement has no corresponding design section") and giving developers confidence that every requirement is accounted for in design and tasks.
+Rationale: In text-based SDD workflows (CLI tools like spec-kit and ai-sdd), developers cannot easily see how requirements map to design decisions and implementation tasks. A visual traceability matrix solves this by showing the cross-phase mapping from requirements to design sections and tasks — making gaps visible at a glance ("this requirement has no corresponding design section") and giving developers confidence that every requirement is accounted for in design and tasks.
 
 Main Flow — AI-Generated Mapping:
 WHEN a developer triggers AI generation for the Design or Tasks phase
@@ -359,7 +359,8 @@ Validation Rules:
 WHERE traceability matrix:
 - The matrix view MUST be accessible from the project workspace at any time (not gated by phase status)
 - If a phase has no generated content yet, that phase's columns MUST be shown as empty (not hidden)
-- Coverage percentage MUST be displayed: "(X of Y requirements have linked design sections)" and "(X of Y requirements have linked tasks)"
+- If the requirements phase has no content yet, the coverage percentage MUST display "(0 of 0 requirements have linked design sections)" — the denominator is always the count of distinct requirements currently parsed from the requirements phase content
+- Coverage percentage MUST be displayed in the matrix header above the table: "(X of Y requirements have linked design sections)" and "(X of Y requirements have linked tasks)". Y is the total number of distinct requirements parsed from the requirements phase content.
 - Manual mapping edits MUST be distinguishable from AI-generated mappings (e.g., different icon or label)
 
 Error Handling:
