@@ -51,7 +51,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
   if (requirements.length === 0) {
     return (
       <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800" role="status">
-        No requirements found. Requirements should use the format &quot;**REQ-N**: description&quot; in the EARS Requirements section of the spec.
+        No requirements found. Requirements should use the format &quot;**FR-NNN**: description&quot; in the EARS Requirements section of the spec.
       </div>
     );
   }

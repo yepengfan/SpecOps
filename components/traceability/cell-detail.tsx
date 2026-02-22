@@ -56,15 +56,23 @@ export function CellDetailDialog({
     const specContent = project.phases.spec.sections
       .map((s) => s.content)
       .join("\n");
-    const reqNum = cell.requirementId.replace("req-", "");
-    // Match **REQ-N**: description format (primary) or ## Req N: format (fallback)
+    // Extract number from requirement ID (supports fr-NNN, nfr-NNN, and legacy req-N)
+    const reqNum = cell.requirementId.replace(/^(?:fr|nfr|req)-0*/, "");
+    // Match **FR-NNN**: or **REQ-N**: description format (primary)
     const boldRegex = new RegExp(
-      `\\*\\*REQ-${reqNum}\\*\\*:\\s*(.+)`,
+      `\\*\\*(?:FR|REQ)-0*${reqNum}\\*\\*:\\s*(.+)`,
     );
     const boldMatch = specContent.match(boldRegex);
     if (boldMatch) return boldMatch[0].trim();
+    // Match **NFR-NNN**: format
+    const nfrRegex = new RegExp(
+      `\\*\\*NFR-0*${reqNum}\\*\\*:\\s*(.+)`,
+    );
+    const nfrMatch = specContent.match(nfrRegex);
+    if (nfrMatch) return nfrMatch[0].trim();
+    // Fallback: ## FR-NNN: or ## Req N: heading format
     const headingRegex = new RegExp(
-      `## Req ${reqNum}:[^]*?(?=## Req \\d|$)`,
+      `## (?:FR-0*${reqNum}|Req ${reqNum}):[^]*?(?=## (?:FR-|Req )\\d|$)`,
     );
     const headingMatch = specContent.match(headingRegex);
     return headingMatch ? headingMatch[0].trim() : null;
