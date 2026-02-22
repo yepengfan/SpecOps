@@ -1,11 +1,11 @@
 import {
-  getDesignSystemPrompt,
-  getRegenerateDesignSectionPrompt,
-  parseDesignSections,
-} from "@/lib/prompts/design";
+  getPlanSystemPrompt,
+  getRegeneratePlanSectionPrompt,
+  parsePlanSections,
+} from "@/lib/prompts/plan";
 
-describe("getDesignSystemPrompt", () => {
-  const prompt = getDesignSystemPrompt();
+describe("getPlanSystemPrompt", () => {
+  const prompt = getPlanSystemPrompt();
 
   it("includes all 5 section headings", () => {
     expect(prompt).toContain("## Architecture");
@@ -15,19 +15,30 @@ describe("getDesignSystemPrompt", () => {
     expect(prompt).toContain("## Security & Edge Cases");
   });
 
-  it("references requirements input", () => {
-    expect(prompt).toMatch(/requirements/i);
+  it("references spec input", () => {
+    expect(prompt).toMatch(/spec/i);
   });
 });
 
-describe("getRegenerateDesignSectionPrompt", () => {
+describe("getRegeneratePlanSectionPrompt", () => {
   it("includes the section name", () => {
-    const prompt = getRegenerateDesignSectionPrompt("Architecture");
+    const prompt = getRegeneratePlanSectionPrompt("Architecture");
     expect(prompt).toContain("Architecture");
   });
+
+  it("includes instruction when provided", () => {
+    const prompt = getRegeneratePlanSectionPrompt("Architecture", "Use event-driven architecture");
+    expect(prompt).toContain("Architect's advice");
+    expect(prompt).toContain("Use event-driven architecture");
+  });
+
+  it("does not include instruction block when not provided", () => {
+    const prompt = getRegeneratePlanSectionPrompt("Architecture");
+    expect(prompt).not.toContain("Architect's advice");
+  });
 });
 
-describe("parseDesignSections", () => {
+describe("parsePlanSections", () => {
   const validInput = [
     "## Architecture",
     "Microservices with API gateway.",
@@ -46,7 +57,7 @@ describe("parseDesignSections", () => {
   ].join("\n");
 
   it("parses valid input into five sections", () => {
-    const result = parseDesignSections(validInput);
+    const result = parsePlanSections(validInput);
 
     expect(result.malformed).toBe(false);
     expect(result.architecture).toBe("Microservices with API gateway.");
@@ -70,7 +81,7 @@ describe("parseDesignSections", () => {
       "content",
     ].join("\n");
 
-    const result = parseDesignSections(input);
+    const result = parsePlanSections(input);
     expect(result.malformed).toBe(true);
   });
 
@@ -86,7 +97,7 @@ describe("parseDesignSections", () => {
       "content",
     ].join("\n");
 
-    const result = parseDesignSections(input);
+    const result = parsePlanSections(input);
     expect(result.malformed).toBe(true);
   });
 
@@ -104,12 +115,12 @@ describe("parseDesignSections", () => {
       "content",
     ].join("\n");
 
-    const result = parseDesignSections(input);
+    const result = parsePlanSections(input);
     expect(result.malformed).toBe(true);
   });
 
   it("returns malformed for empty string", () => {
-    const result = parseDesignSections("");
+    const result = parsePlanSections("");
     expect(result.malformed).toBe(true);
   });
 
@@ -137,7 +148,7 @@ describe("parseDesignSections", () => {
       "",
     ].join("\n");
 
-    const result = parseDesignSections(input);
+    const result = parsePlanSections(input);
 
     expect(result.malformed).toBe(false);
     expect(result.architecture).toBe("Trimmed arch");
@@ -164,7 +175,7 @@ describe("parseDesignSections", () => {
       "Edge case 1",
     ].join("\n");
 
-    const result = parseDesignSections(input);
+    const result = parsePlanSections(input);
 
     expect(result.malformed).toBe(false);
     expect(result.architecture).toBe("Line 1\nLine 2\nLine 3");

@@ -7,8 +7,8 @@ import {
 
 function makeProject(
   overrides: {
-    requirements?: "locked" | "draft" | "reviewed";
-    design?: "locked" | "draft" | "reviewed";
+    spec?: "locked" | "draft" | "reviewed";
+    plan?: "locked" | "draft" | "reviewed";
     tasks?: "locked" | "draft" | "reviewed";
   } = {}
 ): Project {
@@ -19,14 +19,14 @@ function makeProject(
     createdAt: Date.now(),
     updatedAt: Date.now(),
     phases: {
-      requirements: {
-        type: "requirements",
-        status: overrides.requirements ?? "draft",
+      spec: {
+        type: "spec",
+        status: overrides.spec ?? "draft",
         sections: [],
       },
-      design: {
-        type: "design",
-        status: overrides.design ?? "locked",
+      plan: {
+        type: "plan",
+        status: overrides.plan ?? "locked",
         sections: [],
       },
       tasks: {
@@ -39,20 +39,20 @@ function makeProject(
 }
 
 describe("getProjectDisplayStatus", () => {
-  it('returns "Requirements" for a new project', () => {
-    expect(getProjectDisplayStatus(makeProject())).toBe("Requirements");
+  it('returns "Spec" for a new project', () => {
+    expect(getProjectDisplayStatus(makeProject())).toBe("Spec");
   });
 
-  it('returns "Design" when requirements reviewed', () => {
+  it('returns "Plan" when spec reviewed', () => {
     expect(
-      getProjectDisplayStatus(makeProject({ requirements: "reviewed" }))
-    ).toBe("Design");
+      getProjectDisplayStatus(makeProject({ spec: "reviewed" }))
+    ).toBe("Plan");
   });
 
-  it('returns "Tasks" when requirements + design reviewed', () => {
+  it('returns "Tasks" when spec + plan reviewed', () => {
     expect(
       getProjectDisplayStatus(
-        makeProject({ requirements: "reviewed", design: "reviewed" })
+        makeProject({ spec: "reviewed", plan: "reviewed" })
       )
     ).toBe("Tasks");
   });
@@ -61,38 +61,38 @@ describe("getProjectDisplayStatus", () => {
     expect(
       getProjectDisplayStatus(
         makeProject({
-          requirements: "reviewed",
-          design: "reviewed",
+          spec: "reviewed",
+          plan: "reviewed",
           tasks: "reviewed",
         })
       )
     ).toBe("Complete");
   });
 
-  it('returns "Design" when design is draft', () => {
+  it('returns "Plan" when plan is draft', () => {
     expect(
       getProjectDisplayStatus(
-        makeProject({ requirements: "reviewed", design: "draft" })
+        makeProject({ spec: "reviewed", plan: "draft" })
       )
-    ).toBe("Design");
+    ).toBe("Plan");
   });
 });
 
 describe("getActivePhase", () => {
-  it('returns "requirements" for a new project', () => {
-    expect(getActivePhase(makeProject())).toBe("requirements");
+  it('returns "spec" for a new project', () => {
+    expect(getActivePhase(makeProject())).toBe("spec");
   });
 
-  it('returns "design" when requirements reviewed', () => {
-    expect(getActivePhase(makeProject({ requirements: "reviewed" }))).toBe(
-      "design"
+  it('returns "plan" when spec reviewed', () => {
+    expect(getActivePhase(makeProject({ spec: "reviewed" }))).toBe(
+      "plan"
     );
   });
 
-  it('returns "tasks" when requirements + design reviewed', () => {
+  it('returns "tasks" when spec + plan reviewed', () => {
     expect(
       getActivePhase(
-        makeProject({ requirements: "reviewed", design: "reviewed" })
+        makeProject({ spec: "reviewed", plan: "reviewed" })
       )
     ).toBe("tasks");
   });
@@ -101,8 +101,8 @@ describe("getActivePhase", () => {
     expect(
       getActivePhase(
         makeProject({
-          requirements: "reviewed",
-          design: "reviewed",
+          spec: "reviewed",
+          plan: "reviewed",
           tasks: "reviewed",
         })
       )

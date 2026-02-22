@@ -38,15 +38,15 @@ export async function createProject(name: string): Promise<Project> {
       createdAt: now,
       updatedAt: now,
       phases: {
-        requirements: {
-          type: "requirements",
+        spec: {
+          type: "spec",
           status: "draft",
-          sections: getSectionsForPhase("requirements"),
+          sections: getSectionsForPhase("spec"),
         },
-        design: {
-          type: "design",
+        plan: {
+          type: "plan",
           status: "locked",
-          sections: getSectionsForPhase("design"),
+          sections: getSectionsForPhase("plan"),
         },
         tasks: {
           type: "tasks",

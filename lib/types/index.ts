@@ -1,4 +1,4 @@
-export type PhaseType = "requirements" | "design" | "tasks";
+export type PhaseType = "spec" | "plan" | "tasks";
 export type PhaseStatus = "locked" | "draft" | "reviewed";
 
 export interface Section {
@@ -20,20 +20,20 @@ export interface Project {
   createdAt: number;
   updatedAt: number;
   phases: {
-    requirements: Phase;
-    design: Phase;
+    spec: Phase;
+    plan: Phase;
     tasks: Phase;
   };
 }
 
 export const PHASE_TYPES: readonly PhaseType[] = [
-  "requirements",
-  "design",
+  "spec",
+  "plan",
   "tasks",
 ];
 
 export const PHASE_ORDER: Record<PhaseType, number> = {
-  requirements: 0,
-  design: 1,
+  spec: 0,
+  plan: 1,
   tasks: 2,
 };

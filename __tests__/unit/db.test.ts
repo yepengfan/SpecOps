@@ -38,15 +38,15 @@ describe("createProject", () => {
     await expect(createProject("   ")).rejects.toThrow("Project name cannot be empty");
   });
 
-  it("initializes requirements phase as draft", async () => {
+  it("initializes spec phase as draft", async () => {
     const project = await createProject("Test");
-    expect(project.phases.requirements.status).toBe("draft");
-    expect(project.phases.requirements.type).toBe("requirements");
+    expect(project.phases.spec.status).toBe("draft");
+    expect(project.phases.spec.type).toBe("spec");
   });
 
-  it("initializes design and tasks phases as locked", async () => {
+  it("initializes plan and tasks phases as locked", async () => {
     const project = await createProject("Test");
-    expect(project.phases.design.status).toBe("locked");
+    expect(project.phases.plan.status).toBe("locked");
     expect(project.phases.tasks.status).toBe("locked");
   });
 
@@ -68,8 +68,8 @@ describe("createProject", () => {
 
   it("initializes phases with non-empty template sections with empty content", async () => {
     const project = await createProject("Test");
-    expect(project.phases.requirements.sections.length).toBeGreaterThan(0);
-    expect(project.phases.design.sections.length).toBeGreaterThan(0);
+    expect(project.phases.spec.sections.length).toBeGreaterThan(0);
+    expect(project.phases.plan.sections.length).toBeGreaterThan(0);
     expect(project.phases.tasks.sections.length).toBeGreaterThan(0);
     for (const phase of Object.values(project.phases)) {
       for (const section of phase.sections) {

@@ -1,6 +1,24 @@
-import { parseRequirementsSections } from "@/lib/prompts/requirements";
+import { getRegenerateSpecSectionPrompt, parseSpecSections } from "@/lib/prompts/spec";
 
-describe("parseRequirementsSections", () => {
+describe("getRegenerateSpecSectionPrompt", () => {
+  it("includes the section name", () => {
+    const prompt = getRegenerateSpecSectionPrompt("EARS Requirements");
+    expect(prompt).toContain("EARS Requirements");
+  });
+
+  it("includes instruction when provided", () => {
+    const prompt = getRegenerateSpecSectionPrompt("EARS Requirements", "Focus on authentication");
+    expect(prompt).toContain("Architect's advice");
+    expect(prompt).toContain("Focus on authentication");
+  });
+
+  it("does not include instruction block when not provided", () => {
+    const prompt = getRegenerateSpecSectionPrompt("EARS Requirements");
+    expect(prompt).not.toContain("Architect's advice");
+  });
+});
+
+describe("parseSpecSections", () => {
   const validInput = [
     "## Problem Statement",
     "The app needs to do X.",
@@ -13,7 +31,7 @@ describe("parseRequirementsSections", () => {
   ].join("\n");
 
   it("parses valid input into three sections", () => {
-    const result = parseRequirementsSections(validInput);
+    const result = parseSpecSections(validInput);
 
     expect(result.malformed).toBe(false);
     expect(result.problemStatement).toBe("The app needs to do X.");
@@ -33,7 +51,7 @@ describe("parseRequirementsSections", () => {
       "content",
     ].join("\n");
 
-    const result = parseRequirementsSections(input);
+    const result = parseSpecSections(input);
     expect(result.malformed).toBe(true);
   });
 
@@ -45,7 +63,7 @@ describe("parseRequirementsSections", () => {
       "content",
     ].join("\n");
 
-    const result = parseRequirementsSections(input);
+    const result = parseSpecSections(input);
     expect(result.malformed).toBe(true);
   });
 
@@ -57,7 +75,7 @@ describe("parseRequirementsSections", () => {
       "content",
     ].join("\n");
 
-    const result = parseRequirementsSections(input);
+    const result = parseSpecSections(input);
     expect(result.malformed).toBe(true);
   });
 
@@ -71,17 +89,17 @@ describe("parseRequirementsSections", () => {
       "content",
     ].join("\n");
 
-    const result = parseRequirementsSections(input);
+    const result = parseSpecSections(input);
     expect(result.malformed).toBe(true);
   });
 
   it("returns malformed for empty string", () => {
-    const result = parseRequirementsSections("");
+    const result = parseSpecSections("");
     expect(result.malformed).toBe(true);
   });
 
   it("returns malformed for plain text without headings", () => {
-    const result = parseRequirementsSections(
+    const result = parseSpecSections(
       "Just some random text with no section headings.",
     );
     expect(result.malformed).toBe(true);
@@ -103,7 +121,7 @@ describe("parseRequirementsSections", () => {
       "",
     ].join("\n");
 
-    const result = parseRequirementsSections(input);
+    const result = parseSpecSections(input);
 
     expect(result.malformed).toBe(false);
     expect(result.problemStatement).toBe("Trimmed content");
@@ -124,7 +142,7 @@ describe("parseRequirementsSections", () => {
       "- NFR-1: perf",
     ].join("\n");
 
-    const result = parseRequirementsSections(input);
+    const result = parseSpecSections(input);
 
     expect(result.malformed).toBe(false);
     expect(result.problemStatement).toBe("Line 1\nLine 2\nLine 3");

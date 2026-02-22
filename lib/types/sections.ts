@@ -1,6 +1,6 @@
 import type { Section, PhaseType } from "@/lib/types";
 
-export const REQUIREMENTS_SECTIONS: readonly Section[] = [
+export const SPEC_SECTIONS: readonly Section[] = [
   { id: "problem-statement", title: "Problem Statement", content: "" },
   { id: "ears-requirements", title: "EARS Requirements", content: "" },
   {
@@ -10,7 +10,7 @@ export const REQUIREMENTS_SECTIONS: readonly Section[] = [
   },
 ];
 
-export const DESIGN_SECTIONS: readonly Section[] = [
+export const PLAN_SECTIONS: readonly Section[] = [
   { id: "architecture", title: "Architecture", content: "" },
   { id: "api-contracts", title: "API Contracts", content: "" },
   { id: "data-model", title: "Data Model", content: "" },
@@ -26,8 +26,8 @@ export const TASKS_SECTIONS: readonly Section[] = [
 ];
 
 const SECTIONS_BY_PHASE: Record<PhaseType, readonly Section[]> = {
-  requirements: REQUIREMENTS_SECTIONS,
-  design: DESIGN_SECTIONS,
+  spec: SPEC_SECTIONS,
+  plan: PLAN_SECTIONS,
   tasks: TASKS_SECTIONS,
 };
 

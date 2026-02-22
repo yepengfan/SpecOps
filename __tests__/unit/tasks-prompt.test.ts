@@ -14,9 +14,9 @@ describe("getTasksSystemPrompt", () => {
     expect(prompt).toContain("## Test Expectations");
   });
 
-  it("references requirements and design input", () => {
-    expect(prompt).toMatch(/requirements/i);
-    expect(prompt).toMatch(/design/i);
+  it("references spec and plan input", () => {
+    expect(prompt).toMatch(/spec/i);
+    expect(prompt).toMatch(/plan/i);
   });
 });
 
@@ -24,6 +24,17 @@ describe("getRegenerateTaskSectionPrompt", () => {
   it("includes the section name", () => {
     const prompt = getRegenerateTaskSectionPrompt("Task List");
     expect(prompt).toContain("Task List");
+  });
+
+  it("includes instruction when provided", () => {
+    const prompt = getRegenerateTaskSectionPrompt("Task List", "Break into smaller tasks");
+    expect(prompt).toContain("Architect's advice");
+    expect(prompt).toContain("Break into smaller tasks");
+  });
+
+  it("does not include instruction block when not provided", () => {
+    const prompt = getRegenerateTaskSectionPrompt("Task List");
+    expect(prompt).not.toContain("Architect's advice");
   });
 });
 

@@ -47,7 +47,7 @@ export function NewProjectDialog({ open, onOpenChange }: NewProjectDialogProps) 
     try {
       const project = await createProject(trimmed);
       handleClose(false);
-      router.push(`/project/${project.id}/requirements`);
+      router.push(`/project/${project.id}/spec`);
     } catch (e) {
       const message = e instanceof Error ? e.message : "Failed to create project";
       setError(message);

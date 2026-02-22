@@ -93,8 +93,8 @@ describe("POST /api/generate — generate-tasks", () => {
     const response = await POST(
       makeRequest({
         action: "generate-tasks",
-        requirementsContent: "## Problem Statement\nBuild a todo app.",
-        designContent: "## Architecture\nMicroservices approach.",
+        specContent: "## Problem Statement\nBuild a todo app.",
+        planContent: "## Architecture\nMicroservices approach.",
       }),
     );
 
@@ -109,8 +109,8 @@ describe("POST /api/generate — generate-tasks", () => {
     await POST(
       makeRequest({
         action: "generate-tasks",
-        requirementsContent: "## Problem Statement\nBuild a todo app.",
-        designContent: "## Architecture\nMicroservices approach.",
+        specContent: "## Problem Statement\nBuild a todo app.",
+        planContent: "## Architecture\nMicroservices approach.",
       }),
     );
 
@@ -130,8 +130,8 @@ describe("POST /api/generate — generate-tasks", () => {
     const response = await POST(
       makeRequest({
         action: "generate-tasks",
-        requirementsContent: "Requirements content",
-        designContent: "Design content",
+        specContent: "Spec content",
+        planContent: "Plan content",
       }),
     );
 

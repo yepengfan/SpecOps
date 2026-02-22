@@ -79,36 +79,36 @@ async function readSSEStream(
 async function* mockStreamEvents() {
   yield {
     type: "content_block_delta",
-    delta: { type: "text_delta", text: "## Architecture\nDesign content" },
+    delta: { type: "text_delta", text: "## Architecture\nPlan content" },
   };
   yield { type: "message_stop" };
 }
 
-describe("POST /api/generate — generate-design", () => {
-  it("accepts generate-design as a valid action", async () => {
+describe("POST /api/generate — generate-plan", () => {
+  it("accepts generate-plan as a valid action", async () => {
     process.env.ANTHROPIC_API_KEY = "test-key";
     mockCreate.mockReturnValue(mockStreamEvents());
 
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "generate-design",
-        requirementsContent: "## Problem Statement\nBuild a todo app.",
+        action: "generate-plan",
+        specContent: "## Problem Statement\nBuild a todo app.",
       }),
     );
 
     expect(response.status).not.toBe(400);
   });
 
-  it("forwards to Anthropic SDK with design system prompt", async () => {
+  it("forwards to Anthropic SDK with plan system prompt", async () => {
     process.env.ANTHROPIC_API_KEY = "test-key";
     mockCreate.mockReturnValue(mockStreamEvents());
 
     const { POST } = await import("@/app/api/generate/route");
     await POST(
       makeRequest({
-        action: "generate-design",
-        requirementsContent: "## Problem Statement\nBuild a todo app.",
+        action: "generate-plan",
+        specContent: "## Problem Statement\nBuild a todo app.",
       }),
     );
 
@@ -127,8 +127,8 @@ describe("POST /api/generate — generate-design", () => {
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "generate-design",
-        requirementsContent: "Requirements content",
+        action: "generate-plan",
+        specContent: "Spec content",
       }),
     );
 
@@ -142,15 +142,15 @@ describe("POST /api/generate — generate-design", () => {
   });
 });
 
-describe("POST /api/generate — regenerate-design-section", () => {
-  it("accepts regenerate-design-section as a valid action", async () => {
+describe("POST /api/generate — regenerate-plan-section", () => {
+  it("accepts regenerate-plan-section as a valid action", async () => {
     process.env.ANTHROPIC_API_KEY = "test-key";
     mockCreate.mockReturnValue(mockStreamEvents());
 
     const { POST } = await import("@/app/api/generate/route");
     const response = await POST(
       makeRequest({
-        action: "regenerate-design-section",
+        action: "regenerate-plan-section",
         sectionName: "Architecture",
         phaseContext: "## Architecture\nExisting content",
       }),
@@ -159,14 +159,14 @@ describe("POST /api/generate — regenerate-design-section", () => {
     expect(response.status).not.toBe(400);
   });
 
-  it("forwards to Anthropic SDK with design regeneration prompt", async () => {
+  it("forwards to Anthropic SDK with plan regeneration prompt", async () => {
     process.env.ANTHROPIC_API_KEY = "test-key";
     mockCreate.mockReturnValue(mockStreamEvents());
 
     const { POST } = await import("@/app/api/generate/route");
     await POST(
       makeRequest({
-        action: "regenerate-design-section",
+        action: "regenerate-plan-section",
         sectionName: "Architecture",
         phaseContext: "## Architecture\nExisting content",
       }),
@@ -176,6 +176,27 @@ describe("POST /api/generate — regenerate-design-section", () => {
       expect.objectContaining({
         stream: true,
         system: expect.stringContaining("software architect"),
+      }),
+    );
+  });
+
+  it("forwards instruction to prompt when provided", async () => {
+    process.env.ANTHROPIC_API_KEY = "test-key";
+    mockCreate.mockReturnValue(mockStreamEvents());
+
+    const { POST } = await import("@/app/api/generate/route");
+    await POST(
+      makeRequest({
+        action: "regenerate-plan-section",
+        sectionName: "Architecture",
+        phaseContext: "## Architecture\nExisting content",
+        instruction: "Use event-driven architecture",
+      }),
+    );
+
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        system: expect.stringContaining("Architect's advice"),
       }),
     );
   });

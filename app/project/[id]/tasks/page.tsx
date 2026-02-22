@@ -14,14 +14,15 @@ export default function TasksPage() {
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
   );
+  const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const editReviewedPhase = useProjectStore((s) => s.editReviewedPhase);
   const project = useProjectStore((s) => s.currentProject);
 
   const isBusy = isGenerating || regeneratingSection !== null;
-  const designReviewed = project?.phases.design.status === "reviewed";
-  const canGenerate = designReviewed && !isBusy;
+  const planReviewed = project?.phases.plan.status === "reviewed";
+  const canGenerate = planReviewed && !isBusy;
 
   const handleGenerate = useCallback(async () => {
     if (!project) return;
@@ -30,11 +31,11 @@ export default function TasksPage() {
     setError(null);
     setMalformedWarning(false);
 
-    const requirementsContent = project.phases.requirements.sections
+    const specContent = project.phases.spec.sections
       .map((s) => `## ${s.title}\n${s.content}`)
       .join("\n\n");
 
-    const designContent = project.phases.design.sections
+    const planContent = project.phases.plan.sections
       .map((s) => `## ${s.title}\n${s.content}`)
       .join("\n\n");
 
@@ -42,8 +43,8 @@ export default function TasksPage() {
       let accumulated = "";
       for await (const chunk of streamGenerate({
         action: "generate-tasks",
-        requirementsContent,
-        designContent,
+        specContent,
+        planContent,
       })) {
         accumulated += chunk;
       }
@@ -76,7 +77,7 @@ export default function TasksPage() {
   }, [project, updateSection, editReviewedPhase]);
 
   const handleRegenerate = useCallback(
-    async (sectionId: string) => {
+    async (sectionId: string, instruction?: string) => {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
@@ -97,6 +98,7 @@ export default function TasksPage() {
           action: "regenerate-task-section",
           sectionName,
           phaseContext,
+          instruction,
         })) {
           accumulated += chunk;
         }
@@ -105,6 +107,11 @@ export default function TasksPage() {
           editReviewedPhase("tasks");
         }
         updateSection("tasks", sectionId, accumulated);
+        setSectionInstructions((prev) => {
+          const next = { ...prev };
+          delete next[sectionId];
+          return next;
+        });
       } catch (err: unknown) {
         const message =
           err instanceof StreamError
@@ -118,18 +125,25 @@ export default function TasksPage() {
     [project, updateSection, editReviewedPhase, isGenerating],
   );
 
+  const handleInstructionChange = useCallback(
+    (sectionId: string, value: string) => {
+      setSectionInstructions((prev) => ({ ...prev, [sectionId]: value }));
+    },
+    [],
+  );
+
   return (
     <div className="space-y-6">
       <Button onClick={handleGenerate} disabled={!canGenerate}>
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
 
-      {project && !designReviewed && (
+      {project && !planReviewed && (
         <div
           className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
           role="status"
         >
-          Design must be reviewed before generating tasks.
+          Plan must be reviewed before generating tasks.
         </div>
       )}
 
@@ -157,6 +171,8 @@ export default function TasksPage() {
         phaseType="tasks"
         onRegenerate={handleRegenerate}
         regeneratingSection={regeneratingSection}
+        sectionInstructions={sectionInstructions}
+        onInstructionChange={handleInstructionChange}
       />
     </div>
   );

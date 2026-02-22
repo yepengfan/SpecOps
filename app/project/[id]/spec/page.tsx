@@ -2,62 +2,63 @@
 
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { GatedPhasePage } from "@/components/phase/gated-phase-page";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { streamGenerate, StreamError } from "@/lib/api/stream-client";
-import { parseDesignSections } from "@/lib/prompts/design";
+import { parseSpecSections } from "@/lib/prompts/spec";
 
-export default function DesignPage() {
+export default function SpecPage() {
+  const [description, setDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [malformedWarning, setMalformedWarning] = useState(false);
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
   );
+  const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const project = useProjectStore((s) => s.currentProject);
 
   const isBusy = isGenerating || regeneratingSection !== null;
-  const requirementsReviewed =
-    project?.phases.requirements.status === "reviewed";
-  const canGenerate = requirementsReviewed && !isBusy;
+  const canGenerate = description.trim().length >= 10 && !isBusy;
 
   const handleGenerate = useCallback(async () => {
-    if (!project) return;
-
     setIsGenerating(true);
     setError(null);
     setMalformedWarning(false);
 
-    const requirementsContent = project.phases.requirements.sections
-      .map((s) => `## ${s.title}\n${s.content}`)
-      .join("\n\n");
-
     try {
       let accumulated = "";
       for await (const chunk of streamGenerate({
-        action: "generate-design",
-        requirementsContent,
+        action: "generate-spec",
+        projectDescription: description,
       })) {
         accumulated += chunk;
       }
 
-      const parsed = parseDesignSections(accumulated);
+      const parsed = parseSpecSections(accumulated);
 
       if (parsed.malformed) {
         setMalformedWarning(true);
         // Fallback: put raw text in first section
-        updateSection("design", "architecture", accumulated);
+        updateSection("spec", "problem-statement", accumulated);
       } else {
-        updateSection("design", "architecture", parsed.architecture);
-        updateSection("design", "api-contracts", parsed.apiContracts);
-        updateSection("design", "data-model", parsed.dataModel);
-        updateSection("design", "tech-decisions", parsed.techDecisions);
         updateSection(
-          "design",
-          "security-edge-cases",
-          parsed.securityEdgeCases,
+          "spec",
+          "problem-statement",
+          parsed.problemStatement,
+        );
+        updateSection(
+          "spec",
+          "ears-requirements",
+          parsed.earsRequirements,
+        );
+        updateSection(
+          "spec",
+          "non-functional-requirements",
+          parsed.nonFunctionalRequirements,
         );
       }
     } catch (err: unknown) {
@@ -69,16 +70,16 @@ export default function DesignPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [project, updateSection]);
+  }, [description, updateSection]);
 
   const handleRegenerate = useCallback(
-    async (sectionId: string) => {
+    async (sectionId: string, instruction?: string) => {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
       setError(null);
 
-      const phase = project.phases.design;
+      const phase = project.phases.spec;
       const phaseContext = phase.sections
         .map((s) => `## ${s.title}\n${s.content}`)
         .join("\n\n");
@@ -89,14 +90,20 @@ export default function DesignPage() {
       try {
         let accumulated = "";
         for await (const chunk of streamGenerate({
-          action: "regenerate-design-section",
+          action: "regenerate-spec-section",
           sectionName,
           phaseContext,
+          instruction,
         })) {
           accumulated += chunk;
         }
 
-        updateSection("design", sectionId, accumulated);
+        updateSection("spec", sectionId, accumulated);
+        setSectionInstructions((prev) => {
+          const next = { ...prev };
+          delete next[sectionId];
+          return next;
+        });
       } catch (err: unknown) {
         const message =
           err instanceof StreamError
@@ -110,20 +117,32 @@ export default function DesignPage() {
     [project, updateSection, isGenerating],
   );
 
+  const handleInstructionChange = useCallback(
+    (sectionId: string, value: string) => {
+      setSectionInstructions((prev) => ({ ...prev, [sectionId]: value }));
+    },
+    [],
+  );
+
   return (
     <div className="space-y-6">
+      <div className="space-y-2">
+        <label htmlFor="project-description" className="text-sm font-medium">
+          Project Description
+        </label>
+        <Textarea
+          id="project-description"
+          placeholder="Describe your project (minimum 10 characters)..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="min-h-24 font-mono"
+          disabled={isBusy}
+        />
+      </div>
+
       <Button onClick={handleGenerate} disabled={!canGenerate}>
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
-
-      {project && !requirementsReviewed && (
-        <div
-          className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
-          role="status"
-        >
-          Requirements must be reviewed before generating a design.
-        </div>
-      )}
 
       {error && (
         <div
@@ -146,9 +165,11 @@ export default function DesignPage() {
       )}
 
       <GatedPhasePage
-        phaseType="design"
+        phaseType="spec"
         onRegenerate={handleRegenerate}
         regeneratingSection={regeneratingSection}
+        sectionInstructions={sectionInstructions}
+        onInstructionChange={handleInstructionChange}
       />
     </div>
   );

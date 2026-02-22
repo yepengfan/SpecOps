@@ -52,10 +52,10 @@ app/
 ├── project/
 │   └── [id]/
 │       ├── page.tsx        # Project redirect to active phase
-│       ├── requirements/
-│       │   └── page.tsx    # Requirements phase editor
-│       ├── design/
-│       │   └── page.tsx    # Design phase editor
+│       ├── spec/
+│       │   └── page.tsx    # Spec phase editor
+│       ├── plan/
+│       │   └── page.tsx    # Plan phase editor
 │       └── tasks/
 │           └── page.tsx    # Tasks phase editor
 └── api/
@@ -103,10 +103,10 @@ ANTHROPIC_API_KEY=sk-ant-...    # Your Anthropic API key (server-side only)
 
 1. Set `ANTHROPIC_API_KEY` in `.env.local` and start the dev server
 2. Open the app → project list (empty)
-3. Click "New Project" → enter project name → navigate to Requirements phase (Req 1)
-4. Enter project description → click "Generate" → AI generates EARS-format requirements (Req 3)
-5. Review and edit sections → click "Mark as Reviewed" → Design phase unlocks (Req 7)
-6. Click "Generate" in Design → AI generates design doc from approved requirements (Req 4)
+3. Click "New Project" → enter project name → navigate to Spec phase (Req 1)
+4. Enter project description → click "Generate" → AI generates EARS-format spec (Req 3)
+5. Review and edit sections → click "Mark as Reviewed" → Plan phase unlocks (Req 7)
+6. Click "Generate" in Plan → AI generates plan doc from approved spec (Req 4)
 7. Review and edit → approve → Tasks phase unlocks
 8. Click "Generate" in Tasks → AI generates task breakdown (Req 5)
 9. Review and edit → approve → "Export" enabled (Req 8)

@@ -39,7 +39,7 @@ describe("streamGenerate", () => {
     const chunks: string[] = [];
 
     for await (const chunk of streamGenerate({
-      action: "generate-requirements",
+      action: "generate-spec",
       projectDescription: "test",
     })) {
       chunks.push(chunk);
@@ -61,7 +61,7 @@ describe("streamGenerate", () => {
 
     await expect(async () => {
       for await (const _ of streamGenerate({
-        action: "generate-requirements",
+        action: "generate-spec",
         projectDescription: "test",
       })) {
         void _;
@@ -78,7 +78,7 @@ describe("streamGenerate", () => {
 
     await expect(async () => {
       for await (const _ of streamGenerate({
-        action: "generate-requirements",
+        action: "generate-spec",
         projectDescription: "test",
       })) {
         void _;
@@ -97,7 +97,7 @@ describe("streamGenerate", () => {
     const { streamGenerate } = await import("@/lib/api/stream-client");
 
     const iter = streamGenerate({
-      action: "generate-requirements",
+      action: "generate-spec",
       projectDescription: "test",
     });
 
