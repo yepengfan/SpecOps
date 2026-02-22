@@ -10,7 +10,7 @@ import type { Project, TraceabilityMapping } from "@/lib/types";
 function makeMapping(overrides?: Partial<TraceabilityMapping>): TraceabilityMapping {
   return {
     id: "mapping-1",
-    requirementId: "req-1",
+    requirementId: "fr-001",
     requirementLabel: "Req 1: Create Project",
     targetType: "plan",
     targetId: "architecture",
@@ -38,7 +38,7 @@ function makeProject(overrides?: Partial<Project>): Project {
             id: "ears-requirements",
             title: "EARS Requirements",
             content:
-              "- **REQ-1**: WHEN user clicks create, the system SHALL create a new project.\n- **REQ-2**: WHEN user clicks delete, the system SHALL delete the project.\n- **REQ-3**: WHEN user clicks export, the system SHALL export the project.",
+              "- **FR-001**: WHEN user clicks create, the system SHALL create a new project.\n- **FR-002**: WHEN user clicks delete, the system SHALL delete the project.\n- **FR-003**: WHEN user clicks export, the system SHALL export the project.",
           },
           { id: "non-functional-requirements", title: "Non-Functional Requirements", content: "" },
         ],
@@ -163,9 +163,9 @@ describe("parseRequirementIds", () => {
     const reqs = parseRequirementIds(project);
 
     expect(reqs).toHaveLength(3);
-    expect(reqs[0]).toEqual({ id: "req-1", label: "REQ-1: WHEN user clicks create, the system SHALL create a new project." });
-    expect(reqs[1]).toEqual({ id: "req-2", label: "REQ-2: WHEN user clicks delete, the system SHALL delete the project." });
-    expect(reqs[2]).toEqual({ id: "req-3", label: "REQ-3: WHEN user clicks export, the system SHALL export the project." });
+    expect(reqs[0]).toEqual({ id: "fr-001", label: "FR-001: WHEN user clicks create, the system SHALL create a new project." });
+    expect(reqs[1]).toEqual({ id: "fr-002", label: "FR-002: WHEN user clicks delete, the system SHALL delete the project." });
+    expect(reqs[2]).toEqual({ id: "fr-003", label: "FR-003: WHEN user clicks export, the system SHALL export the project." });
   });
 
   it("returns empty array when no requirements exist", () => {
@@ -202,8 +202,8 @@ describe("getCoverageStats", () => {
   it("counts plan coverage correctly", () => {
     const project = makeProject({
       traceabilityMappings: [
-        makeMapping({ id: "m1", requirementId: "req-1", targetType: "plan" }),
-        makeMapping({ id: "m2", requirementId: "req-2", targetType: "plan" }),
+        makeMapping({ id: "m1", requirementId: "fr-001", targetType: "plan" }),
+        makeMapping({ id: "m2", requirementId: "fr-002", targetType: "plan" }),
       ],
     });
     const stats = getCoverageStats(project);
@@ -214,7 +214,7 @@ describe("getCoverageStats", () => {
   it("counts task coverage correctly", () => {
     const project = makeProject({
       traceabilityMappings: [
-        makeMapping({ id: "m1", requirementId: "req-1", targetType: "task" }),
+        makeMapping({ id: "m1", requirementId: "fr-001", targetType: "task" }),
       ],
     });
     const stats = getCoverageStats(project);
@@ -225,8 +225,8 @@ describe("getCoverageStats", () => {
   it("does not double-count same requirement with multiple mappings", () => {
     const project = makeProject({
       traceabilityMappings: [
-        makeMapping({ id: "m1", requirementId: "req-1", targetType: "plan", targetId: "architecture" }),
-        makeMapping({ id: "m2", requirementId: "req-1", targetType: "plan", targetId: "data-model" }),
+        makeMapping({ id: "m1", requirementId: "fr-001", targetType: "plan", targetId: "architecture" }),
+        makeMapping({ id: "m2", requirementId: "fr-001", targetType: "plan", targetId: "data-model" }),
       ],
     });
     const stats = getCoverageStats(project);

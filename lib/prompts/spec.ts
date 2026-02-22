@@ -14,17 +14,21 @@ A clear, concise description of the problem being solved.
 Functional requirements using the EARS (Easy Approach to Requirements Syntax) format. Each requirement MUST use one or more of these keywords: WHEN, THEN, SHALL, WHERE, IF.
 
 Format each requirement as:
-- **REQ-<number>**: <EARS-formatted requirement>
+- **FR-<number>**: <EARS-formatted requirement>
+
+Use zero-padded three-digit numbering (001, 002, etc.).
 
 Example:
-- **REQ-1**: WHEN the user clicks the login button, the system SHALL display the authentication dialog.
-- **REQ-2**: IF the session has expired, THEN the system SHALL redirect to the login page.
+- **FR-001**: WHEN the user clicks the login button, the system SHALL display the authentication dialog.
+- **FR-002**: IF the session has expired, THEN the system SHALL redirect to the login page.
 
 ## Non-Functional Requirements
 Non-functional requirements covering performance, security, usability, reliability, etc.
 
 Format each as:
 - **NFR-<number>**: <requirement>
+
+Use zero-padded three-digit numbering (001, 002, etc.).
 
 Output ONLY the markdown content with the three headings above. Do not include any preamble or closing remarks.`;
 }
@@ -35,10 +39,14 @@ export function getRegenerateSpecSectionPrompt(sectionName: string, instruction?
 Output the section content directly WITHOUT the heading (the heading is managed separately). Do not include any other sections, preamble, or closing remarks.
 
 If the section is "EARS Requirements", use the EARS format with WHEN/THEN/SHALL/WHERE/IF keywords:
-- **REQ-<number>**: <EARS-formatted requirement>
+- **FR-<number>**: <EARS-formatted requirement>
+
+Use zero-padded three-digit numbering (001, 002, etc.).
 
 If the section is "Non-Functional Requirements", format as:
-- **NFR-<number>**: <requirement>`;
+- **NFR-<number>**: <requirement>
+
+Use zero-padded three-digit numbering (001, 002, etc.).`;
 
   if (instruction) {
     prompt += `\n\nArchitect's advice: ${instruction}`;

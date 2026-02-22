@@ -6,11 +6,11 @@ describe("evaluateSpec", () => {
 Users need a login system.
 
 ## EARS Requirements
-- **REQ-1**: System SHALL display a login form WHEN the user navigates to /login
-- **REQ-2**: IF the user enters invalid credentials, THEN the system SHALL display an error
+- **FR-001**: System SHALL display a login form WHEN the user navigates to /login
+- **FR-002**: IF the user enters invalid credentials, THEN the system SHALL display an error
 
 ## Non-Functional Requirements
-- **NFR-1**: The login page SHALL load in under 2 seconds (performance)`;
+- **NFR-001**: The login page SHALL load in under 2 seconds (performance)`;
 
     const results = evaluateSpec(content);
     const earsCheck = results.find((r) => r.id === "spec-ears-keywords");
@@ -22,16 +22,16 @@ Users need a login system.
 Users need a login system.
 
 ## EARS Requirements
-- **REQ-1**: Display a login form
-- **REQ-2**: Show an error message
+- **FR-001**: Display a login form
+- **FR-002**: Show an error message
 
 ## Non-Functional Requirements
-- **NFR-1**: The system should be fast (performance)`;
+- **NFR-001**: The system should be fast (performance)`;
 
     const results = evaluateSpec(content);
     const earsCheck = results.find((r) => r.id === "spec-ears-keywords");
     expect(earsCheck?.passed).toBe(false);
-    expect(earsCheck?.explanation).toContain("REQ-1");
+    expect(earsCheck?.explanation).toContain("FR-001");
   });
 
   it("only checks EARS keywords on REQ lines, not NFR lines", () => {
@@ -39,10 +39,10 @@ Users need a login system.
 Description.
 
 ## EARS Requirements
-- **REQ-1**: WHEN the user logs in, the system SHALL create a session
+- **FR-001**: WHEN the user logs in, the system SHALL create a session
 
 ## Non-Functional Requirements
-- **NFR-1**: The system must support 1000 concurrent users`;
+- **NFR-001**: The system must support 1000 concurrent users`;
 
     const results = evaluateSpec(content);
     const earsCheck = results.find((r) => r.id === "spec-ears-keywords");
@@ -54,7 +54,7 @@ Description.
 Some description.
 
 ## EARS Requirements
-- **REQ-1**: System SHALL do something`;
+- **FR-001**: System SHALL do something`;
     // Missing Non-Functional Requirements section
 
     const results = evaluateSpec(content);
@@ -68,10 +68,10 @@ Some description.
 Description.
 
 ## EARS Requirements
-- **REQ-1**: System SHALL do something
+- **FR-001**: System SHALL do something
 
 ## Non-Functional Requirements
-- **NFR-1**: The system must be secure`;
+- **NFR-001**: The system must be secure`;
 
     const results = evaluateSpec(content);
     const perfCheck = results.find((r) => r.id === "spec-performance-target");
@@ -83,10 +83,10 @@ Description.
 Description.
 
 ## EARS Requirements
-- **REQ-1**: System SHALL do something
+- **FR-001**: System SHALL do something
 
 ## Non-Functional Requirements
-- **NFR-1**: The system response time must be under 200ms`;
+- **NFR-001**: The system response time must be under 200ms`;
 
     const results = evaluateSpec(content);
     const perfCheck = results.find((r) => r.id === "spec-performance-target");

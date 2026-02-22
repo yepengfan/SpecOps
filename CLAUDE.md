@@ -12,6 +12,7 @@ Auto-generated from all feature plans. Last updated: 2026-02-22
 - TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown (013-ai-chat-assistant)
 - IndexedDB via Dexie.js (client-side only) — new `chatMessages` table (013-ai-chat-assistant)
 - TypeScript 5.x + Next.js 16, React 19, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown (014-rename-to-specops)
+- IndexedDB via Dexie.js (no schema changes) (015-align-requirement-ids)
 
 ## Project Structure
 
@@ -31,6 +32,7 @@ npm test && npm run lint
 TypeScript 5.x: Follow standard conventions
 
 ## Recent Changes
+- 015-align-requirement-ids: Added TypeScript 5.x + Next.js 16, React 19, Zustand 5, Dexie.js 4
 - 014-rename-to-specops: Added TypeScript 5.x + Next.js 16, React 19, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown
 - 013-ai-chat-assistant: Added TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown
 - 012-rename-project: Added TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4

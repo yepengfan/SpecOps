@@ -31,7 +31,7 @@ describe("Evaluation persistence and invalidation", () => {
       .updateSection(
         "spec",
         "problem-statement",
-        "## Problem Statement\nUsers need a login system.\n\n## EARS Requirements\n- **REQ-1**: System SHALL display a login form WHEN the user navigates to /login\n\n## Non-Functional Requirements\n- **NFR-1**: The login page SHALL load in under 2 seconds (performance)"
+        "## Problem Statement\nUsers need a login system.\n\n## EARS Requirements\n- **FR-001**: System SHALL display a login form WHEN the user navigates to /login\n\n## Non-Functional Requirements\n- **NFR-001**: The login page SHALL load in under 2 seconds (performance)"
       );
     await jest.runAllTimersAsync();
 

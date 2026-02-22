@@ -46,9 +46,9 @@ describe("parseEditSuggestion", () => {
   it("handles multiline proposed content", () => {
     const input = [
       "[EDIT ears-requirements spec]",
-      "- **REQ-1**: WHEN user logs in, the system SHALL create a session.",
-      "- **REQ-2**: WHEN session expires, the system SHALL redirect to login.",
-      "- **REQ-3**: The system SHALL support OAuth2 authentication.",
+      "- **FR-001**: WHEN user logs in, the system SHALL create a session.",
+      "- **FR-002**: WHEN session expires, the system SHALL redirect to login.",
+      "- **FR-003**: The system SHALL support OAuth2 authentication.",
       "[/EDIT]",
     ].join("\n");
 
@@ -57,9 +57,9 @@ describe("parseEditSuggestion", () => {
     expect(result).not.toBeNull();
     expect(result!.proposedContent).toBe(
       [
-        "- **REQ-1**: WHEN user logs in, the system SHALL create a session.",
-        "- **REQ-2**: WHEN session expires, the system SHALL redirect to login.",
-        "- **REQ-3**: The system SHALL support OAuth2 authentication.",
+        "- **FR-001**: WHEN user logs in, the system SHALL create a session.",
+        "- **FR-002**: WHEN session expires, the system SHALL redirect to login.",
+        "- **FR-003**: The system SHALL support OAuth2 authentication.",
       ].join("\n"),
     );
   });

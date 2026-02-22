@@ -12,7 +12,7 @@ export function getTasksSystemPrompt(): string {
 An ordered list of atomic, implementable tasks. Each task should be small enough for a single developer to complete in one session. Use the format:
 - **T<number>**: <task description>
 
-Number tasks sequentially. Reference specific spec items (REQ-/NFR-) and plan decisions where applicable.
+Number tasks sequentially. Reference specific spec items (FR-/NFR-) and plan decisions where applicable.
 
 ## Dependencies
 Define the execution order and dependencies between tasks. Use the format:
@@ -33,8 +33,8 @@ Include unit tests, integration tests, and E2E tests as appropriate.
 Use the approved spec and plan document as the basis for all task decisions. Output ONLY the markdown content with the four headings above. Do not include any preamble or closing remarks.
 
 After the four sections, output a traceability comment in this exact format:
-<!-- TRACEABILITY: [{"sectionId":"task-list","requirementIds":["req-1","req-2"]},{"sectionId":"dependencies","requirementIds":["req-1"]},...] -->
-Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Derive IDs from "**REQ-N**:" items in the spec (e.g., **REQ-1** becomes "req-1").`;
+<!-- TRACEABILITY: [{"sectionId":"task-list","requirementIds":["fr-001","fr-002"]},{"sectionId":"dependencies","requirementIds":["fr-001"]},...] -->
+Map each section to the requirement IDs (e.g. "fr-001", "fr-002") from the spec that it addresses. Derive IDs from "**FR-NNN**:" items in the spec (e.g., **FR-001** becomes "fr-001").`;
 }
 
 export function getRegenerateTaskSectionPrompt(sectionName: string, instruction?: string): string {

@@ -24,10 +24,10 @@ describe("parseSpecSections", () => {
     "The app needs to do X.",
     "",
     "## EARS Requirements",
-    "- **REQ-1**: WHEN user clicks, the system SHALL respond.",
+    "- **FR-001**: WHEN user clicks, the system SHALL respond.",
     "",
     "## Non-Functional Requirements",
-    "- **NFR-1**: The system SHALL respond within 200ms.",
+    "- **NFR-001**: The system SHALL respond within 200ms.",
   ].join("\n");
 
   it("parses valid input into three sections", () => {
@@ -36,10 +36,10 @@ describe("parseSpecSections", () => {
     expect(result.malformed).toBe(false);
     expect(result.problemStatement).toBe("The app needs to do X.");
     expect(result.earsRequirements).toBe(
-      "- **REQ-1**: WHEN user clicks, the system SHALL respond.",
+      "- **FR-001**: WHEN user clicks, the system SHALL respond.",
     );
     expect(result.nonFunctionalRequirements).toBe(
-      "- **NFR-1**: The system SHALL respond within 200ms.",
+      "- **NFR-001**: The system SHALL respond within 200ms.",
     );
   });
 
@@ -136,10 +136,10 @@ describe("parseSpecSections", () => {
       "Line 2",
       "Line 3",
       "## EARS Requirements",
-      "- REQ-1: first",
-      "- REQ-2: second",
+      "- FR-001: first",
+      "- FR-002: second",
       "## Non-Functional Requirements",
-      "- NFR-1: perf",
+      "- NFR-001: perf",
     ].join("\n");
 
     const result = parseSpecSections(input);

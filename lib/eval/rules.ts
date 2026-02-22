@@ -48,22 +48,22 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
   const results: RuleCheckResult[] = [];
 
   // Check EARS keywords in requirements
-  // The spec prompt generates REQ-<number> and NFR-<number> format
+  // The spec prompt generates FR-<number> and NFR-<number> format (zero-padded three-digit)
   const reqLines = content
     .split("\n")
-    .filter((line) => /^\s*-\s+\*\*(REQ|NFR)-\d+\*\*:/.test(line));
+    .filter((line) => /^\s*-\s+\*\*(FR|NFR)-\d+\*\*:/.test(line));
 
   if (reqLines.length === 0) {
     results.push({
       id: "spec-ears-keywords",
       name: "EARS Keywords Present",
       passed: false,
-      explanation: "No requirements found (expected lines starting with REQ-N or NFR-N)",
+      explanation: "No requirements found (expected lines starting with FR-NNN or NFR-NNN)",
     });
   } else {
-    // Only check EARS keywords on REQ lines (NFR lines don't require EARS format)
-    const reqOnlyLines = reqLines.filter((line) => /\*\*REQ-/.test(line));
-    const missing = reqOnlyLines.filter((line) => !EARS_KEYWORDS.test(line));
+    // Only check EARS keywords on FR lines (NFR lines don't require EARS format)
+    const frOnlyLines = reqLines.filter((line) => /\*\*FR-/.test(line));
+    const missing = frOnlyLines.filter((line) => !EARS_KEYWORDS.test(line));
     if (missing.length === 0) {
       results.push({
         id: "spec-ears-keywords",
@@ -76,7 +76,7 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
         id: "spec-ears-keywords",
         name: "EARS Keywords Present",
         passed: false,
-        explanation: `${missing.length} requirement(s) missing EARS keywords (WHEN, THEN, SHALL, WHERE, IF): ${missing.map((l) => l.match(/REQ-\d+/)?.[0] ?? "unknown").join(", ")}`,
+        explanation: `${missing.length} requirement(s) missing EARS keywords (WHEN, THEN, SHALL, WHERE, IF): ${missing.map((l) => l.match(/FR-\d+/)?.[0] ?? "unknown").join(", ")}`,
       });
     }
   }
