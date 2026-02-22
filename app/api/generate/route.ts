@@ -18,11 +18,11 @@ function isValidAction(action: string): action is ValidAction {
   return (VALID_ACTIONS as readonly string[]).includes(action);
 }
 
-function buildPrompt(body: GenerateRequest): {
+function buildPrompt(action: ValidAction, body: GenerateRequest): {
   system: string;
   userMessage: string;
 } {
-  switch (body.action as ValidAction) {
+  switch (action) {
     case "generate-requirements":
       return {
         system: getRequirementsSystemPrompt(),
@@ -42,13 +42,18 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ error: "API key not configured" }, { status: 401 });
   }
 
-  const body: GenerateRequest = await request.json();
+  let body: GenerateRequest;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "Invalid request body" }, { status: 400 });
+  }
 
   if (!body.action || !isValidAction(body.action)) {
     return Response.json({ error: "Invalid action" }, { status: 400 });
   }
 
-  const { system, userMessage } = buildPrompt(body);
+  const { system, userMessage } = buildPrompt(body.action, body);
   const client = new Anthropic({ apiKey });
 
   let stream: AsyncIterable<Anthropic.MessageStreamEvent>;
@@ -107,6 +112,10 @@ export async function POST(request: Request): Promise<Response> {
   });
 
   return new Response(readable, {
-    headers: { "Content-Type": "text/event-stream" },
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
   });
 }

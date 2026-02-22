@@ -60,12 +60,11 @@ describe("streamGenerate", () => {
     );
 
     await expect(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for await (const _chunk of streamGenerate({
+      for await (const _ of streamGenerate({
         action: "generate-requirements",
         projectDescription: "test",
       })) {
-        // consume
+        void _;
       }
     }).rejects.toThrow(StreamError);
   });
@@ -78,12 +77,11 @@ describe("streamGenerate", () => {
     );
 
     await expect(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for await (const _chunk of streamGenerate({
+      for await (const _ of streamGenerate({
         action: "generate-requirements",
         projectDescription: "test",
       })) {
-        // consume
+        void _;
       }
     }).rejects.toThrow(StreamError);
   });

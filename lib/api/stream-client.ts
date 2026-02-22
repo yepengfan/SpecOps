@@ -54,7 +54,12 @@ export async function* streamGenerate(
       const line = part.trim();
       if (!line.startsWith("data: ")) continue;
 
-      const data = JSON.parse(line.slice(6));
+      let data;
+      try {
+        data = JSON.parse(line.slice(6));
+      } catch {
+        continue;
+      }
 
       if (data.type === "content") {
         yield data.text;

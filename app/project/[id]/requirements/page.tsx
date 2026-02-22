@@ -20,7 +20,8 @@ export default function RequirementsPage() {
   const updateSection = useProjectStore((s) => s.updateSection);
   const project = useProjectStore((s) => s.currentProject);
 
-  const canGenerate = description.trim().length >= 10 && !isGenerating;
+  const isBusy = isGenerating || regeneratingSection !== null;
+  const canGenerate = description.trim().length >= 10 && !isBusy;
 
   const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
@@ -72,7 +73,7 @@ export default function RequirementsPage() {
 
   const handleRegenerate = useCallback(
     async (sectionId: string) => {
-      if (!project) return;
+      if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
       setError(null);
@@ -106,7 +107,7 @@ export default function RequirementsPage() {
         setRegeneratingSection(null);
       }
     },
-    [project, updateSection],
+    [project, updateSection, isGenerating],
   );
 
   return (
@@ -121,7 +122,7 @@ export default function RequirementsPage() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="min-h-24 font-mono"
-          disabled={isGenerating}
+          disabled={isBusy}
         />
       </div>
 
