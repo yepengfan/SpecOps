@@ -157,7 +157,7 @@ describe("withErrorHandling", () => {
     const spy = jest
       .spyOn(db.projects, "orderBy")
       .mockImplementationOnce(() => {
-        throw new Dexie.OpenFailedError();
+        throw new Dexie.OpenFailedError("test");
       });
     const error = await listProjects().catch((e) => e);
     expect(error).toBeInstanceOf(StorageError);

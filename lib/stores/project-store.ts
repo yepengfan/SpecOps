@@ -8,6 +8,7 @@ interface ProjectState {
   saveError: string | null;
   setProject: (project: Project) => void;
   clearProject: () => void;
+  cancelPendingSave: () => void;
   updateSection: (
     phaseType: PhaseType,
     sectionId: string,
@@ -15,68 +16,71 @@ interface ProjectState {
   ) => void;
 }
 
-// Module-level timeout ID: safe in production (singleton store) but shared
-// across store instances in tests. Tests that exercise updateSection should
-// call clearProject() in afterEach to cancel any pending debounced save.
-let saveTimeoutId: ReturnType<typeof setTimeout> | null = null;
+export const useProjectStore = create<ProjectState>()((set, get) => {
+  let saveTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
-function debouncedSave(project: Project, set: (partial: Partial<ProjectState>) => void) {
-  if (saveTimeoutId) {
-    clearTimeout(saveTimeoutId);
-  }
-  saveTimeoutId = setTimeout(async () => {
-    set({ isSaving: true, saveError: null });
-    try {
-      await updateProject(project);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to save";
-      set({ saveError: message });
-    } finally {
-      set({ isSaving: false });
-    }
-  }, 1000);
-}
-
-export const useProjectStore = create<ProjectState>()((set, get) => ({
-  currentProject: null,
-  isSaving: false,
-  saveError: null,
-
-  setProject: (project) => {
-    set({ currentProject: project, saveError: null });
-  },
-
-  clearProject: () => {
+  function cancelPendingSave() {
     if (saveTimeoutId) {
       clearTimeout(saveTimeoutId);
       saveTimeoutId = null;
     }
-    set({ currentProject: null, isSaving: false, saveError: null });
-  },
+  }
 
-  updateSection: (phaseType, sectionId, content) => {
-    const { currentProject } = get();
-    if (!currentProject) return;
+  function debouncedSave(project: Project) {
+    cancelPendingSave();
+    saveTimeoutId = setTimeout(async () => {
+      set({ isSaving: true, saveError: null });
+      try {
+        await updateProject(project);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Failed to save";
+        set({ saveError: message });
+      } finally {
+        set({ isSaving: false });
+      }
+    }, 1000);
+  }
 
-    const phase = currentProject.phases[phaseType];
-    if (!phase.sections.some((s) => s.id === sectionId)) return;
+  return {
+    currentProject: null,
+    isSaving: false,
+    saveError: null,
 
-    const updatedSections = phase.sections.map((s) =>
-      s.id === sectionId ? { ...s, content } : s,
-    );
+    setProject: (project) => {
+      set({ currentProject: project, saveError: null });
+    },
 
-    const updatedProject: Project = {
-      ...currentProject,
-      phases: {
-        ...currentProject.phases,
-        [phaseType]: {
-          ...phase,
-          sections: updatedSections,
+    clearProject: () => {
+      cancelPendingSave();
+      set({ currentProject: null, isSaving: false, saveError: null });
+    },
+
+    cancelPendingSave,
+
+    updateSection: (phaseType, sectionId, content) => {
+      const { currentProject } = get();
+      if (!currentProject) return;
+
+      const phase = currentProject.phases[phaseType];
+      if (!phase.sections.some((s) => s.id === sectionId)) return;
+
+      const updatedSections = phase.sections.map((s) =>
+        s.id === sectionId ? { ...s, content } : s,
+      );
+
+      const updatedProject: Project = {
+        ...currentProject,
+        phases: {
+          ...currentProject.phases,
+          [phaseType]: {
+            ...phase,
+            sections: updatedSections,
+          },
         },
-      },
-    };
+      };
 
-    set({ currentProject: updatedProject });
-    debouncedSave(updatedProject, set);
-  },
-}));
+      set({ currentProject: updatedProject });
+      debouncedSave(updatedProject);
+    },
+  };
+});
