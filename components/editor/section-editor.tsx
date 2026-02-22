@@ -20,6 +20,7 @@ interface SectionEditorProps {
   isRegenerating?: boolean;
   instruction?: string;
   onInstructionChange?: (value: string) => void;
+  defaultViewMode?: "edit" | "preview";
 }
 
 export function SectionEditor({
@@ -33,6 +34,7 @@ export function SectionEditor({
   isRegenerating,
   instruction,
   onInstructionChange,
+  defaultViewMode,
 }: SectionEditorProps) {
   const updateSection = useProjectStore((s) => s.updateSection);
   const isSaving = useProjectStore((s) => s.isSaving);
@@ -43,7 +45,7 @@ export function SectionEditor({
   const isReviewed = phaseStatus === "reviewed";
   const effectiveReadOnly = readOnly || isReviewed;
 
-  const [viewMode, setViewMode] = useState<"edit" | "preview">("edit");
+  const [viewMode, setViewMode] = useState<"edit" | "preview">(defaultViewMode ?? "edit");
 
   const headingId = `section-heading-${sectionId}`;
 

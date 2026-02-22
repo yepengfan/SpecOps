@@ -22,6 +22,8 @@ interface GatedPhasePageProps {
   regeneratingSection?: string | null;
   sectionInstructions?: Record<string, string>;
   onInstructionChange?: (sectionId: string, value: string) => void;
+  defaultViewMode?: "edit" | "preview";
+  generationKey?: number;
 }
 
 export function GatedPhasePage({
@@ -30,6 +32,8 @@ export function GatedPhasePage({
   regeneratingSection,
   sectionInstructions,
   onInstructionChange,
+  defaultViewMode,
+  generationKey,
 }: GatedPhasePageProps) {
   const project = useProjectStore((s) => s.currentProject);
   const editReviewedPhase = useProjectStore((s) => s.editReviewedPhase);
@@ -61,7 +65,7 @@ export function GatedPhasePage({
     <div className="space-y-6">
       {phase.sections.map((section) => (
         <SectionEditor
-          key={section.id}
+          key={`${section.id}-${generationKey ?? 0}`}
           phaseType={phaseType}
           sectionId={section.id}
           title={section.title}
@@ -79,6 +83,7 @@ export function GatedPhasePage({
               ? (value) => onInstructionChange(section.id, value)
               : undefined
           }
+          defaultViewMode={defaultViewMode}
         />
       ))}
       <ApproveButton phaseType={phaseType} />
