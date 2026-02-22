@@ -15,6 +15,7 @@ export default function TasksPage() {
     null,
   );
   const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
+  const [generationKey, setGenerationKey] = useState(0);
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const editReviewedPhase = useProjectStore((s) => s.editReviewedPhase);
@@ -73,6 +74,7 @@ export default function TasksPage() {
       setError(message);
     } finally {
       setIsGenerating(false);
+      setGenerationKey((k) => k + 1);
     }
   }, [project, updateSection, editReviewedPhase]);
 
@@ -173,6 +175,8 @@ export default function TasksPage() {
         regeneratingSection={regeneratingSection}
         sectionInstructions={sectionInstructions}
         onInstructionChange={handleInstructionChange}
+        defaultViewMode="preview"
+        generationKey={generationKey}
       />
     </div>
   );

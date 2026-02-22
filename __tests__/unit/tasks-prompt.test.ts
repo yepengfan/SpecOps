@@ -18,6 +18,10 @@ describe("getTasksSystemPrompt", () => {
     expect(prompt).toMatch(/spec/i);
     expect(prompt).toMatch(/plan/i);
   });
+
+  it("instructs mermaid dependency graph", () => {
+    expect(prompt).toContain("mermaid");
+  });
 });
 
 describe("getRegenerateTaskSectionPrompt", () => {
@@ -35,6 +39,11 @@ describe("getRegenerateTaskSectionPrompt", () => {
   it("does not include instruction block when not provided", () => {
     const prompt = getRegenerateTaskSectionPrompt("Task List");
     expect(prompt).not.toContain("Architect's advice");
+  });
+
+  it("includes mermaid instruction for Dependencies regeneration", () => {
+    const prompt = getRegenerateTaskSectionPrompt("Dependencies");
+    expect(prompt).toContain("mermaid");
   });
 });
 

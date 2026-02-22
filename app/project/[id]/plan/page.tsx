@@ -15,6 +15,7 @@ export default function PlanPage() {
     null,
   );
   const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
+  const [generationKey, setGenerationKey] = useState(0);
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const project = useProjectStore((s) => s.currentProject);
@@ -69,6 +70,7 @@ export default function PlanPage() {
       setError(message);
     } finally {
       setIsGenerating(false);
+      setGenerationKey((k) => k + 1);
     }
   }, [project, updateSection]);
 
@@ -166,6 +168,8 @@ export default function PlanPage() {
         regeneratingSection={regeneratingSection}
         sectionInstructions={sectionInstructions}
         onInstructionChange={handleInstructionChange}
+        defaultViewMode="preview"
+        generationKey={generationKey}
       />
     </div>
   );
