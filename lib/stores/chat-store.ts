@@ -22,6 +22,7 @@ interface ChatState {
     project: Project,
     phaseType: PhaseType,
   ) => Promise<void>;
+  updateMessage: (id: number, data: Partial<ChatMessage>) => void;
   clearMessages: () => void;
 }
 
@@ -44,12 +45,22 @@ export const useChatStore = create<ChatState>()((set, get) => ({
     }
   },
 
+  updateMessage: (id: number, data: Partial<ChatMessage>) => {
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === id ? { ...m, ...data } : m,
+      ),
+    }));
+  },
+
   sendMessage: async (
     text: string,
     projectId: string,
     project: Project,
     phaseType: PhaseType,
   ) => {
+    if (get().isStreaming) return;
+
     const trimmed = text.trim();
     if (!trimmed) return;
 
