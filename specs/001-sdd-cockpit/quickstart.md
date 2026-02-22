@@ -6,6 +6,7 @@
 
 - Node.js 20+ (LTS)
 - npm 10+ (included with Node.js)
+- Anthropic API key
 
 ## Setup
 
@@ -17,82 +18,91 @@ cd sdd-cockpit
 # Install dependencies
 npm install
 
+# Configure API key
+cp .env.example .env.local
+# Edit .env.local and set: ANTHROPIC_API_KEY=sk-ant-...
+
 # Start dev server
 npm run dev
 ```
 
-The app opens at `http://localhost:5173`.
+The app opens at `http://localhost:3000`.
 
 ## Tech Stack
 
 | Concern | Tool |
 |---------|------|
-| Framework | Svelte 5 + SvelteKit (SPA mode) |
+| Framework | Next.js (App Router) with React |
 | Language | TypeScript 5.x |
-| Build | Vite (via SvelteKit) |
+| State management | Zustand |
+| UI components | shadcn/ui (Radix + Tailwind CSS) |
 | Storage | IndexedDB via Dexie.js |
-| Testing | Vitest + fake-indexeddb |
-| Accessibility | Svelte compiler warnings + Bits UI |
-| LLM API | Anthropic Messages API (Claude) |
+| LLM API | Anthropic SDK (server-side, via API routes) |
+| Testing | Jest + React Testing Library (unit), Playwright (E2E) |
+| A11y linting | eslint-plugin-jsx-a11y |
 
 ## Project Structure
 
 ```
-src/
-├── lib/
-│   ├── db/                 # Dexie database, schema, operations
-│   ├── api/                # Claude API client, streaming
-│   ├── stores/             # Svelte stores for app state
-│   ├── components/         # Reusable UI components
-│   │   ├── ui/             # Bits UI wrappers, primitives
-│   │   ├── editor/         # Section editor, markdown preview
-│   │   └── phase/          # Phase gate, status indicators
-│   ├── prompts/            # LLM system prompts per phase
-│   └── types/              # TypeScript types and interfaces
-├── routes/
-│   ├── +layout.svelte      # App shell, navigation
-│   ├── +page.svelte        # Project list (home)
-│   ├── settings/
-│   │   └── +page.svelte    # API key configuration
-│   └── project/
-│       └── [id]/
-│           ├── +page.svelte          # Project overview / redirect
-│           ├── requirements/
-│           │   └── +page.svelte      # Requirements phase editor
-│           ├── design/
-│           │   └── +page.svelte      # Design phase editor
-│           └── tasks/
-│               └── +page.svelte      # Tasks phase editor
-├── app.html                # HTML entry point
-└── app.css                 # Global styles
+app/
+├── layout.tsx              # Root layout, navigation shell
+├── page.tsx                # Project list (home)
+├── settings/
+│   └── page.tsx            # API key status page
+├── project/
+│   └── [id]/
+│       ├── page.tsx        # Project redirect to active phase
+│       ├── requirements/
+│       │   └── page.tsx    # Requirements phase editor
+│       ├── design/
+│       │   └── page.tsx    # Design phase editor
+│       └── tasks/
+│           └── page.tsx    # Tasks phase editor
+└── api/
+    ├── generate/
+    │   └── route.ts        # LLM proxy: POST /api/generate (streaming)
+    └── key-status/
+        └── route.ts        # GET /api/key-status
 
-tests/
-├── unit/
-│   ├── db.test.ts          # IndexedDB operations
-│   ├── phase-gate.test.ts  # Phase status transitions
-│   └── export.test.ts      # Markdown export logic
-└── integration/
-    ├── project-crud.test.ts
-    └── phase-workflow.test.ts
+components/
+├── ui/                     # shadcn/ui components (Button, Dialog, Tabs, etc.)
+├── editor/                 # Section editor, markdown preview
+└── phase/                  # Phase gate UI, status indicators
 
-static/                     # Static assets (if any)
+lib/
+├── db/                     # Dexie database, schema, CRUD operations
+├── stores/                 # Zustand stores for app state
+├── prompts/                # LLM system prompts per phase
+└── types/                  # TypeScript interfaces and enums
+
+__tests__/
+├── unit/                   # Jest unit tests
+├── integration/            # Jest integration tests
+└── e2e/                    # Playwright E2E tests
 ```
 
 ## Key Commands
 
 ```bash
-npm run dev          # Start dev server with HMR
-npm run build        # Production build (static SPA)
-npm run preview      # Preview production build
-npm run test         # Run Vitest in watch mode
-npm run test:run     # Run tests once (CI mode)
-npm run check        # Svelte type checking + a11y warnings
+npm run dev          # Start dev server with Turbopack HMR
+npm run build        # Production build
+npm run start        # Start production server
+npm run test         # Run Jest tests
+npm run test:e2e     # Run Playwright E2E tests
+npm run lint         # ESLint + jsx-a11y checks
+```
+
+## Environment Variables
+
+```bash
+# .env.local (required)
+ANTHROPIC_API_KEY=sk-ant-...    # Your Anthropic API key (server-side only)
 ```
 
 ## First-Time User Flow
 
-1. Open the app → API key setup screen (Req 9)
-2. Paste Anthropic API key → validated → proceed to project list
+1. Set `ANTHROPIC_API_KEY` in `.env.local` and start the dev server
+2. Open the app → project list (empty)
 3. Click "New Project" → enter project name → navigate to Requirements phase (Req 1)
 4. Enter project description → click "Generate" → AI generates EARS-format requirements (Req 3)
 5. Review and edit sections → click "Mark as Reviewed" → Design phase unlocks (Req 7)

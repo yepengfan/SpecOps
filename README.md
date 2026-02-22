@@ -1,6 +1,6 @@
 # SDD Workflow App
 
-A pure frontend web application that guides developers through the [Spec-Driven Development (SDD)](https://github.com/github/spec-kit) workflow — from idea to implementation-ready specs — with structured templates, phase gate enforcement, and markdown export for AI coding agents.
+A Next.js web application that guides developers through the [Spec-Driven Development (SDD)](https://github.com/github/spec-kit) workflow — from idea to implementation-ready specs — with structured templates, phase gate enforcement, and markdown export for AI coding agents.
 
 ## Problem
 
@@ -92,7 +92,7 @@ specs/
 
 ## Key Decisions
 
-- **Pure frontend SPA** — No backend. All data stored in browser (IndexedDB). API key entered at runtime, never bundled. Zero auth complexity.
+- **Next.js with API routes** — Lightweight server proxies LLM API calls. API key stored server-side in `.env.local`, never sent to browser. Project data stored in browser (IndexedDB). Zero auth complexity.
 - **Export-oriented** — Specs are exported as markdown files. Users place them in their own Git repos. No GitHub integration in v1.
 - **AI-agent-optimized output** — Exported specs follow conventions that AI coding agents can parse and implement against reliably.
 
