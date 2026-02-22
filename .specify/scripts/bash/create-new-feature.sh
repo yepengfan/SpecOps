@@ -207,7 +207,7 @@ generate_branch_name() {
     # If we have meaningful words, use first 3-4 of them
     if [ ${#meaningful_words[@]} -gt 0 ]; then
         local max_words=3
-        if [ ${#meaningful_words[@]} -eq 4 ]; then max_words=4; fi
+        if [ ${#meaningful_words[@]} -ge 4 ]; then max_words=4; fi
         
         local result=""
         local count=0
