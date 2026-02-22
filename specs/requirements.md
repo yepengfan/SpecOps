@@ -23,7 +23,7 @@ THEN the system SHALL:
 - Create a new project record with unique ID, name, and created timestamp
 - Initialize the project in the Requirements phase with status "draft"
 - Initialize Design and Tasks phases with status "locked"
-- Persist the project to browser local storage (localStorage or IndexedDB)
+- Persist the project to IndexedDB
 - Navigate the developer to the Requirements phase of the new project
 - Complete within 500ms
 
@@ -34,7 +34,7 @@ WHERE project creation:
 - Project ID MUST be a UUID v4
 
 Error Handling:
-IF local storage is full THEN:
+IF IndexedDB storage is full THEN:
 - Display error message: "Storage is full. Please delete unused projects."
 - Do NOT create the project
 
@@ -52,7 +52,7 @@ Rationale: Developers need to manage multiple SDD workflows simultaneously, resu
 Main Flow:
 WHEN a developer opens the app
 THEN the system SHALL:
-- Load all projects from browser local storage
+- Load all projects from IndexedDB
 - Display a project list showing: project name, current phase (Requirements / Design / Tasks / Complete), and last updated timestamp
 - Sort projects by last updated (most recent first)
 - Complete within 1 second
@@ -68,11 +68,11 @@ Alternative Flow — Delete:
 WHEN a developer clicks "Delete" on a project and confirms the action
 THEN the system SHALL:
 - Display a confirmation dialog: "Delete [project name]? This cannot be undone."
-- Remove the project and all associated data from local storage
+- Remove the project and all associated data from IndexedDB
 - Update the project list immediately
 
 Error Handling:
-IF local storage is corrupted or unreadable THEN:
+IF IndexedDB is corrupted or unreadable THEN:
 - Display error message: "Unable to load projects. Storage may be corrupted."
 - Offer option to clear all data and start fresh
 
@@ -90,7 +90,7 @@ THEN the system SHALL:
 - Generate a complete requirements.md draft with all fixed sections: Problem Statement, EARS-format requirement entries, and Non-Functional Requirements
 - Each generated requirement entry MUST follow EARS format (WHEN/THEN/WHERE/IF)
 - Display the generated draft in an editable view, organized by section
-- Persist the generated content to local storage
+- Persist the generated content to IndexedDB
 - Display a loading indicator during generation
 
 Validation Rules:
@@ -124,9 +124,9 @@ Main Flow:
 WHEN a developer triggers design generation after Requirements phase is approved
 THEN the system SHALL:
 - Send the approved requirements.md content as context to the LLM API
-- Generate a complete design.md draft with all fixed sections: Architecture Overview, API Endpoints, Database Schema, Business Logic, External Dependencies, Security Considerations, Error Handling Strategy, Performance Considerations, Testing Strategy
+- Generate a complete design.md draft with all fixed sections: Architecture, API Contracts, Data Model, Tech Decisions, Security & Edge Cases
 - Display the generated draft in an editable view, organized by section
-- Persist the generated content to local storage
+- Persist the generated content to IndexedDB
 - Display a loading indicator during generation
 
 Validation Rules:
@@ -151,10 +151,10 @@ Main Flow:
 WHEN a developer triggers task generation after Design phase is approved
 THEN the system SHALL:
 - Send the approved requirements.md AND design.md content as context to the LLM API
-- Generate a complete tasks.md draft with all fixed sections: Task List (ordered, with dependencies), Estimated Effort, File Mapping, and Acceptance Criteria per task
-- Each generated task MUST include: task number, title, dependencies, estimated effort, description, acceptance criteria, and implementation notes
+- Generate a complete tasks.md draft with all fixed sections: Task List (ordered, atomic tasks with clear inputs and outputs), Dependencies, File Mapping, Test Expectations
+- Each generated task MUST include: task number, title, dependencies, file mapping, and test expectations
 - Display the generated draft in an editable view, organized by section
-- Persist the generated content to local storage
+- Persist the generated content to IndexedDB
 - Display a loading indicator during generation
 
 Validation Rules:
@@ -180,7 +180,7 @@ WHEN a developer views a generated phase (Requirements, Design, or Tasks)
 THEN the system SHALL:
 - Display each section of the generated content in an editable text area
 - Allow the developer to edit any section's content directly
-- Auto-save edits to local storage on change (debounced, within 1 second of last keystroke)
+- Auto-save edits to IndexedDB on change (debounced, within 1 second of last keystroke)
 
 Alternative Flow — Regenerate Section:
 WHEN a developer clicks "Regenerate" on a specific section
@@ -221,7 +221,7 @@ WHEN a developer clicks "Mark as Reviewed" on a phase
 THEN the system SHALL:
 - Set the current phase's status to "reviewed"
 - Unlock the next phase (change status from "locked" to "draft")
-- Persist the updated statuses to local storage
+- Persist the updated statuses to IndexedDB
 
 Alternative Flow — Edit Approved Phase:
 WHEN a developer edits content in a phase that has status "reviewed"
@@ -312,7 +312,7 @@ Browser Support:
 - Last 2 versions of Chrome, Firefox, Safari, and Edge
 
 Storage:
-- All project data persisted in browser local storage (localStorage or IndexedDB)
+- All project data persisted in IndexedDB (chosen over localStorage for larger storage quota and structured data support)
 - No server-side storage
 - No data sent to any server other than LLM API calls
 
