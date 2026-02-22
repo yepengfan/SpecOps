@@ -18,6 +18,10 @@ describe("getPlanSystemPrompt", () => {
   it("references spec input", () => {
     expect(prompt).toMatch(/spec/i);
   });
+
+  it("instructs mermaid format for diagrams", () => {
+    expect(prompt).toContain("mermaid");
+  });
 });
 
 describe("getRegeneratePlanSectionPrompt", () => {
@@ -35,6 +39,11 @@ describe("getRegeneratePlanSectionPrompt", () => {
   it("does not include instruction block when not provided", () => {
     const prompt = getRegeneratePlanSectionPrompt("Architecture");
     expect(prompt).not.toContain("Architect's advice");
+  });
+
+  it("includes mermaid instruction", () => {
+    const prompt = getRegeneratePlanSectionPrompt("Architecture");
+    expect(prompt).toContain("mermaid");
   });
 });
 

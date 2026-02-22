@@ -135,6 +135,7 @@ THEN the system SHALL:
 - Display the generated draft in an editable view, organized by section
 - Persist the generated content to IndexedDB
 - Display a loading indicator during generation
+- All generated diagrams (architecture, data flow, etc.) MUST use mermaid fenced code blocks — not ASCII art or plain text
 
 Validation Rules:
 WHERE plan generation:
@@ -167,6 +168,7 @@ THEN the system SHALL:
 - Display the generated draft in an editable view, organized by section
 - Persist the generated content to IndexedDB
 - Display a loading indicator during generation
+- The Dependencies section MUST include a mermaid dependency graph showing task execution order
 
 Validation Rules:
 WHERE task generation:
@@ -204,7 +206,7 @@ THEN the system SHALL:
 - In Preview mode: render markdown with full GFM support (headings, bold, italic, lists, tables, inline code, fenced code blocks)
 - Render mermaid fenced code blocks (```mermaid) as rendered diagrams using a client-side mermaid renderer
 - When a phase has status "reviewed": always display rendered markdown instead of the raw textarea
-- Default to Edit mode when the section is editable
+- Default to Preview mode for Plan and Tasks phases after generation; default to Edit mode for Spec phase and when no generation has occurred
 - Empty sections MUST always show the textarea regardless of view mode
 - This applies to ALL phases (Spec, Plan, Tasks) — not limited to a single phase
 

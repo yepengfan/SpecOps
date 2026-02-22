@@ -15,6 +15,7 @@ export default function TasksPage() {
     null,
   );
   const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
+  const [generationKey, setGenerationKey] = useState(0);
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const editReviewedPhase = useProjectStore((s) => s.editReviewedPhase);
@@ -65,6 +66,7 @@ export default function TasksPage() {
         updateSection("tasks", "file-mapping", parsed.fileMapping);
         updateSection("tasks", "test-expectations", parsed.testExpectations);
       }
+      setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
       const message =
         err instanceof StreamError
@@ -173,6 +175,8 @@ export default function TasksPage() {
         regeneratingSection={regeneratingSection}
         sectionInstructions={sectionInstructions}
         onInstructionChange={handleInstructionChange}
+        defaultViewMode="preview"
+        generationKey={generationKey}
       />
     </div>
   );

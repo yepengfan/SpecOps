@@ -18,7 +18,7 @@ Number tasks sequentially. Reference specific spec items (REQ-/NFR-) and plan de
 Define the execution order and dependencies between tasks. Use the format:
 - T<number> → T<number> (reason)
 
-List which tasks must complete before others can begin.
+List which tasks must complete before others can begin. Include a mermaid dependency graph (\`\`\`mermaid ... \`\`\`) showing task execution order.
 
 ## File Mapping
 Map each task to the files it will create or modify. Use the format:
@@ -43,6 +43,7 @@ If the section is "Task List", use the format:
 
 If the section is "Dependencies", use the format:
 - T<number> → T<number> (reason)
+Also include a mermaid dependency graph (\`\`\`mermaid ... \`\`\`) showing task execution order.
 
 If the section is "File Mapping", use the format:
 - T<number>: <file paths>

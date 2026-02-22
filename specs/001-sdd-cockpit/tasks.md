@@ -294,6 +294,19 @@
 
 ---
 
+## Phase 13: Mermaid Prompts & Default Preview
+
+**Purpose**: Ensure AI-generated content uses mermaid diagrams and sections default to preview after generation
+
+- [ ] T080 [P] Update `getPlanSystemPrompt()` and `getRegeneratePlanSectionPrompt()` in `lib/prompts/plan.ts` to require mermaid fenced code blocks for all diagrams
+- [ ] T081 [P] Update `getTasksSystemPrompt()` and `getRegenerateTaskSectionPrompt()` in `lib/prompts/tasks.ts` to require mermaid dependency graph
+- [ ] T082 Add `defaultViewMode` prop to `SectionEditor` in `components/editor/section-editor.tsx`, thread through `GatedPhasePage` with `generationKey` in `components/phase/gated-phase-page.tsx`
+- [ ] T083 [P] Update Plan page in `app/project/[id]/plan/page.tsx` to increment `generationKey` after generation, pass `defaultViewMode="preview"`
+- [ ] T084 [P] Update Tasks page in `app/project/[id]/tasks/page.tsx` same as Plan
+- [ ] T085 [P] Add unit tests for mermaid prompt instructions in `__tests__/unit/plan-prompt.test.ts` and `__tests__/unit/tasks-prompt.test.ts`
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
@@ -309,6 +322,7 @@
 - **US7 - Export (Phase 9)**: Depends on US4 only (needs phase pages and "all phases reviewed" check). Does NOT need AI generation. Can run in parallel with US3, US5, US6.
 - **US8 - Traceability Matrix (Phase 10)**: Depends on US3 (reuses streaming infra + needs generation flows to hook into), US5, and US6 (needs plan and task generation to produce mappings). Can run in parallel with US7.
 - **Markdown Rendering (Phase 12)**: Depends on Foundational (T014 section editor). Can run in parallel with US3–US8.
+- **Mermaid Prompts & Default Preview (Phase 13)**: Depends on Phase 12 (markdown rendering) and US5/US6 (plan/tasks generation pages).
 - **Polish (Phase 11)**: Depends on all user stories being complete.
 
 ### Critical Path
@@ -381,4 +395,5 @@ Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Spec Gen
 - The section editor (T014) is built in Foundational and reused by all phases
 - The streaming infrastructure (T039, T041) is built in US3 and reused by US5 and US6
 - The MarkdownRenderer (T077) is built in Phase 12 and used by all phase editors via SectionEditor
+- Phase 13 adds mermaid prompt instructions and default preview mode after generation for Plan and Tasks phases
 - Phase pages (T030–T032) are built in US4; AI generation is added to them in US3/US5/US6

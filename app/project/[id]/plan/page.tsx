@@ -15,6 +15,7 @@ export default function PlanPage() {
     null,
   );
   const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
+  const [generationKey, setGenerationKey] = useState(0);
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const project = useProjectStore((s) => s.currentProject);
@@ -61,6 +62,7 @@ export default function PlanPage() {
           parsed.securityEdgeCases,
         );
       }
+      setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
       const message =
         err instanceof StreamError
@@ -166,6 +168,8 @@ export default function PlanPage() {
         regeneratingSection={regeneratingSection}
         sectionInstructions={sectionInstructions}
         onInstructionChange={handleInstructionChange}
+        defaultViewMode="preview"
+        generationKey={generationKey}
       />
     </div>
   );
