@@ -49,12 +49,11 @@ For generation actions (streamed):
 Content-Type: text/event-stream
 
 data: {"type": "content", "text": "..."}
-data: {"type": "done"}
-data: {"type": "done", "traceabilityMappings": [...]}   // for generate-design, generate-tasks, re-analyze-mappings
+data: {"type": "done", "traceabilityMappings": []}       // always present; empty for actions that don't produce mappings
 data: {"type": "error", "message": "..."}
 ```
 
-For `generate-design`, `generate-tasks`, and `re-analyze-mappings`, the `done` event includes a `traceabilityMappings` array (Req 10). See [Operation 7](#7-re-analyze-mappings-req-10) for the mapping shape.
+The `done` event always includes a `traceabilityMappings` array. For `generate-design`, `generate-tasks`, and `re-analyze-mappings`, this array contains the AI-generated mappings (Req 10). For all other actions (`validate`, `generate-requirements`, `regenerate-section`), the array is empty. See [Operation 7](#7-re-analyze-mappings-req-10) for the mapping shape.
 
 ## API Route → Claude API
 

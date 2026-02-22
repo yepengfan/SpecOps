@@ -57,6 +57,8 @@ Individual requirements are identified by a slug derived from their heading in t
 | origin | "ai" \| "manual" | Whether this mapping was AI-generated or manually added | Req 10 |
 | createdAt | number (timestamp) | Set on creation | Req 10 |
 
+**Design note**: `updatedAt` is intentionally omitted. Mappings are toggled (add/remove), not edited in place — there is no mutation path that would need a last-modified timestamp. If in-place editing is added in the future, `updatedAt` can be introduced then.
+
 ### API Key (server-side only)
 
 The API key is stored in `.env.local` as `ANTHROPIC_API_KEY` and is only accessed by Next.js API routes. It is NOT stored in IndexedDB or any client-side storage. See `contracts/llm-api.md` for the API route contract.

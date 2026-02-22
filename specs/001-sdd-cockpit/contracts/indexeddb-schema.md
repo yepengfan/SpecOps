@@ -49,6 +49,7 @@ interface TraceabilityMapping {
   targetLabel: string;                 // e.g., "Architecture"
   origin: "ai" | "manual";            // AI-generated or manually added
   createdAt: number;                   // Unix timestamp (ms)
+  // No updatedAt — mappings are toggled (add/remove), not edited in place
 }
 ```
 
