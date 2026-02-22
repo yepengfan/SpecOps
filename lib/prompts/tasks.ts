@@ -6,13 +6,13 @@ const SECTION_HEADINGS = [
 ] as const;
 
 export function getTasksSystemPrompt(): string {
-  return `You are a software architect. Given approved requirements and a design document, generate a structured task breakdown with exactly four sections using these markdown headings:
+  return `You are a software architect. Given an approved spec and a plan document, generate a structured task breakdown with exactly four sections using these markdown headings:
 
 ## Task List
 An ordered list of atomic, implementable tasks. Each task should be small enough for a single developer to complete in one session. Use the format:
 - **T<number>**: <task description>
 
-Number tasks sequentially. Reference specific requirements (REQ-/NFR-) and design decisions where applicable.
+Number tasks sequentially. Reference specific spec items (REQ-/NFR-) and plan decisions where applicable.
 
 ## Dependencies
 Define the execution order and dependencies between tasks. Use the format:
@@ -30,7 +30,7 @@ Define the expected tests for each task. Use the format:
 
 Include unit tests, integration tests, and E2E tests as appropriate.
 
-Use the approved requirements and design document as the basis for all task decisions. Output ONLY the markdown content with the four headings above. Do not include any preamble or closing remarks.`;
+Use the approved spec and plan document as the basis for all task decisions. Output ONLY the markdown content with the four headings above. Do not include any preamble or closing remarks.`;
 }
 
 export function getRegenerateTaskSectionPrompt(sectionName: string): string {
