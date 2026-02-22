@@ -44,13 +44,13 @@ One section within a phase. Content is editable markdown text.
 
 Represents a link between an individual requirement and a design section or task. Embedded within a Project as an array. Mappings are always from a requirement to a design section or task (one direction).
 
-Individual requirements are identified by a slug derived from their heading in the EARS-format content (e.g., `"req-1"`, `"req-3"`). The AI parses these from the `ears-requirements` section content during generation; manual mappings use the same identifiers. The `requirementLabel` provides the human-readable display name.
+Individual requirements are identified by a slug derived from their heading in the EARS-format content (e.g., `"fr-001"`, `"fr-003"`). The AI parses these from the `ears-requirements` section content during generation; manual mappings use the same identifiers. The `requirementLabel` provides the human-readable display name.
 
 | Field | Type | Constraints | Source |
 |-------|------|-------------|--------|
 | id | string (UUID v4) | Primary key, generated via `crypto.randomUUID()` | Req 10 |
-| requirementId | string | Slug of the requirement (e.g., `"req-1"`, `"req-10"`) | Req 10 |
-| requirementLabel | string | Human-readable label (e.g., "Req 1: Create New Project") | Req 10 |
+| requirementId | string | Slug of the requirement (e.g., `"fr-001"`, `"fr-010"`) | Req 10 |
+| requirementLabel | string | Human-readable label (e.g., "FR-001: Create New Project") | Req 10 |
 | targetType | "design" \| "task" | Which phase the target belongs to | Req 10 |
 | targetId | string | Section id or task identifier in the target phase (e.g., `"architecture"`, `"task-list"`) | Req 10 |
 | targetLabel | string | Human-readable label (e.g., "Architecture", "Task List") | Req 10 |

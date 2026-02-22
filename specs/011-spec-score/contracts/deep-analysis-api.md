@@ -53,8 +53,8 @@ After accumulating all `content` events, the full text is parsed as JSON:
   ],
   "crossPhaseFindings": {
     "summary": "Overall coverage assessment",
-    "coveredItems": ["REQ-1: ...", "REQ-2: ..."],
-    "uncoveredItems": ["REQ-3: ..."]
+    "coveredItems": ["FR-001: ...", "FR-002: ..."],
+    "uncoveredItems": ["FR-003: ..."]
   }
 }
 ```

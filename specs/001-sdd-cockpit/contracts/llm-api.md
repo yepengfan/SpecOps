@@ -148,8 +148,8 @@ GET /api/key-status
 //
 // Example mapping output from AI:
 // {"traceability": [
-//   {"targetType": "plan", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
-//   {"targetType": "plan", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-4", "req-5"]}
+//   {"targetType": "plan", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["fr-001", "fr-007"]},
+//   {"targetType": "plan", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["fr-003", "fr-004", "fr-005"]}
 // ]}
 ```
 
@@ -196,9 +196,9 @@ GET /api/key-status
 // route and returned in the "done" SSE event:
 //
 // {"traceability": [
-//   {"targetType": "plan", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
-//   {"targetType": "plan", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-9"]},
-//   {"targetType": "task", "targetId": "task-list", "targetLabel": "Task List", "requirementIds": ["req-1", "req-2", "req-3"]},
+//   {"targetType": "plan", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["fr-001", "fr-007"]},
+//   {"targetType": "plan", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["fr-003", "fr-009"]},
+//   {"targetType": "task", "targetId": "task-list", "targetLabel": "Task List", "requirementIds": ["fr-001", "fr-002", "fr-003"]},
 //   ...
 // ]}
 //
