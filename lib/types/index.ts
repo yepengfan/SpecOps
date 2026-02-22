@@ -1,3 +1,5 @@
+import type { PhaseEvaluation } from "@/lib/eval/types";
+
 export type PhaseType = "spec" | "plan" | "tasks";
 export type PhaseStatus = "locked" | "draft" | "reviewed";
 
@@ -36,6 +38,11 @@ export interface Project {
     tasks: Phase;
   };
   traceabilityMappings: TraceabilityMapping[];
+  evaluations?: {
+    spec?: PhaseEvaluation;
+    plan?: PhaseEvaluation;
+    tasks?: PhaseEvaluation;
+  };
 }
 
 export const PHASE_TYPES: readonly PhaseType[] = [

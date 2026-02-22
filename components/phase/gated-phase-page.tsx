@@ -14,6 +14,7 @@ import {
 import { useProjectStore, getActivePhase } from "@/lib/stores/project-store";
 import { SectionEditor } from "@/components/editor/section-editor";
 import { ApproveButton } from "@/components/phase/approve-button";
+import { EvaluationPanel } from "@/components/eval/evaluation-panel";
 import type { PhaseType } from "@/lib/types";
 
 interface GatedPhasePageProps {
@@ -86,6 +87,7 @@ export function GatedPhasePage({
           defaultViewMode={defaultViewMode}
         />
       ))}
+      <EvaluationPanel phaseType={phaseType} />
       <ApproveButton phaseType={phaseType} />
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>

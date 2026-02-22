@@ -9,6 +9,7 @@ import {
   getProjectDisplayStatus,
   getActivePhase,
   formatRelativeTime,
+  computeHealthScore,
 } from "@/lib/utils/project";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ export function ProjectCard({ project }: { project: Project }) {
 
   const status = getProjectDisplayStatus(project);
   const activePhase = getActivePhase(project);
+  const health = computeHealthScore(project);
 
   async function handleDelete() {
     try {
@@ -49,6 +51,11 @@ export function ProjectCard({ project }: { project: Project }) {
           <div className="min-w-0 flex-1">
             <h3 className="truncate font-semibold">{project.name}</h3>
             <p className="mt-1 text-sm text-muted-foreground">{status}</p>
+            {health && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                {health.passed}/{health.total} checks passing
+              </p>
+            )}
             <p className="mt-1 text-xs text-muted-foreground">
               {formatRelativeTime(project.updatedAt)}
             </p>
