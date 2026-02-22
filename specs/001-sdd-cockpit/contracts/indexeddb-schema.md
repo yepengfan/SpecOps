@@ -42,19 +42,6 @@ interface Section {
 
 **Dexie schema**: `"id, updatedAt"`
 
-### appConfig
-
-```typescript
-interface AppConfig {
-  id: string;                          // Always "app-config"
-  apiKey: string | null;               // Raw API key
-  apiKeyValid: boolean;                // Cached validation
-  apiKeyLastFour: string | null;       // Last 4 chars for display
-}
-```
-
-**Dexie schema**: `"id"`
-
 ## Operations
 
 | Operation | Method | Store | Source |
@@ -64,8 +51,8 @@ interface AppConfig {
 | Get project | `projects.get(id)` | projects | Req 2 |
 | Update project | `projects.put(project)` | projects | Req 6, 7 |
 | Delete project | `projects.delete(id)` | projects | Req 2 |
-| Get config | `appConfig.get('app-config')` | appConfig | Req 9 |
-| Save config | `appConfig.put(config)` | appConfig | Req 9 |
+
+**Note**: API key is stored server-side in `.env.local` (Req 9), not in IndexedDB.
 
 ## Error Handling
 

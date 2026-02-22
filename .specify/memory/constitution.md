@@ -2,8 +2,8 @@
 
 ## Core Principles
 
-### I. Pure Frontend, Zero Backend
-The app is a pure frontend SPA with no backend server. All data is stored in the browser via IndexedDB. No user authentication. The API key is entered at runtime and stored in IndexedDB — never bundled into the JS build or committed to version control. Zero server-side dependencies.
+### I. Minimal Server, Secure API Proxy
+The app is a Next.js web application with API routes that proxy LLM requests to the Claude API. Project data is stored in the browser via IndexedDB. The API key is stored server-side in `.env.local` and never reaches the browser. No user authentication. No external database or infrastructure beyond the Next.js server.
 
 ### II. Phase Gate Discipline (NON-NEGOTIABLE)
 SDD's core value is enforced phase ordering: Requirements → Design → Tasks. Each phase must be reviewed before the next unlocks. Phase skipping is the #1 anti-pattern this app exists to prevent. All phase gate logic must be implemented strictly — no workarounds, no "skip for now" options.
@@ -18,12 +18,12 @@ All requirements use the EARS (Easy Approach to Requirements Syntax) format with
 All exported specs must be structured for reliable AI coding agent consumption. Fixed section templates per phase ensure consistency across projects. The goal is reproducibility: given the same spec, any AI agent should produce a consistent implementation.
 
 ### VI. Simplicity and YAGNI
-Start simple. No features beyond what the current requirements specify. No backend, no GitHub integration, no collaboration features in v1. Prefer straightforward implementations over clever abstractions. Three similar lines of code are better than a premature abstraction.
+Start simple. No features beyond what the current requirements specify. No GitHub integration, no collaboration features in v1. API routes are thin proxies — no custom backend logic beyond forwarding requests to Claude. Prefer straightforward implementations over clever abstractions. Three similar lines of code are better than a premature abstraction.
 
 ## Technical Constraints
 
-- **Storage**: IndexedDB only — chosen over localStorage for larger quota and structured data support. No server-side storage.
-- **Security**: API key entered at runtime, stored in IndexedDB, never logged/displayed in full/bundled. `.env*` files in `.gitignore`.
+- **Storage**: IndexedDB for project data (chosen over localStorage for larger quota and structured data support). No server-side database.
+- **Security**: API key stored server-side in `.env.local` — never sent to the browser, logged, or committed to version control. `.env*` files in `.gitignore`.
 - **Performance**: Project list <1s, creation <500ms, navigation <500ms, export <2s, auto-save debounced within 1s.
 - **Browser support**: Last 2 versions of Chrome, Firefox, Safari, Edge.
 - **Accessibility**: WCAG 2.1 AA keyboard navigation, focus management, accessible labels on all interactive elements.
@@ -40,4 +40,4 @@ Start simple. No features beyond what the current requirements specify. No backe
 
 This constitution defines the non-negotiable principles for the SDD Cockpit project. All implementation decisions must align with these principles. Phase gate enforcement is the single most critical feature — it must never be weakened or bypassed. Amendments to this constitution require updating this document, reviewing the change, and verifying no existing implementation violates the new rules.
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-22 | **Last Amended**: 2026-02-22
+**Version**: 1.1.0 | **Ratified**: 2026-02-22 | **Last Amended**: 2026-02-22

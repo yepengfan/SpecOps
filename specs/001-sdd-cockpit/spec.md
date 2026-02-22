@@ -8,7 +8,7 @@ Last updated: 2026-02-22
 Context:
 Spec-Driven Development (SDD) is one of the most effective methodologies for working with AI coding agents — structured specs lead to predictable, high-quality implementations. However, adopting SDD in practice is difficult due to four core pain points: (1) high learning curve with no guided tooling, (2) phase skipping that undermines the methodology, (3) inconsistent spec quality leading to unpredictable AI agent output, and (4) poor reproducibility without structured templates and validation.
 
-This app provides a guided, gate-enforced workflow that produces consistent, AI-agent-optimized spec documents. It is a pure frontend SPA — no backend, no user authentication. The API key is entered at runtime and stored in IndexedDB (never bundled into the JS build).
+This app provides a guided, gate-enforced workflow that produces consistent, AI-agent-optimized spec documents. It is a Next.js web application with API routes for secure LLM proxy — no user authentication. The API key is stored server-side in `.env.local` and never reaches the browser.
 
 ---
 
@@ -285,31 +285,35 @@ IF zip generation fails THEN:
 ## Req 9: API Key Configuration
 
 Priority: High
-Rationale: The app requires a valid LLM API key for all AI generation features. To avoid embedding the key in the JS bundle (which would make it extractable in any deployment), the key is entered at runtime through a settings UI and stored in IndexedDB.
+Rationale: The app requires a valid LLM API key for all AI generation features. The key is stored server-side in `.env.local` and accessed only by Next.js API routes — it never reaches the browser.
 
 Main Flow:
-WHEN a developer opens the app and no valid API key is stored in IndexedDB
+WHEN the Next.js server starts
 THEN the system SHALL:
-- Display a setup screen explaining that an API key is required
-- Provide a text input for the developer to paste their API key
-- On submit, validate the key with a lightweight API call (list models endpoint or a minimal completion with `max_tokens: 1`)
-- IF valid: store the key in IndexedDB and proceed to the project list
-- IF invalid: display an inline error: "API key is invalid. Please check and try again."
-- Block access to all workflow features until a valid key is stored
+- Read the API key from the `ANTHROPIC_API_KEY` environment variable (`.env.local`)
+- Make the key available to API route handlers only (server-side)
+- The key MUST NOT be sent to the browser or included in any client-side bundle
 
-Alternative Flow — Update Key:
-WHEN a developer opens the settings screen
+Alternative Flow — Key Not Configured:
+WHEN a developer triggers any AI generation and the API key is not set in `.env.local`
 THEN the system SHALL:
-- Display the current key status (configured / not configured) without revealing the full key (show last 4 characters only)
-- Allow the developer to replace the key by pasting a new one
-- Validate the new key before saving (same validation as Main Flow)
+- Return an error from the API route: "API key not configured. Set ANTHROPIC_API_KEY in .env.local"
+- Display the error in the UI with setup instructions
+- Block AI generation features but allow manual editing, review, and export
+
+Alternative Flow — Settings Page:
+WHEN a developer opens the settings page
+THEN the system SHALL:
+- Call a lightweight API endpoint (`/api/key-status`) that returns whether the key is configured (without revealing the key)
+- Display key status: "Configured" or "Not configured"
+- If not configured, display instructions to add `ANTHROPIC_API_KEY=sk-ant-...` to `.env.local` and restart the dev server
 
 Validation Rules:
 WHERE API key configuration:
-- The API key MUST be entered at runtime and stored in IndexedDB — never bundled into the JS build or committed to version control
-- The app MUST NOT function without a valid API key — all AI generation features are blocked
-- The key MUST NOT be logged, displayed in full, or included in error messages
-- Key validation result MUST be cached for the current session — do not re-validate on every page navigation
+- The API key MUST be stored in `.env.local` on the server — never in the browser, IndexedDB, or client-side code
+- The key MUST NOT be logged, displayed, or included in API route responses
+- The app MUST allow manual editing, review, and export without a valid API key — only AI generation is blocked
+- API routes MUST validate the key is present before forwarding requests to Claude
 
 ---
 
@@ -337,6 +341,6 @@ Storage:
 - No data sent to any server other than LLM API calls
 
 Security:
-- API key entered at runtime and stored in IndexedDB — never bundled into the JS build or committed to version control
+- API key stored server-side in `.env.local` — never sent to the browser, bundled into client JS, or committed to version control
 - No user authentication required
-- API key MUST NOT be logged, displayed in full, or included in error messages
+- API key MUST NOT be logged, displayed, or included in API route responses

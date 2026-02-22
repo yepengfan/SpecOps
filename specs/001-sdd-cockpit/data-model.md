@@ -39,16 +39,9 @@ One section within a phase. Content is editable markdown text.
 | title | string | Display name (e.g., "Problem Statement") | Req 6 |
 | content | string | Markdown content, auto-saved on edit | Req 6 |
 
-### AppConfig
+### API Key (server-side only)
 
-Singleton configuration record for the application.
-
-| Field | Type | Constraints | Source |
-|-------|------|-------------|--------|
-| id | string | Always "app-config" (singleton) | — |
-| apiKey | string \| null | Encrypted/raw API key, never displayed in full | Req 9 |
-| apiKeyValid | boolean | Cached validation result for current session | Req 9 |
-| apiKeyLastFour | string \| null | Last 4 chars for display | Req 9 |
+The API key is stored in `.env.local` as `ANTHROPIC_API_KEY` and is only accessed by Next.js API routes. It is NOT stored in IndexedDB or any client-side storage. See `contracts/llm-api.md` for the API route contract.
 
 ## Enums / Constants
 
@@ -89,7 +82,6 @@ Fixed sections per phase type (from README):
 ```
 Project (1) ──── (3) Phase (requirements, design, tasks)
 Phase   (1) ──── (N) Section (fixed set per phase type)
-AppConfig        (1) singleton
 ```
 
 ## State Transitions
@@ -137,8 +129,7 @@ For "Complete" projects, clicking navigates to the Tasks phase (Req 2).
 | ID is UUID v4 | Project | Req 1 |
 | Description min 10 chars (for generation) | Project | Req 3 |
 | Sections must all have content before phase approval | Phase | Req 7 |
-| API key never displayed in full | AppConfig | Req 9 |
-| API key validated before storage | AppConfig | Req 9 |
+| API key server-side only (.env.local) | Server config | Req 9 |
 
 ## IndexedDB Schema (Dexie.js)
 
@@ -148,9 +139,6 @@ Database: sdd-cockpit
 Table: projects
   Primary key: id
   Indexes: updatedAt
-
-Table: appConfig
-  Primary key: id
 ```
 
-**Note**: Phases and sections are embedded within the Project record (not separate tables). This simplifies CRUD — a single `put()` persists the entire project state. Dexie's deep proxy support in `liveQuery()` still tracks changes to nested fields.
+**Note**: Phases and sections are embedded within the Project record (not separate tables). This simplifies CRUD — a single `put()` persists the entire project state. Dexie's `useLiveQuery()` React hook tracks changes reactively. API key is stored server-side in `.env.local`, not in IndexedDB.
