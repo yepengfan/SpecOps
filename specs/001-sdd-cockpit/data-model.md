@@ -79,12 +79,12 @@ The API key is stored in `.env.local` as `ANTHROPIC_API_KEY` and is only accesse
 
 Fixed sections per phase type (from README):
 
-**Requirements phase**:
+**Spec phase**:
 - `problem-statement` — "Problem Statement"
 - `ears-requirements` — "EARS-format Requirements"
 - `non-functional-requirements` — "Non-Functional Requirements"
 
-**Design phase**:
+**Plan phase**:
 - `architecture` — "Architecture"
 - `api-contracts` — "API Contracts"
 - `data-model` — "Data Model"

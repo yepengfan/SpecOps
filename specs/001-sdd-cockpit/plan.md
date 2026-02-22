@@ -5,7 +5,7 @@
 
 ## Summary
 
-Build a Next.js web application that guides developers through the Spec-Driven Development workflow (Requirements → Design → Tasks) with AI-assisted generation via server-side Claude API proxy, phase gate enforcement, section-level editing with auto-save, and markdown export. Built with Next.js (App Router), React, Zustand, shadcn/ui, Dexie.js for IndexedDB storage, and Jest + Playwright for testing.
+Build a Next.js web application that guides developers through the Spec-Driven Development workflow (Spec → Plan → Tasks) with AI-assisted generation via server-side Claude API proxy, phase gate enforcement, section-level editing with auto-save, and markdown export. Built with Next.js (App Router), React, Zustand, shadcn/ui, Dexie.js for IndexedDB storage, and Jest + Playwright for testing.
 
 ## Technical Context
 
@@ -75,10 +75,10 @@ app/
 ├── project/
 │   └── [id]/
 │       ├── page.tsx        # Project redirect to active phase
-│       ├── requirements/
-│       │   └── page.tsx    # Requirements phase editor
-│       ├── design/
-│       │   └── page.tsx    # Design phase editor
+│       ├── spec/
+│       │   └── page.tsx    # Spec phase editor
+│       ├── plan/
+│       │   └── page.tsx    # Plan phase editor
 │       ├── tasks/
 │       │   └── page.tsx    # Tasks phase editor
 │       └── traceability/

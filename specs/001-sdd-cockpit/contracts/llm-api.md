@@ -126,11 +126,11 @@ GET /api/key-status
 //   - Non-Functional Requirements
 ```
 
-### 4. Generate Design (Req 4, 10)
+### 4. Generate Plan (Req 4, 10)
 
 ```typescript
-// System prompt instructs design document format
-// User message contains the approved requirements.md content
+// System prompt instructs plan document format
+// User message contains the approved spec content
 // Stream: true
 
 // Expected output sections:
@@ -142,14 +142,14 @@ GET /api/key-status
 
 // Traceability metadata (Req 10):
 // The system prompt also instructs the AI to output a JSON traceability
-// mapping after the design content, mapping each design section to the
+// mapping after the plan content, mapping each plan section to the
 // requirement(s) it addresses. The API route parses this and includes it
 // in the "done" SSE event as traceabilityMappings[].
 //
 // Example mapping output from AI:
 // {"traceability": [
-//   {"targetType": "design", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
-//   {"targetType": "design", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-4", "req-5"]}
+//   {"targetType": "plan", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
+//   {"targetType": "plan", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-4", "req-5"]}
 // ]}
 ```
 
@@ -157,7 +157,7 @@ GET /api/key-status
 
 ```typescript
 // System prompt instructs task breakdown format
-// User message contains approved requirements.md AND design.md content
+// User message contains approved spec AND plan content
 // Stream: true
 
 // Expected output sections:
@@ -196,8 +196,8 @@ GET /api/key-status
 // route and returned in the "done" SSE event:
 //
 // {"traceability": [
-//   {"targetType": "design", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
-//   {"targetType": "design", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-9"]},
+//   {"targetType": "plan", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
+//   {"targetType": "plan", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-9"]},
 //   {"targetType": "task", "targetId": "task-list", "targetLabel": "Task List", "requirementIds": ["req-1", "req-2", "req-3"]},
 //   ...
 // ]}

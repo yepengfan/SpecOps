@@ -21,10 +21,10 @@ Main Flow:
 WHEN a developer clicks "New Project" and provides a project name
 THEN the system SHALL:
 - Create a new project record with unique ID, name, and created timestamp
-- Initialize the project in the Requirements phase with status "draft"
-- Initialize Design and Tasks phases with status "locked"
+- Initialize the project in the Spec phase with status "draft"
+- Initialize Plan and Tasks phases with status "locked"
 - Persist the project to IndexedDB
-- Navigate the developer to the Requirements phase of the new project
+- Navigate the developer to the Spec phase of the new project
 - Complete within 500ms
 
 Validation Rules:
@@ -53,8 +53,8 @@ Main Flow:
 WHEN a developer opens the app
 THEN the system SHALL:
 - Load all projects from IndexedDB
-- Display a project list showing: project name, current phase (Requirements / Design / Tasks / Complete), and last updated timestamp
-- A project's phase displays as "Complete" when all three phases (Requirements, Design, Tasks) have status "reviewed". "Complete" is a derived display status, not a separate phase
+- Display a project list showing: project name, current phase (Spec / Plan / Tasks / Complete), and last updated timestamp
+- A project's phase displays as "Complete" when all three phases (Spec, Plan, Tasks) have status "reviewed". "Complete" is a derived display status, not a separate phase
 - Sort projects by last updated (most recent first)
 - Complete within 1 second
 
@@ -80,7 +80,7 @@ IF IndexedDB is corrupted or unreadable THEN:
 
 ---
 
-## Req 3: AI-Assisted Requirements Generation
+## Req 3: AI-Assisted Spec Generation
 
 Priority: Critical
 Rationale: The core value proposition — developers describe their idea in natural language and the AI generates a structured EARS-format requirements draft, eliminating the blank-page problem.
@@ -89,14 +89,14 @@ Main Flow:
 WHEN a developer enters a natural language project description and triggers generation
 THEN the system SHALL:
 - Send the project description to the configured LLM API (Claude)
-- Generate a complete requirements.md draft with all fixed sections: Problem Statement, EARS-format requirement entries, and Non-Functional Requirements
+- Generate a complete spec.md draft with all fixed sections: Problem Statement, EARS-format requirement entries, and Non-Functional Requirements
 - Each generated requirement entry MUST follow EARS format (WHEN/THEN/WHERE/IF)
 - Display the generated draft in an editable view, organized by section
 - Persist the generated content to IndexedDB
 - Display a loading indicator during generation
 
 Validation Rules:
-WHERE requirements generation:
+WHERE spec generation:
 - Project description MUST be non-empty (minimum 10 characters)
 - Generated requirements MUST use EARS keywords: WHEN, THEN, SHALL, WHERE, IF
 - Each generated requirement MUST include: Priority, Rationale, Main Flow, Validation Rules, and Error Handling sections
@@ -122,24 +122,24 @@ IF LLM response does not conform to the expected section structure THEN:
 
 ---
 
-## Req 4: AI-Assisted Design Generation
+## Req 4: AI-Assisted Plan Generation
 
 Priority: Critical
-Rationale: Once requirements are approved, the AI generates a design.md draft based on the approved requirements, translating "what" into "how".
+Rationale: Once requirements are approved, the AI generates a plan.md draft based on the approved spec, translating "what" into "how".
 
 Main Flow:
-WHEN a developer triggers design generation after Requirements phase is approved
+WHEN a developer triggers plan generation after Spec phase is approved
 THEN the system SHALL:
-- Send the approved requirements.md content as context to the LLM API
-- Generate a complete design.md draft with all fixed sections: Architecture, API Contracts, Data Model, Tech Decisions, Security & Edge Cases
+- Send the approved spec content as context to the LLM API
+- Generate a complete plan.md draft with all fixed sections: Architecture, API Contracts, Data Model, Tech Decisions, Security & Edge Cases
 - Display the generated draft in an editable view, organized by section
 - Persist the generated content to IndexedDB
 - Display a loading indicator during generation
 
 Validation Rules:
-WHERE design generation:
-- Requirements phase MUST have status "reviewed" before design generation is allowed
-- The full approved requirements content MUST be included in the LLM prompt as context
+WHERE plan generation:
+- Spec phase MUST have status "reviewed" before plan generation is allowed
+- The full approved spec content MUST be included in the LLM prompt as context
 
 Error Handling:
 IF API call fails THEN:
@@ -156,12 +156,12 @@ IF LLM response does not conform to the expected section structure THEN:
 ## Req 5: AI-Assisted Task Breakdown Generation
 
 Priority: Critical
-Rationale: Once design is approved, the AI generates a tasks.md draft based on approved requirements and design, producing an implementation plan that AI coding agents can execute.
+Rationale: Once plan is approved, the AI generates a tasks.md draft based on approved spec and plan, producing an implementation plan that AI coding agents can execute.
 
 Main Flow:
-WHEN a developer triggers task generation after Design phase is approved
+WHEN a developer triggers task generation after the Plan phase is approved
 THEN the system SHALL:
-- Send the approved requirements.md AND design.md content as context to the LLM API
+- Send the approved spec AND plan content as context to the LLM API
 - Generate a complete tasks.md draft with all fixed sections: Task List (ordered, atomic tasks with clear inputs and outputs), Dependencies, File Mapping, Test Expectations
 - Each generated task MUST include: task number, title, dependencies, file mapping, and test expectations
 - Display the generated draft in an editable view, organized by section
@@ -170,8 +170,8 @@ THEN the system SHALL:
 
 Validation Rules:
 WHERE task generation:
-- Design phase MUST have status "reviewed" before task generation is allowed
-- The full approved requirements AND design content MUST be included in the LLM prompt as context
+- Plan phase MUST have status "reviewed" before task generation is allowed
+- The full approved spec AND plan content MUST be included in the LLM prompt as context
 
 Error Handling:
 IF API call fails THEN:
@@ -191,7 +191,7 @@ Priority: Critical
 Rationale: Developers must be able to review, edit, and refine each section of AI-generated content before approving a phase.
 
 Main Flow:
-WHEN a developer views a generated phase (Requirements, Design, or Tasks)
+WHEN a developer views a generated phase (Spec, Plan, or Tasks)
 THEN the system SHALL:
 - Display each section of the generated content in an editable text area
 - Allow the developer to edit any section's content directly
@@ -219,15 +219,15 @@ Priority: Critical
 Rationale: SDD's core discipline requires completing each phase before advancing. Without enforcement, developers fall back to phase skipping — the second pain point this app solves.
 
 Main Flow:
-WHEN a developer attempts to navigate to the Design phase
+WHEN a developer attempts to navigate to the Plan phase
 THEN the system SHALL:
-- Check that Requirements phase has status "reviewed"
-- IF status is "reviewed": allow navigation to Design phase
-- IF status is NOT "reviewed": block navigation and display the Design phase as visually locked/disabled
+- Check that the Spec phase has status "reviewed"
+- IF status is "reviewed": allow navigation to the Plan phase
+- IF status is NOT "reviewed": block navigation and display the Plan phase as visually locked/disabled
 
 WHEN a developer attempts to navigate to the Tasks phase
 THEN the system SHALL:
-- Check that Design phase has status "reviewed"
+- Check that the Plan phase has status "reviewed"
 - IF status is "reviewed": allow navigation to Tasks phase
 - IF status is NOT "reviewed": block navigation and display the Tasks phase as visually locked/disabled
 
@@ -263,7 +263,7 @@ Rationale: The final output of the workflow — markdown files ready to be commi
 Main Flow:
 WHEN a developer clicks "Export" after all three phases are marked as "reviewed"
 THEN the system SHALL:
-- Generate three markdown files: `requirements.md`, `design.md`, `tasks.md`
+- Generate three markdown files: `spec.md`, `plan.md`, `tasks.md`
 - Each file MUST follow the fixed section template for its phase
 - Offer download as individual files
 - Offer download as a single zip archive containing all three files
@@ -273,7 +273,7 @@ Validation Rules:
 WHERE export:
 - Export MUST be disabled (button greyed out with tooltip) if any phase status is not "reviewed"
 - Exported content MUST match the latest saved content exactly (no stale data)
-- Exported requirements.md MUST use EARS format (WHEN/THEN/WHERE/IF)
+- Exported spec.md MUST use EARS format (WHEN/THEN/WHERE/IF)
 
 Error Handling:
 IF zip generation fails THEN:
@@ -320,30 +320,30 @@ WHERE API key configuration:
 ## Req 10: Traceability Matrix
 
 Priority: High
-Rationale: In text-based SDD workflows (CLI tools like spec-kit and ai-sdd), developers cannot easily see how requirements map to design decisions and implementation tasks. A visual traceability matrix solves this by showing the cross-phase mapping from requirements to design sections and tasks — making gaps visible at a glance ("this requirement has no corresponding design section") and giving developers confidence that every requirement is accounted for in design and tasks.
+Rationale: In text-based SDD workflows (CLI tools like spec-kit and ai-sdd), developers cannot easily see how requirements map to plan decisions and implementation tasks. A visual traceability matrix solves this by showing the cross-phase mapping from requirements to plan sections and tasks — making gaps visible at a glance ("this requirement has no corresponding plan section") and giving developers confidence that every requirement is accounted for in the plan and tasks.
 
 Main Flow — AI-Generated Mapping:
-WHEN a developer triggers AI generation for the Design or Tasks phase
+WHEN a developer triggers AI generation for the Plan or Tasks phase
 THEN the system SHALL:
 - Include instructions in the LLM prompt to generate traceability metadata alongside the spec content
-- For Design generation: the AI MUST output a mapping of each design section to the requirement(s) it addresses (e.g., "API Contracts → Req 1, Req 3, Req 5")
-- For Tasks generation: the AI MUST output a mapping of each task to the requirement(s) and design section(s) it implements
+- For Plan generation: the AI MUST output a mapping of each plan section to the requirement(s) it addresses (e.g., "API Contracts → Req 1, Req 3, Req 5")
+- For Tasks generation: the AI MUST output a mapping of each task to the requirement(s) and plan section(s) it implements
 - Persist the mapping data in IndexedDB as part of the project record
 - Display a loading indicator during generation (same as phase generation)
 
 Main Flow — Matrix View:
 WHEN a developer opens the Traceability Matrix view for a project
 THEN the system SHALL:
-- Display a matrix table with requirements as rows and design sections / tasks as columns
+- Display a matrix table with requirements as rows and plan sections / tasks as columns
 - Each cell indicates whether a mapping exists (linked) or not (gap)
-- Highlight coverage gaps: requirements with no linked design sections or tasks are visually flagged (e.g., red/amber row highlight)
+- Highlight coverage gaps: requirements with no linked plan sections or tasks are visually flagged (e.g., red/amber row highlight)
 - Allow the developer to click any cell to see the linked content from both phases side by side
 - Update the matrix automatically when phase content or mappings change
 
 Alternative Flow — Manual Mapping Edit:
 WHEN a developer clicks on a cell in the traceability matrix
 THEN the system SHALL:
-- Allow the developer to manually add or remove a mapping link between a requirement and a design section or task
+- Allow the developer to manually add or remove a mapping link between a requirement and a plan section or task
 - Persist the updated mapping to IndexedDB immediately
 - Recalculate coverage gap highlighting
 
@@ -359,8 +359,8 @@ Validation Rules:
 WHERE traceability matrix:
 - The matrix view MUST be accessible from the project workspace at any time (not gated by phase status)
 - If a phase has no generated content yet, that phase's columns MUST be shown as empty (not hidden)
-- If the requirements phase has no content yet, the coverage percentage MUST display "(0 of 0 requirements have linked design sections)" — the denominator is always the count of distinct requirements currently parsed from the requirements phase content
-- Coverage percentage MUST be displayed in the matrix header above the table: "(X of Y requirements have linked design sections)" and "(X of Y requirements have linked tasks)". Y is the total number of distinct requirements parsed from the requirements phase content.
+- If the spec phase has no content yet, the coverage percentage MUST display "(0 of 0 requirements have linked plan sections)" — the denominator is always the count of distinct requirements currently parsed from the spec phase content
+- Coverage percentage MUST be displayed in the matrix header above the table: "(X of Y requirements have linked plan sections)" and "(X of Y requirements have linked tasks)". Y is the total number of distinct requirements parsed from the spec phase content.
 - Manual mapping edits MUST be distinguishable from AI-generated mappings (e.g., different icon or label)
 
 Error Handling:
