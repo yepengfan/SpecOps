@@ -178,7 +178,8 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T045 [US5] Unit tests for design prompt and generation in `__tests__/unit/design-gen.test.ts`: verify prompt includes approved requirements content, verify generated content populates correct design sections
+- [ ] T045 [P] [US5] Unit tests for design system prompt in `__tests__/unit/design-prompt.test.ts`: verify prompt includes approved requirements content, verify prompt instructs EARS-format input parsing, verify all 5 design sections are requested
+- [ ] T045b [P] [US5] Unit tests for design generation in `__tests__/unit/design-gen.test.ts`: verify generated content populates correct design sections, verify section regeneration replaces only targeted section, verify loading state during generation
 
 ### Implementation for User Story 5
 
@@ -199,7 +200,8 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T048 [US6] Unit tests for tasks prompt and generation in `__tests__/unit/tasks-gen.test.ts`: verify prompt includes approved requirements AND design content, verify generated content populates correct tasks sections
+- [ ] T048 [P] [US6] Unit tests for tasks system prompt in `__tests__/unit/tasks-prompt.test.ts`: verify prompt includes approved requirements AND design content, verify all 4 tasks sections are requested
+- [ ] T048b [P] [US6] Unit tests for tasks generation in `__tests__/unit/tasks-gen.test.ts`: verify generated content populates correct tasks sections, verify section regeneration replaces only targeted section, verify loading state during generation
 
 ### Implementation for User Story 6
 
@@ -237,11 +239,13 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T056 [P] Add loading skeletons to project list and phase editors for perceived performance
-- [ ] T057 [P] Add keyboard navigation focus management when switching between phases in `components/phase/phase-nav.tsx`
-- [ ] T058 [P] Add `aria-live="polite"` regions for auto-save status and generation progress indicators
-- [ ] T059 Verify all performance targets: project list <1s, creation <500ms, navigation <500ms, export <2s
-- [ ] T060 Run quickstart.md validation: follow the first-time user flow end-to-end
+- [ ] T056 [P] Integration tests for project CRUD workflow in `__tests__/integration/project-crud.test.ts`: create project → verify in list → update name → verify change persisted → delete → verify removed from list. Tests Dexie + Zustand integration.
+- [ ] T057 [P] Integration tests for phase gate workflow in `__tests__/integration/phase-workflow.test.ts`: create project → fill all requirement sections → approve → verify design unlocks → fill design sections → approve → verify tasks unlocks → edit requirement → confirm cascade reset → verify downstream phases reset to draft with content preserved.
+- [ ] T058 [P] Add loading skeletons to project list and phase editors for perceived performance
+- [ ] T059 [P] Add keyboard navigation focus management when switching between phases in `components/phase/phase-nav.tsx`
+- [ ] T060 [P] Add `aria-live="polite"` regions for auto-save status and generation progress indicators
+- [ ] T061 Verify all performance targets: project list <1s, creation <500ms, navigation <500ms, export <2s
+- [ ] T062 Run quickstart.md validation: follow the first-time user flow end-to-end
 
 ---
 
@@ -277,7 +281,9 @@ Setup → Foundational → US1 (CRUD) → US4 (Phase Gates) → US3 (AI Req Gen)
 - T024, T025 test tasks can run in parallel within US4
 - T037, T038 test tasks can run in parallel within US3
 - T051, T052 test tasks can run in parallel within US7
-- T056, T057, T058 can all run in parallel (Phase 10)
+- T045, T045b test tasks can run in parallel within US5
+- T048, T048b test tasks can run in parallel within US6
+- T056, T057, T058, T059, T060 can all run in parallel (Phase 10)
 
 **Across phases:**
 - US2 (API Key) can run in parallel with US1 and US4 — independent concern, only needs Foundational
