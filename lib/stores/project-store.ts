@@ -18,6 +18,7 @@ interface ProjectState {
   setProject: (project: Project) => void;
   clearProject: () => void;
   cancelPendingSave: () => void;
+  renameProject: (name: string) => void;
   updateSection: (
     phaseType: PhaseType,
     sectionId: string,
@@ -79,6 +80,16 @@ export const useProjectStore = create<ProjectState>()((set, get) => {
     },
 
     cancelPendingSave,
+
+    renameProject: (name) => {
+      const { currentProject } = get();
+      if (!currentProject) return;
+      const trimmed = name.trim();
+      if (!trimmed || trimmed === currentProject.name) return;
+      const updatedProject: Project = { ...currentProject, name: trimmed };
+      set({ currentProject: updatedProject });
+      immediateSave(updatedProject);
+    },
 
     updateSection: (phaseType, sectionId, content) => {
       const { currentProject } = get();
