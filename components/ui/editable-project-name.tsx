@@ -10,6 +10,7 @@ export function EditableProjectName() {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const isCancellingRef = useRef(false);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -21,10 +22,12 @@ export function EditableProjectName() {
   const enterEditMode = useCallback(() => {
     if (!name) return;
     setEditValue(name);
+    isCancellingRef.current = false;
     setIsEditing(true);
   }, [name]);
 
   const handleSave = useCallback(() => {
+    if (isCancellingRef.current) return;
     const trimmed = editValue.trim();
     if (trimmed && trimmed !== name) {
       renameProject(trimmed);
@@ -33,6 +36,7 @@ export function EditableProjectName() {
   }, [editValue, name, renameProject]);
 
   const handleCancel = useCallback(() => {
+    isCancellingRef.current = true;
     setIsEditing(false);
   }, []);
 
@@ -70,7 +74,7 @@ export function EditableProjectName() {
       <button
         type="button"
         onClick={enterEditMode}
-        className="cursor-pointer hover:text-primary/80 transition-colors bg-transparent border-none p-0 font-inherit text-inherit text-left"
+        className="cursor-pointer hover:text-primary/80 transition-colors bg-transparent border-none p-0 text-inherit text-left"
       >
         {name}
       </button>
