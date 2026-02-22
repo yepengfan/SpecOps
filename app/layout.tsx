@@ -30,7 +30,7 @@ export default function RootLayout({
               SDD Cockpit
             </Link>
             <Link
-              href="/projects"
+              href="/"
               className="text-sm text-muted-foreground hover:text-foreground"
             >
               Projects

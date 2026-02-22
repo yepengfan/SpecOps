@@ -2,6 +2,8 @@ import { create } from "zustand";
 import type { PhaseType, Project } from "@/lib/types";
 import { updateProject } from "@/lib/db/projects";
 
+export { getProjectDisplayStatus, getActivePhase } from "@/lib/utils/project";
+
 interface ProjectState {
   currentProject: Project | null;
   isSaving: boolean;
