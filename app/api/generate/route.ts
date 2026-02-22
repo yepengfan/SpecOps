@@ -1,21 +1,22 @@
 import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import {
-  getRequirementsSystemPrompt,
-  getRegenerateSectionPrompt,
-} from "@/lib/prompts/requirements";
-import { getDesignSystemPrompt, getRegenerateDesignSectionPrompt } from "@/lib/prompts/design";
+  getSpecSystemPrompt,
+  getRegenerateSpecSectionPrompt,
+} from "@/lib/prompts/spec";
+import { getPlanSystemPrompt, getRegeneratePlanSectionPrompt } from "@/lib/prompts/plan";
 import { getTasksSystemPrompt, getRegenerateTaskSectionPrompt } from "@/lib/prompts/tasks";
 
-const VALID_ACTIONS = ["generate-requirements", "regenerate-section", "generate-design", "regenerate-design-section", "generate-tasks", "regenerate-task-section"] as const;
+const VALID_ACTIONS = ["generate-spec", "regenerate-spec-section", "generate-plan", "regenerate-plan-section", "generate-tasks", "regenerate-task-section"] as const;
 type ValidAction = (typeof VALID_ACTIONS)[number];
 
 interface GenerateRequest {
   action: string;
   projectDescription?: string;
-  requirementsContent?: string;
-  designContent?: string;
+  specContent?: string;
+  planContent?: string;
   sectionName?: string;
   phaseContext?: string;
+  instruction?: string;
 }
 
 function isValidAction(action: string): action is ValidAction {
@@ -27,30 +28,30 @@ function buildPrompt(action: ValidAction, body: GenerateRequest): {
   userMessage: string;
 } {
   switch (action) {
-    case "generate-requirements":
+    case "generate-spec":
       return {
-        system: getRequirementsSystemPrompt(),
-        userMessage: `Generate requirements for the following project:\n\n${body.projectDescription || ""}`,
+        system: getSpecSystemPrompt(),
+        userMessage: `Generate a spec for the following project:\n\n${body.projectDescription || ""}`,
       };
-    case "regenerate-section":
+    case "regenerate-spec-section":
       return {
-        system: getRegenerateSectionPrompt(body.sectionName || ""),
+        system: getRegenerateSpecSectionPrompt(body.sectionName || ""),
         userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
       };
-    case "generate-design":
+    case "generate-plan":
       return {
-        system: getDesignSystemPrompt(),
-        userMessage: `Generate a design document based on these approved requirements:\n\n${body.requirementsContent || ""}`,
+        system: getPlanSystemPrompt(),
+        userMessage: `Generate a plan document based on this approved spec:\n\n${body.specContent || ""}`,
       };
-    case "regenerate-design-section":
+    case "regenerate-plan-section":
       return {
-        system: getRegenerateDesignSectionPrompt(body.sectionName || ""),
+        system: getRegeneratePlanSectionPrompt(body.sectionName || "", body.instruction),
         userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
       };
     case "generate-tasks":
       return {
         system: getTasksSystemPrompt(),
-        userMessage: `Generate a task breakdown based on these approved requirements:\n\n${body.requirementsContent || ""}\n\nAnd this design document:\n\n${body.designContent || ""}`,
+        userMessage: `Generate a task breakdown based on this approved spec:\n\n${body.specContent || ""}\n\nAnd this plan document:\n\n${body.planContent || ""}`,
       };
     case "regenerate-task-section":
       return {

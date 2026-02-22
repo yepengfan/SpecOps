@@ -20,8 +20,8 @@ export default function TasksPage() {
   const project = useProjectStore((s) => s.currentProject);
 
   const isBusy = isGenerating || regeneratingSection !== null;
-  const designReviewed = project?.phases.design.status === "reviewed";
-  const canGenerate = designReviewed && !isBusy;
+  const planReviewed = project?.phases.plan.status === "reviewed";
+  const canGenerate = planReviewed && !isBusy;
 
   const handleGenerate = useCallback(async () => {
     if (!project) return;
@@ -30,11 +30,11 @@ export default function TasksPage() {
     setError(null);
     setMalformedWarning(false);
 
-    const requirementsContent = project.phases.requirements.sections
+    const specContent = project.phases.spec.sections
       .map((s) => `## ${s.title}\n${s.content}`)
       .join("\n\n");
 
-    const designContent = project.phases.design.sections
+    const planContent = project.phases.plan.sections
       .map((s) => `## ${s.title}\n${s.content}`)
       .join("\n\n");
 
@@ -42,8 +42,8 @@ export default function TasksPage() {
       let accumulated = "";
       for await (const chunk of streamGenerate({
         action: "generate-tasks",
-        requirementsContent,
-        designContent,
+        specContent,
+        planContent,
       })) {
         accumulated += chunk;
       }
@@ -124,12 +124,12 @@ export default function TasksPage() {
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
 
-      {project && !designReviewed && (
+      {project && !planReviewed && (
         <div
           className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
           role="status"
         >
-          Design must be reviewed before generating tasks.
+          Plan must be reviewed before generating tasks.
         </div>
       )}
 

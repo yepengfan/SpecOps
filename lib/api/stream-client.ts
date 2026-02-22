@@ -8,10 +8,11 @@ export class StreamError extends Error {
 export interface GenerateParams {
   action: string;
   projectDescription?: string;
-  requirementsContent?: string;
-  designContent?: string;
+  specContent?: string;
+  planContent?: string;
   sectionName?: string;
   phaseContext?: string;
+  instruction?: string;
 }
 
 export async function* streamGenerate(

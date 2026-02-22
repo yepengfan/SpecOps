@@ -1,8 +1,8 @@
 import { PHASE_TYPES, type PhaseType, type Project } from "@/lib/types";
 
 const PHASE_LABELS: Record<PhaseType, string> = {
-  requirements: "Requirements",
-  design: "Design",
+  spec: "Spec",
+  plan: "Plan",
   tasks: "Tasks",
 };
 

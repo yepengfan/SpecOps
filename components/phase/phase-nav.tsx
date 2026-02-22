@@ -8,8 +8,8 @@ import { PHASE_TYPES, type PhaseType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const PHASE_LABELS: Record<PhaseType, string> = {
-  requirements: "Requirements",
-  design: "Design",
+  spec: "Spec",
+  plan: "Plan",
   tasks: "Tasks",
 };
 
