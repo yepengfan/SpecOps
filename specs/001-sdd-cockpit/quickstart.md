@@ -1,4 +1,4 @@
-# Quickstart: SDD Cockpit
+# Quickstart: SpecOps
 
 **Branch**: `001-sdd-cockpit` | **Date**: 2026-02-22
 
@@ -12,8 +12,8 @@
 
 ```bash
 # Clone and enter the project
-git clone <repo-url> sdd-cockpit
-cd sdd-cockpit
+git clone <repo-url> spec-ops
+cd spec-ops
 
 # Install dependencies
 npm install

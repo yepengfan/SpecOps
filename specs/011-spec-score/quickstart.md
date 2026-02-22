@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Spec Score feature adds quality evaluation to the SDD Cockpit. It has two tiers:
+The Spec Score feature adds quality evaluation to SpecOps. It has two tiers:
 1. **Rule-based checks** — instant, no API call, validates structural quality
 2. **AI deep analysis** — on-demand, one API call, scores quality across 5 dimensions
 

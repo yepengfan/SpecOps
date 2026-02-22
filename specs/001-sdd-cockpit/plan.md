@@ -1,4 +1,4 @@
-# Implementation Plan: SDD Cockpit
+# Implementation Plan: SpecOps
 
 **Branch**: `001-sdd-cockpit` | **Date**: 2026-02-22 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/001-sdd-cockpit/spec.md`

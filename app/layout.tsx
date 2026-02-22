@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SDD Cockpit",
-  description: "Specification-Driven Development Cockpit",
+  title: "SpecOps",
+  description: "Specification-Driven Development Workflow",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
             className="mx-auto flex max-w-5xl items-center gap-6 px-4 py-3"
           >
             <Link href="/" className="text-lg font-bold">
-              SDD Cockpit
+              SpecOps
             </Link>
             <Link
               href="/"

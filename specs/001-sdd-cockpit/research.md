@@ -1,4 +1,4 @@
-# Research: SDD Cockpit
+# Research: SpecOps
 
 **Branch**: `001-sdd-cockpit` | **Date**: 2026-02-22
 

@@ -1,4 +1,4 @@
-# Tasks: SDD Cockpit
+# Tasks: SpecOps
 
 **Input**: Plan documents from `/specs/001-sdd-cockpit/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md, contracts/
