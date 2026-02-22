@@ -1,4 +1,4 @@
-# SDD Cockpit Constitution
+# SpecOps Constitution
 
 ## Core Principles
 
@@ -38,6 +38,6 @@ Start simple. No features beyond what the current requirements specify. No GitHu
 
 ## Governance
 
-This constitution defines the non-negotiable principles for the SDD Cockpit project. All implementation decisions must align with these principles. Phase gate enforcement is the single most critical feature — it must never be weakened or bypassed. Amendments to this constitution require updating this document, reviewing the change, and verifying no existing implementation violates the new rules.
+This constitution defines the non-negotiable principles for the SpecOps project. All implementation decisions must align with these principles. Phase gate enforcement is the single most critical feature — it must never be weakened or bypassed. Amendments to this constitution require updating this document, reviewing the change, and verifying no existing implementation violates the new rules.
 
 **Version**: 1.0.0 | **Ratified**: 2026-02-22
