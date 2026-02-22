@@ -121,6 +121,14 @@ describe("parseEditSuggestion", () => {
 
       expect(result).toBeNull();
     });
+
+    it("returns null when header contains newlines", () => {
+      const input = "[EDIT problem-statement\nspec]\nContent here.\n[/EDIT]";
+
+      const result = parseEditSuggestion(input);
+
+      expect(result).toBeNull();
+    });
   });
 
   it("returns the first marker if multiple exist", () => {

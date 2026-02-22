@@ -2,7 +2,7 @@ import type { SuggestedEdit } from "@/lib/types/chat";
 
 const VALID_PHASE_TYPES = new Set(["spec", "plan", "tasks"]);
 
-const EDIT_REGEX = /\[EDIT\s+([^\]]+)\]([\s\S]*?)\[\/EDIT\]/;
+const EDIT_REGEX = /\[EDIT\s+([^\]\n]+)\]([\s\S]*?)\[\/EDIT\]/;
 
 export function parseEditSuggestion(text: string): SuggestedEdit | null {
   const match = EDIT_REGEX.exec(text);
