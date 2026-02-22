@@ -14,6 +14,9 @@ export interface GenerateParams {
   sectionName?: string;
   phaseContext?: string;
   instruction?: string;
+  phaseType?: string;
+  phaseContent?: string;
+  upstreamContent?: string;
 }
 
 export async function* streamGenerate(

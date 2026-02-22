@@ -6,8 +6,9 @@ import {
 import { getPlanSystemPrompt, getRegeneratePlanSectionPrompt } from "@/lib/prompts/plan";
 import { getTasksSystemPrompt, getRegenerateTaskSectionPrompt } from "@/lib/prompts/tasks";
 import { getReanalyzeMappingsPrompt } from "@/lib/prompts/traceability";
+import { buildDeepAnalysisPrompt } from "@/lib/prompts/deep-analysis";
 
-const VALID_ACTIONS = ["generate-spec", "regenerate-spec-section", "generate-plan", "regenerate-plan-section", "generate-tasks", "regenerate-task-section", "reanalyze-mappings"] as const;
+const VALID_ACTIONS = ["generate-spec", "regenerate-spec-section", "generate-plan", "regenerate-plan-section", "generate-tasks", "regenerate-task-section", "reanalyze-mappings", "deep-analysis"] as const;
 type ValidAction = (typeof VALID_ACTIONS)[number];
 
 interface GenerateRequest {
@@ -19,6 +20,9 @@ interface GenerateRequest {
   sectionName?: string;
   phaseContext?: string;
   instruction?: string;
+  phaseType?: string;
+  phaseContent?: string;
+  upstreamContent?: string;
 }
 
 function isValidAction(action: string): action is ValidAction {
@@ -65,6 +69,14 @@ function buildPrompt(action: ValidAction, body: GenerateRequest): {
         system: getReanalyzeMappingsPrompt(),
         userMessage: `Analyze traceability between the following spec, plan, and tasks:\n\nSpec:\n${body.specContent || ""}\n\nPlan:\n${body.planContent || ""}\n\nTasks:\n${body.tasksContent || ""}`,
       };
+    case "deep-analysis": {
+      const phaseType = (body.phaseType || "spec") as "spec" | "plan" | "tasks";
+      return buildDeepAnalysisPrompt(
+        phaseType,
+        body.phaseContent || "",
+        body.upstreamContent || undefined,
+      );
+    }
   }
 }
 
