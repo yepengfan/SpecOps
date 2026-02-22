@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useProjectStore } from "@/lib/stores/project-store";
+import { MarkdownRenderer } from "@/components/editor/markdown-renderer";
 import type { PhaseType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +18,8 @@ interface SectionEditorProps {
   onRequestEdit?: () => void;
   onRegenerate?: () => void;
   isRegenerating?: boolean;
+  instruction?: string;
+  onInstructionChange?: (value: string) => void;
 }
 
 export function SectionEditor({
@@ -27,6 +31,8 @@ export function SectionEditor({
   onRequestEdit,
   onRegenerate,
   isRegenerating,
+  instruction,
+  onInstructionChange,
 }: SectionEditorProps) {
   const updateSection = useProjectStore((s) => s.updateSection);
   const isSaving = useProjectStore((s) => s.isSaving);
@@ -36,6 +42,8 @@ export function SectionEditor({
 
   const isReviewed = phaseStatus === "reviewed";
   const effectiveReadOnly = readOnly || isReviewed;
+
+  const [viewMode, setViewMode] = useState<"edit" | "preview">("edit");
 
   const headingId = `section-heading-${sectionId}`;
 
@@ -51,6 +59,9 @@ export function SectionEditor({
       onRequestEdit();
     }
   }, [isReviewed, onRequestEdit]);
+
+  const showMarkdown = effectiveReadOnly || viewMode === "preview";
+  const hasContent = content.trim() !== "";
 
   return (
     <div className="space-y-2">
@@ -72,6 +83,24 @@ export function SectionEditor({
               Saving…
             </span>
           )}
+          {!effectiveReadOnly && hasContent && (
+            <>
+              <Button
+                variant={viewMode === "edit" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("edit")}
+              >
+                Edit
+              </Button>
+              <Button
+                variant={viewMode === "preview" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("preview")}
+              >
+                Preview
+              </Button>
+            </>
+          )}
           {onRegenerate && !effectiveReadOnly && (
             <Button
               variant="outline"
@@ -84,18 +113,45 @@ export function SectionEditor({
           )}
         </div>
       </div>
-      <Textarea
-        aria-labelledby={headingId}
-        value={content}
-        onChange={handleChange}
-        readOnly={effectiveReadOnly || isRegenerating}
-        onClick={handleTextareaClick}
-        className={cn(
-          "min-h-32 font-mono",
-          isReviewed && "opacity-75 cursor-pointer",
-          isRegenerating && "opacity-50",
-        )}
-      />
+      {onInstructionChange && !effectiveReadOnly && (
+        <Input
+          placeholder="Instructions for AI regeneration..."
+          value={instruction ?? ""}
+          onChange={(e) => onInstructionChange(e.target.value)}
+          className="text-sm"
+        />
+      )}
+      {showMarkdown && hasContent && !isRegenerating ? (
+        <div
+          role={isReviewed ? "button" : undefined}
+          tabIndex={isReviewed ? 0 : undefined}
+          onClick={isReviewed ? handleTextareaClick : undefined}
+          onKeyDown={isReviewed ? (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleTextareaClick();
+            }
+          } : undefined}
+          className={cn(
+            "rounded-md border p-4",
+            isReviewed && "opacity-75 cursor-pointer",
+          )}
+        >
+          <MarkdownRenderer content={content} />
+        </div>
+      ) : (
+        <Textarea
+          aria-labelledby={headingId}
+          value={content}
+          onChange={handleChange}
+          readOnly={effectiveReadOnly || isRegenerating}
+          onClick={handleTextareaClick}
+          className={cn(
+            "min-h-32 font-mono",
+            isReviewed && "opacity-75 cursor-pointer",
+            isRegenerating && "opacity-50",
+          )}
+        />
+      )}
     </div>
   );
 }
