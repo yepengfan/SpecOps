@@ -54,15 +54,17 @@ WHEN a developer opens the app
 THEN the system SHALL:
 - Load all projects from IndexedDB
 - Display a project list showing: project name, current phase (Requirements / Design / Tasks / Complete), and last updated timestamp
+- A project's phase displays as "Complete" when all three phases (Requirements, Design, Tasks) have status "reviewed". "Complete" is a derived display status, not a separate phase
 - Sort projects by last updated (most recent first)
 - Complete within 1 second
 
 Alternative Flow — Resume:
 WHEN a developer clicks on a project in the list
 THEN the system SHALL:
-- Navigate to that project's current active phase
+- Navigate to that project's current active phase (for "Complete" projects, navigate to the Tasks phase)
 - Restore all previously saved content for all phases
 - Complete within 500ms
+- A "Complete" project remains fully editable — editing any phase triggers the standard phase gate re-review flow (see Req 7)
 
 Alternative Flow — Delete:
 WHEN a developer clicks "Delete" on a project and confirms the action
@@ -224,11 +226,12 @@ THEN the system SHALL:
 - Persist the updated statuses to IndexedDB
 
 Alternative Flow — Edit Approved Phase:
-WHEN a developer edits content in a phase that has status "reviewed"
+WHEN a developer attempts to edit content in a phase that has status "reviewed"
 THEN the system SHALL:
-- Display a confirmation warning: "Editing this phase will require re-review of all downstream phases. Continue?"
-- IF confirmed: allow the edit, reset the current phase's status to "draft", reset all downstream phases' status to "draft" (NOT "locked"), preserve all downstream content (do NOT delete)
-- IF cancelled: discard the edit attempt
+- Keep the text field read-only and immediately display a confirmation warning: "Editing this phase will require re-review of all downstream phases. Continue?"
+- Auto-save MUST be suppressed until the user confirms
+- IF confirmed: make the field editable, reset the current phase's status to "draft", reset all downstream phases' status to "draft" (NOT "locked"), preserve all downstream content (do NOT delete), then resume normal auto-save behavior
+- IF cancelled: keep the field read-only, make no changes to content or status
 
 Validation Rules:
 WHERE phase gate enforcement:
@@ -288,8 +291,11 @@ THEN the system SHALL:
 Validation Rules:
 WHERE API key configuration:
 - The API key MUST be loaded from environment variable via `.env` file (never hardcoded)
+- `.env` MUST be listed in `.gitignore` to prevent accidental commits
 - The app MUST NOT function without a valid API key — all AI generation features are blocked
 - This architecture is intentionally local-only — the key is embedded in the JS bundle and MUST never be deployed to a public-facing host
+- IF `NODE_ENV=production` is set at build time, the build MUST emit a console warning: "WARNING: This app contains an embedded API key and is intended for local development only."
+- The app MUST display a persistent "Local Development Only" indicator in the UI (e.g., footer or badge)
 
 ---
 
