@@ -4,7 +4,7 @@
 
 ## Overview
 
-This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, configuration, and documentation. It is a text-replacement feature with one critical constraint: the IndexedDB database name must be preserved internally to avoid data loss.
+This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, database, configuration, and documentation. The IndexedDB database name is changed from "sdd-cockpit" to "spec-ops" — existing local data is not preserved (acceptable at this stage).
 
 ## Prerequisites
 
@@ -50,7 +50,7 @@ This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, conf
 ### Manual Verification
 1. Open the app — browser tab should read "SpecOps"
 2. Check navigation header — should display "SpecOps"
-3. Create a project, close and reopen — data persists (DB name unchanged)
+3. Create a project, close and reopen — data persists in the new "spec-ops" database
 4. Run `grep -r "SDD Cockpit" --include="*.ts" --include="*.tsx" --include="*.md" --include="*.json" . | grep -v node_modules | grep -v .next | grep -v specs/014` — should return only matches within `specs/001-sdd-cockpit/` directory paths, not in file content
 
 ### Verification Script

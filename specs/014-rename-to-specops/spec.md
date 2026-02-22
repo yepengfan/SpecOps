@@ -3,7 +3,7 @@
 **Feature Branch**: `014-rename-to-specops`
 **Created**: 2026-02-23
 **Status**: Draft
-**Input**: User description: "Rename the project from SDD Cockpit / sdd-cockpit to SpecOps / spec-ops across all user-facing UI, configuration, documentation, and spec files. The GitHub repo has already been renamed to SpecOps. Update package.json name, Next.js page title and nav header, Dexie IndexedDB database name with migration so existing user data is preserved, README.md with updated name references aligned with spec-kit methodology, CLAUDE.md development guidelines, and all spec document titles and references in specs/. Do not rename the specs/001-sdd-cockpit/ directory itself as it is historical record, but update document titles and text references within those files."
+**Input**: User description: "Rename the project from SDD Cockpit / sdd-cockpit to SpecOps / spec-ops across all user-facing UI, configuration, documentation, and spec files. The GitHub repo has already been renamed to SpecOps. Update package.json name, Next.js page title and nav header, Dexie IndexedDB database name (renamed to spec-ops, data loss acceptable), README.md with updated name references aligned with spec-kit methodology, CLAUDE.md development guidelines, and all spec document titles and references in specs/. Do not rename the specs/001-sdd-cockpit/ directory itself as it is historical record, but update document titles and text references within those files."
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -42,7 +42,7 @@ The IndexedDB database name is updated from "sdd-cockpit" to "spec-ops" to align
 
 A developer cloning the repository reads accurate documentation that references "SpecOps" consistently. The README describes the project correctly, the development guidelines reflect the current name, and all spec documents use the updated name in their titles and references.
 
-**Why this priority**: Documentation accuracy matters for onboarding and project credibility but does not affect the running application. It is important but secondary to the live app identity and data preservation.
+**Why this priority**: Documentation accuracy matters for onboarding and project credibility but does not affect the running application. It is important but secondary to the live app identity and database alignment.
 
 **Independent Test**: Clone the repository, read the README, CLAUDE.md, and spec documents — verify all references use "SpecOps" or "spec-ops" and no stale "SDD Cockpit" or "sdd-cockpit" references remain (except in the historical `specs/001-sdd-cockpit/` directory name, which is preserved).
 

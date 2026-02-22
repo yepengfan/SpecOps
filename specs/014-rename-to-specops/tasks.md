@@ -15,11 +15,11 @@
 
 ---
 
-## Phase 1: User Story 1 + 2 — App Identity & Data Preservation (Priority: P1) 🎯 MVP
+## Phase 1: User Story 1 + 2 — App Identity & Database Alignment (Priority: P1) 🎯 MVP
 
-**Goal**: Update all user-facing UI text to "SpecOps" while preserving existing IndexedDB data
+**Goal**: Update all user-facing UI text to "SpecOps" and rename IndexedDB database to "spec-ops"
 
-**Independent Test**: Open the app — browser tab reads "SpecOps", nav header reads "SpecOps", existing projects are intact
+**Independent Test**: Open the app — browser tab reads "SpecOps", nav header reads "SpecOps", database named "spec-ops"
 
 ### Implementation
 
@@ -27,7 +27,7 @@
 - [X] T002 [P] [US1] Update navigation header text from "SDD Cockpit" to "SpecOps" in `app/layout.tsx`
 - [X] T003 [P] [US2] Rename class `SddCockpitDatabase` to `SpecOpsDatabase`, change `super("sdd-cockpit")` to `super("spec-ops")`, rename export in `lib/db/database.ts`
 
-**Checkpoint**: App shows "SpecOps" in browser tab and nav header. All existing data accessible (DB name unchanged internally).
+**Checkpoint**: App shows "SpecOps" in browser tab and nav header. Database named "spec-ops" (fresh DB, existing data not preserved).
 
 ---
 
@@ -50,7 +50,7 @@
 
 **Goal**: Update all documentation references from "SDD Cockpit" / "sdd-cockpit" to "SpecOps" / "spec-ops"
 
-**Independent Test**: Grep for "SDD Cockpit" returns zero matches in file content; grep for "sdd-cockpit" returns only the `specs/001-sdd-cockpit/` directory path and the `super("sdd-cockpit")` DB name line
+**Independent Test**: Grep for "SDD Cockpit" returns zero matches in file content; grep for "sdd-cockpit" returns only the `specs/001-sdd-cockpit/` directory path
 
 ### Implementation
 
@@ -74,7 +74,7 @@
 
 - [X] T015 Run `npm test` — all existing tests must pass with zero regressions
 - [X] T016 Run `npm run lint` — zero errors
-- [X] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-sdd-cockpit/` directory paths and `lib/db/database.ts` super() call
+- [X] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-sdd-cockpit/` directory paths
 - [X] T018 Run `npm run build` — successful build with no old-name references in output
 
 ---
@@ -120,7 +120,7 @@ Task: T005 "npm install to regenerate lock file"
 ### MVP First (Phase 1 Only)
 
 1. Complete Phase 1: Source code changes (T001-T003)
-2. **STOP and VALIDATE**: App shows "SpecOps", data preserved
+2. **STOP and VALIDATE**: App shows "SpecOps", DB named "spec-ops"
 3. Continue to Phase 2+3 for full rename
 
 ### All-at-Once (Recommended for this feature)
