@@ -8,6 +8,7 @@ export class StreamError extends Error {
 export interface GenerateParams {
   action: string;
   projectDescription?: string;
+  requirementsContent?: string;
   sectionName?: string;
   phaseContext?: string;
 }

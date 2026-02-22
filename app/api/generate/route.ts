@@ -3,13 +3,15 @@ import {
   getRequirementsSystemPrompt,
   getRegenerateSectionPrompt,
 } from "@/lib/prompts/requirements";
+import { getDesignSystemPrompt } from "@/lib/prompts/design";
 
-const VALID_ACTIONS = ["generate-requirements", "regenerate-section"] as const;
+const VALID_ACTIONS = ["generate-requirements", "regenerate-section", "generate-design"] as const;
 type ValidAction = (typeof VALID_ACTIONS)[number];
 
 interface GenerateRequest {
   action: string;
   projectDescription?: string;
+  requirementsContent?: string;
   sectionName?: string;
   phaseContext?: string;
 }
@@ -32,6 +34,11 @@ function buildPrompt(action: ValidAction, body: GenerateRequest): {
       return {
         system: getRegenerateSectionPrompt(body.sectionName || ""),
         userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
+      };
+    case "generate-design":
+      return {
+        system: getDesignSystemPrompt(),
+        userMessage: `Generate a design document based on these approved requirements:\n\n${body.requirementsContent || ""}`,
       };
   }
 }
