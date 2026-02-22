@@ -28,7 +28,7 @@ Use the approved spec as the basis for all plan decisions. Output ONLY the markd
 
 After the five sections, output a traceability comment in this exact format:
 <!-- TRACEABILITY: [{"sectionId":"architecture","requirementIds":["req-1"]},{"sectionId":"api-contracts","requirementIds":["req-2"]},...] -->
-Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Use the "## Req N:" headings in the spec to identify requirement IDs.`;
+Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Derive IDs from "**REQ-N**:" items in the spec (e.g., **REQ-1** becomes "req-1").`;
 }
 
 export function getRegeneratePlanSectionPrompt(sectionName: string, instruction?: string): string {

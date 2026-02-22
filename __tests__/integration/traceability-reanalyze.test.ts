@@ -32,7 +32,7 @@ function makeProject(mappings: TraceabilityMapping[] = []): Project {
           {
             id: "ears-requirements",
             title: "EARS Requirements",
-            content: "## Req 1: Feature A\nContent\n\n## Req 2: Feature B\nContent",
+            content: "- **REQ-1**: WHEN user does A, the system SHALL do Feature A.\n- **REQ-2**: WHEN user does B, the system SHALL do Feature B.",
           },
           { id: "non-functional-requirements", title: "Non-Functional Requirements", content: "" },
         ],

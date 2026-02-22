@@ -12,7 +12,7 @@ Output ONLY a JSON array in this exact format (no markdown fencing, no explanati
 ]
 
 Rules:
-- Use requirement IDs in the format "req-N" matching the "## Req N:" headings in the spec
+- Use requirement IDs in the format "req-N" where N matches the number from "**REQ-N**:" in the spec (e.g., **REQ-1** becomes "req-1")
 - sectionType must be "plan" or "task"
 - sectionId must match the section slug (e.g., "architecture", "api-contracts", "data-model", "tech-decisions", "security-edge-cases", "task-list", "dependencies", "file-mapping", "test-expectations")
 - Map every requirement to at least one section if possible

@@ -34,7 +34,7 @@ Use the approved spec and plan document as the basis for all task decisions. Out
 
 After the four sections, output a traceability comment in this exact format:
 <!-- TRACEABILITY: [{"sectionId":"task-list","requirementIds":["req-1","req-2"]},{"sectionId":"dependencies","requirementIds":["req-1"]},...] -->
-Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Use the "## Req N:" headings in the spec to identify requirement IDs.`;
+Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Derive IDs from "**REQ-N**:" items in the spec (e.g., **REQ-1** becomes "req-1").`;
 }
 
 export function getRegenerateTaskSectionPrompt(sectionName: string, instruction?: string): string {

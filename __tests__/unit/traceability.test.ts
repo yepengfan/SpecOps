@@ -38,7 +38,7 @@ function makeProject(overrides?: Partial<Project>): Project {
             id: "ears-requirements",
             title: "EARS Requirements",
             content:
-              "## Req 1: Create Project\nWHEN user clicks create, the system SHALL create a new project.\n\n## Req 2: Delete Project\nWHEN user clicks delete, the system SHALL delete the project.\n\n## Req 3: Export Project\nWHEN user clicks export, the system SHALL export the project.",
+              "- **REQ-1**: WHEN user clicks create, the system SHALL create a new project.\n- **REQ-2**: WHEN user clicks delete, the system SHALL delete the project.\n- **REQ-3**: WHEN user clicks export, the system SHALL export the project.",
           },
           { id: "non-functional-requirements", title: "Non-Functional Requirements", content: "" },
         ],
@@ -163,9 +163,9 @@ describe("parseRequirementIds", () => {
     const reqs = parseRequirementIds(project);
 
     expect(reqs).toHaveLength(3);
-    expect(reqs[0]).toEqual({ id: "req-1", label: "Req 1: Create Project" });
-    expect(reqs[1]).toEqual({ id: "req-2", label: "Req 2: Delete Project" });
-    expect(reqs[2]).toEqual({ id: "req-3", label: "Req 3: Export Project" });
+    expect(reqs[0]).toEqual({ id: "req-1", label: "REQ-1: WHEN user clicks create, the system SHALL create a new project." });
+    expect(reqs[1]).toEqual({ id: "req-2", label: "REQ-2: WHEN user clicks delete, the system SHALL delete the project." });
+    expect(reqs[2]).toEqual({ id: "req-3", label: "REQ-3: WHEN user clicks export, the system SHALL export the project." });
   });
 
   it("returns empty array when no requirements exist", () => {
