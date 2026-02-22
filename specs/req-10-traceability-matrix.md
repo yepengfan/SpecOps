@@ -1,5 +1,7 @@
 # Req 10: Traceability Matrix
 
+> **Note**: This requirement has been integrated into `specs/001-sdd-cockpit/spec.md` (Req 10). This file is the original reference — the canonical version lives in the spec.
+
 Priority: High
 Rationale: In text-based SDD workflows (CLI tools like spec-kit and ai-sdd), developers cannot easily see how requirements map to design decisions and implementation tasks. A visual traceability matrix solves this by showing the bidirectional mapping between phases — making gaps visible at a glance ("this requirement has no corresponding design section") and giving developers confidence that every requirement is accounted for in design and tasks.
 

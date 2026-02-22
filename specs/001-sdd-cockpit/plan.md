@@ -35,16 +35,16 @@ Build a Next.js web application that guides developers through the Spec-Driven D
 | V | AI-Agent-Optimized Output | PASS | Req 8 exports fixed-template markdown. Reproducible section structure. |
 | VI | Simplicity and YAGNI | PASS | No collaboration, no GitHub integration, no backend, minimal dependencies. |
 
-### Post-Design Check
+### Post-Design Check (updated for Req 10)
 
 | # | Principle | Status | Evidence |
 |---|-----------|--------|----------|
-| I | Minimal Server, Secure API Proxy | PASS | Next.js API routes proxy Claude API calls. API key in `.env.local` server-side. Dexie.js for client storage. No separate backend deployment. |
-| II | Phase Gate Discipline | PASS | Phase status state machine (locked→draft→reviewed) modeled in data-model.md. Zustand store enforces transitions. |
-| III | Spec as Source of Truth | PASS | Project entity embeds all phase/section data. Single `put()` persists state. |
-| IV | EARS Format | PASS | LLM prompts instruct EARS output. Section templates match spec. |
-| V | AI-Agent-Optimized Output | PASS | Fixed section templates per phase. Export generates exact markdown structure. |
-| VI | Simplicity and YAGNI | PASS | Minimal deps (Zustand, shadcn/ui, Dexie, react-markdown, client-zip, Anthropic SDK). API routes are thin proxies — no custom backend logic beyond forwarding. |
+| I | Minimal Server, Secure API Proxy | PASS | Next.js API routes proxy Claude API calls. API key in `.env.local` server-side. Dexie.js for client storage. No separate backend deployment. Req 10 re-analyze uses the same LLM proxy. |
+| II | Phase Gate Discipline | PASS | Phase status state machine (locked→draft→reviewed) modeled in data-model.md. Zustand store enforces transitions. Traceability matrix is accessible at any time (not gated). |
+| III | Spec as Source of Truth | PASS | Project entity embeds all phase/section data and traceability mappings. Single `put()` persists state. |
+| IV | EARS Format | PASS | LLM prompts instruct EARS output. Section templates match spec. Req 10 identifies requirements by EARS heading slugs. |
+| V | AI-Agent-Optimized Output | PASS | Fixed section templates per phase. Export generates exact markdown structure. Traceability mappings are structured metadata, not free-form. |
+| VI | Simplicity and YAGNI | PASS | Req 10 adds one new entity (TraceabilityMapping), one page, and two components. Mappings are embedded in the Project record — no new IndexedDB tables or indexes. AI metadata parsing reuses existing LLM proxy. No new dependencies. |
 
 **Gate result**: ALL PASS. No violations.
 
@@ -105,7 +105,9 @@ __tests__/
 ├── unit/
 │   ├── db.test.ts          # IndexedDB operations
 │   ├── phase-gate.test.ts  # Phase status state machine
-│   └── export.test.ts      # Markdown export logic
+│   ├── export.test.ts      # Markdown export logic
+│   ├── traceability.test.ts       # Traceability mapping CRUD
+│   └── traceability-matrix.test.ts # Matrix component rendering
 ├── integration/
 │   ├── project-crud.test.ts
 │   └── phase-workflow.test.ts
@@ -117,8 +119,8 @@ __tests__/
 
 ## Complexity Tracking
 
-> No constitution violations detected. No complexity justifications needed.
+> No constitution violations. One complexity note for Req 10.
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| (none) | — | — |
+| Addition | Why Needed | Simpler Alternative Rejected Because |
+|----------|------------|-------------------------------------|
+| Req 10: TraceabilityMapping entity + AI metadata parsing | Core value: makes requirement coverage gaps visible, which is critical for SDD workflow confidence | Simply listing mappings in markdown export was considered, but doesn't support interactive gap detection or manual override — the key use case. |

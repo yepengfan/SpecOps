@@ -253,10 +253,11 @@
 
 ### Implementation for User Story 8
 
-- [ ] T065 [US8] Add `TraceabilityMapping` type to `lib/types/index.ts` and `traceabilityMappings` field to `Project` interface: `{ id, sourceType, sourceId, sourceLabel, targetType, targetId, targetLabel, origin: "ai" | "manual", createdAt }`
+- [ ] T065 [US8] Add `TraceabilityMapping` type to `lib/types/index.ts` and `traceabilityMappings` field to `Project` interface: `{ id, requirementId, requirementLabel, targetType, targetId, targetLabel, origin: "ai" | "manual", createdAt }`. Requirement IDs are slugs parsed from EARS headings (e.g., `"req-1"`, `"req-10"`).
 - [ ] T066 [US8] Create traceability mapping operations in `lib/db/traceability.ts`: `addMapping()`, `removeMapping()`, `getMappingsForProject()`, `clearAiMappings(projectId)` (preserves manual mappings), `getCoverageStats(project)` returning `{ designCoverage: { covered, total }, taskCoverage: { covered, total } }`
-- [ ] T067 [US8] Update design and tasks LLM prompts in `lib/prompts/design.ts` and `lib/prompts/tasks.ts`: add instructions for AI to output traceability metadata (JSON mapping of section → requirement IDs) alongside generated content
-- [ ] T068 [US8] Parse and persist AI-generated mappings in design and tasks generation flows: extract mapping metadata from LLM response, create `TraceabilityMapping` records with `origin: "ai"`, persist to project record in IndexedDB
+- [ ] T067 [US8] Update design and tasks LLM prompts in `lib/prompts/design.ts` and `lib/prompts/tasks.ts` (requires T046 and T049 to be complete): add instructions for AI to output traceability metadata (JSON mapping of section → requirement IDs) alongside generated content
+- [ ] T068a [US8] Parse and persist AI-generated mappings in design generation flow (`app/project/[id]/design/page.tsx`): extract mapping metadata from LLM response, create `TraceabilityMapping` records with `origin: "ai"`, persist to project record in IndexedDB
+- [ ] T068b [US8] Parse and persist AI-generated mappings in tasks generation flow (`app/project/[id]/tasks/page.tsx`): extract mapping metadata from LLM response, create `TraceabilityMapping` records with `origin: "ai"`, persist to project record in IndexedDB
 - [ ] T069 [US8] Create traceability matrix page in `app/project/[id]/traceability/page.tsx`: load project and mappings, render matrix table component, "Re-analyze Mappings" button that calls LLM API to regenerate AI mappings
 - [ ] T070 [US8] Create traceability matrix table component in `components/traceability/matrix-table.tsx`: requirements as rows, design sections + tasks as columns, cell indicators (linked/gap), gap row highlighting (amber/red), coverage percentage display, AI vs manual mapping distinction (icon/label)
 - [ ] T071 [US8] Create cell detail view in `components/traceability/cell-detail.tsx`: clicking a cell shows linked content from both phases side by side in a dialog, manual add/remove mapping toggle, immediate persist to IndexedDB
