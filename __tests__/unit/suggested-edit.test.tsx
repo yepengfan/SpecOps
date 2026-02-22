@@ -7,19 +7,32 @@ jest.mock("@/lib/db/chat-messages", () => ({
   updateChatMessage: (...args: unknown[]) => mockUpdateChatMessage(...args),
 }));
 
-// Mock project store
+// Mock project store with configurable phase statuses
 const mockUpdateSection = jest.fn();
+let mockPhases = {
+  spec: { status: "draft" },
+  plan: { status: "draft" },
+  tasks: { status: "locked" },
+};
 jest.mock("@/lib/stores/project-store", () => ({
-  useProjectStore: {
+  useProjectStore: Object.assign(
+    (selector: (s: unknown) => unknown) =>
+      selector({ currentProject: { phases: mockPhases } }),
+    {
+      getState: () => ({
+        currentProject: { phases: mockPhases },
+        updateSection: mockUpdateSection,
+      }),
+    },
+  ),
+}));
+
+// Mock chat store
+const mockUpdateMessage = jest.fn();
+jest.mock("@/lib/stores/chat-store", () => ({
+  useChatStore: {
     getState: () => ({
-      currentProject: {
-        phases: {
-          spec: { status: "draft" },
-          plan: { status: "draft" },
-          tasks: { status: "locked" },
-        },
-      },
-      updateSection: mockUpdateSection,
+      updateMessage: mockUpdateMessage,
     }),
   },
 }));
@@ -50,6 +63,11 @@ function makeMessage(
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockPhases = {
+    spec: { status: "draft" },
+    plan: { status: "draft" },
+    tasks: { status: "locked" },
+  };
 });
 
 describe("SuggestedEdit", () => {
@@ -84,7 +102,7 @@ describe("SuggestedEdit", () => {
     );
   });
 
-  it("Apply button calls updateChatMessage to set status to applied", async () => {
+  it("Apply button calls updateChatMessage and updates chat store", async () => {
     const user = userEvent.setup();
     const message = makeMessage();
     render(
@@ -103,9 +121,18 @@ describe("SuggestedEdit", () => {
         },
       },
     );
+    expect(mockUpdateMessage).toHaveBeenCalledWith(
+      message.id,
+      {
+        suggestedEdit: {
+          ...message.suggestedEdit,
+          status: "applied",
+        },
+      },
+    );
   });
 
-  it("Dismiss button calls updateChatMessage to set status to dismissed", async () => {
+  it("Dismiss button calls updateChatMessage and updates chat store", async () => {
     const user = userEvent.setup();
     const message = makeMessage();
     render(
@@ -116,6 +143,15 @@ describe("SuggestedEdit", () => {
     await user.click(dismissButton);
 
     expect(mockUpdateChatMessage).toHaveBeenCalledWith(
+      message.id,
+      {
+        suggestedEdit: {
+          ...message.suggestedEdit,
+          status: "dismissed",
+        },
+      },
+    );
+    expect(mockUpdateMessage).toHaveBeenCalledWith(
       message.id,
       {
         suggestedEdit: {
@@ -160,5 +196,63 @@ describe("SuggestedEdit", () => {
     expect(screen.getByText(/dismissed/i)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /apply/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /dismiss/i })).not.toBeInTheDocument();
+  });
+
+  it("Apply button is disabled with 'Phase is locked' when phase is reviewed", () => {
+    mockPhases = {
+      spec: { status: "reviewed" },
+      plan: { status: "draft" },
+      tasks: { status: "locked" },
+    };
+    const message = makeMessage();
+    render(
+      <SuggestedEdit message={message} projectId={TEST_PROJECT_ID} />,
+    );
+
+    const applyButton = screen.getByRole("button", { name: /apply/i });
+    expect(applyButton).toBeDisabled();
+    expect(screen.getByText(/phase is locked/i)).toBeInTheDocument();
+  });
+
+  it("Apply button is disabled when phase is locked", () => {
+    mockPhases = {
+      spec: { status: "draft" },
+      plan: { status: "draft" },
+      tasks: { status: "locked" },
+    };
+    const message = makeMessage({
+      suggestedEdit: {
+        sectionId: "task-breakdown",
+        phaseType: "tasks",
+        proposedContent: "Updated tasks.",
+        status: "pending",
+      },
+    });
+    render(
+      <SuggestedEdit message={message} projectId={TEST_PROJECT_ID} />,
+    );
+
+    const applyButton = screen.getByRole("button", { name: /apply/i });
+    expect(applyButton).toBeDisabled();
+    expect(screen.getByText(/phase is locked/i)).toBeInTheDocument();
+  });
+
+  it("Apply does not call updateSection when phase is reviewed", async () => {
+    mockPhases = {
+      spec: { status: "reviewed" },
+      plan: { status: "draft" },
+      tasks: { status: "locked" },
+    };
+    const user = userEvent.setup();
+    const message = makeMessage();
+    render(
+      <SuggestedEdit message={message} projectId={TEST_PROJECT_ID} />,
+    );
+
+    const applyButton = screen.getByRole("button", { name: /apply/i });
+    await user.click(applyButton);
+
+    expect(mockUpdateSection).not.toHaveBeenCalled();
+    expect(mockUpdateChatMessage).not.toHaveBeenCalled();
   });
 });

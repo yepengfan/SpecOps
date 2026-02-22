@@ -1,6 +1,7 @@
 "use client";
 
 import { useProjectStore } from "@/lib/stores/project-store";
+import { useChatStore } from "@/lib/stores/chat-store";
 import { updateChatMessage } from "@/lib/db/chat-messages";
 import { SPEC_SECTIONS, PLAN_SECTIONS, TASKS_SECTIONS } from "@/lib/types/sections";
 import type { ChatMessage } from "@/lib/types/chat";
@@ -19,13 +20,19 @@ interface SuggestedEditProps {
 }
 
 export function SuggestedEdit({ message }: SuggestedEditProps) {
+  const currentProject = useProjectStore((s) => s.currentProject);
   const edit = message.suggestedEdit;
+
   if (!edit) return null;
 
   const title = getSectionTitle(edit.sectionId);
   const isPending = edit.status === "pending";
+  const phaseStatus = currentProject?.phases[edit.phaseType as PhaseType]?.status;
+  const isLocked = phaseStatus === "reviewed" || phaseStatus === "locked";
 
   const handleApply = async () => {
+    if (isLocked) return;
+
     useProjectStore
       .getState()
       .updateSection(
@@ -34,17 +41,27 @@ export function SuggestedEdit({ message }: SuggestedEditProps) {
         edit.proposedContent,
       );
 
+    const updatedEdit = { ...edit, status: "applied" as const };
+
     if (message.id != null) {
       await updateChatMessage(message.id, {
-        suggestedEdit: { ...edit, status: "applied" },
+        suggestedEdit: updatedEdit,
+      });
+      useChatStore.getState().updateMessage(message.id, {
+        suggestedEdit: updatedEdit,
       });
     }
   };
 
   const handleDismiss = async () => {
+    const updatedEdit = { ...edit, status: "dismissed" as const };
+
     if (message.id != null) {
       await updateChatMessage(message.id, {
-        suggestedEdit: { ...edit, status: "dismissed" },
+        suggestedEdit: updatedEdit,
+      });
+      useChatStore.getState().updateMessage(message.id, {
+        suggestedEdit: updatedEdit,
       });
     }
   };
@@ -69,10 +86,11 @@ export function SuggestedEdit({ message }: SuggestedEditProps) {
         {edit.proposedContent}
       </pre>
       {isPending && (
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleApply}
-            className="rounded-md bg-primary px-3 py-1 text-xs text-primary-foreground hover:bg-primary/90"
+            disabled={isLocked}
+            className="rounded-md bg-primary px-3 py-1 text-xs text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             Apply
           </button>
@@ -82,6 +100,11 @@ export function SuggestedEdit({ message }: SuggestedEditProps) {
           >
             Dismiss
           </button>
+          {isLocked && (
+            <span className="text-xs text-muted-foreground">
+              Phase is locked
+            </span>
+          )}
         </div>
       )}
     </div>
