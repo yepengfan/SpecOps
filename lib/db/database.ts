@@ -2,12 +2,12 @@ import Dexie, { type Table } from "dexie";
 import type { Project } from "@/lib/types";
 import type { ChatMessage } from "@/lib/types/chat";
 
-export class SddCockpitDatabase extends Dexie {
+export class SpecOpsDatabase extends Dexie {
   projects!: Table<Project, string>;
   chatMessages!: Table<ChatMessage, number>;
 
   constructor() {
-    super("sdd-cockpit");
+    super("spec-ops");
     this.version(1).stores({ projects: "id, updatedAt" });
     this.version(2).stores({ projects: "id, updatedAt" }).upgrade((tx) => {
       return tx.table("projects").toCollection().modify((project: Record<string, unknown>) => {
@@ -41,4 +41,4 @@ export class SddCockpitDatabase extends Dexie {
   }
 }
 
-export const db = new SddCockpitDatabase();
+export const db = new SpecOpsDatabase();
