@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { PHASE_ORDER, PHASE_TYPES, type PhaseType, type Project } from "@/lib/types";
 import { updateProject } from "@/lib/db/projects";
+import { computePhaseHash } from "@/lib/eval/hash";
+import { clearEvaluation } from "@/lib/db/evaluations";
 
 export { getProjectDisplayStatus, getActivePhase } from "@/lib/utils/project";
 
@@ -90,7 +92,7 @@ export const useProjectStore = create<ProjectState>()((set, get) => {
         s.id === sectionId ? { ...s, content } : s,
       );
 
-      const updatedProject: Project = {
+      let updatedProject: Project = {
         ...currentProject,
         phases: {
           ...currentProject.phases,
@@ -100,6 +102,15 @@ export const useProjectStore = create<ProjectState>()((set, get) => {
           },
         },
       };
+
+      // Invalidate evaluation if content hash changed
+      const storedEval = updatedProject.evaluations?.[phaseType];
+      if (storedEval) {
+        const newHash = computePhaseHash(updatedSections);
+        if (newHash !== storedEval.contentHash) {
+          updatedProject = clearEvaluation(updatedProject, phaseType);
+        }
+      }
 
       set({ currentProject: updatedProject });
       debouncedSave(updatedProject);
