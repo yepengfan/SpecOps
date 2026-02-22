@@ -1,6 +1,5 @@
 import type { Project, PhaseType } from "@/lib/types";
 import type { PhaseEvaluation } from "@/lib/eval/types";
-import { updateProject } from "@/lib/db/projects";
 
 export function getEvaluation(
   project: Project,
@@ -37,21 +36,3 @@ export function clearEvaluation(
   };
 }
 
-export async function persistEvaluation(
-  project: Project,
-  phaseType: PhaseType,
-  evaluation: PhaseEvaluation
-): Promise<Project> {
-  const updated = setEvaluation(project, phaseType, evaluation);
-  await updateProject(updated);
-  return updated;
-}
-
-export async function persistClearEvaluation(
-  project: Project,
-  phaseType: PhaseType
-): Promise<Project> {
-  const updated = clearEvaluation(project, phaseType);
-  await updateProject(updated);
-  return updated;
-}

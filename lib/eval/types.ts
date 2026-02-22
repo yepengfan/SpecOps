@@ -1,5 +1,3 @@
-import type { PhaseType } from "@/lib/types";
-
 export interface RuleCheckResult {
   id: string;
   name: string;
@@ -43,7 +41,3 @@ export interface PhaseEvaluation {
   deepAnalysis: DeepAnalysisResult | null;
   evaluatedAt: number;
 }
-
-export type PhaseEvaluations = {
-  [K in PhaseType]?: PhaseEvaluation;
-};
