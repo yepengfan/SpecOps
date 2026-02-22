@@ -15,8 +15,6 @@ export default function ProjectLayout({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const setProject = useProjectStore((s) => s.setProject);
-  const clearProject = useProjectStore((s) => s.clearProject);
   const project = useProjectStore((s) => s.currentProject);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +28,7 @@ export default function ProjectLayout({
           router.replace("/");
           return;
         }
-        setProject(p);
+        useProjectStore.getState().setProject(p);
         setLoading(false);
       })
       .catch(() => {
@@ -39,9 +37,9 @@ export default function ProjectLayout({
 
     return () => {
       cancelled = true;
-      clearProject();
+      useProjectStore.getState().clearProject();
     };
-  }, [id, router, setProject, clearProject]);
+  }, [id, router]);
 
   if (loading) {
     return <p className="py-8 text-muted-foreground">Loading project…</p>;
