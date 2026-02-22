@@ -1,8 +1,10 @@
 import Dexie, { type Table } from "dexie";
 import type { Project } from "@/lib/types";
+import type { ChatMessage } from "@/lib/types/chat";
 
 export class SddCockpitDatabase extends Dexie {
   projects!: Table<Project, string>;
+  chatMessages!: Table<ChatMessage, number>;
 
   constructor() {
     super("sdd-cockpit");
@@ -31,6 +33,10 @@ export class SddCockpitDatabase extends Dexie {
           project.traceabilityMappings = [];
         }
       });
+    });
+    this.version(4).stores({
+      projects: "id, updatedAt",
+      chatMessages: "++id, projectId, timestamp",
     });
   }
 }

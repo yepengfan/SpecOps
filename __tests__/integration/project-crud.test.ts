@@ -9,6 +9,7 @@ import { useProjectStore } from "@/lib/stores/project-store";
 
 beforeEach(async () => {
   await db.projects.clear();
+  await db.chatMessages.clear();
   useProjectStore.getState().clearProject();
 });
 
@@ -46,12 +47,13 @@ describe("Project CRUD integration", () => {
     );
     expect(section!.content).toBe("Updated content");
 
+    // Switch to real timers before delete (Dexie transactions need real timers)
+    jest.useRealTimers();
+
     // Delete
     await deleteProject(project.id);
     const afterDelete = await listProjects();
     expect(afterDelete).toHaveLength(0);
-
-    jest.useRealTimers();
   });
 
   it("multiple projects maintain independent state", async () => {

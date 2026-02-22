@@ -81,6 +81,9 @@ export async function updateProject(project: Project): Promise<void> {
 
 export async function deleteProject(id: string): Promise<void> {
   return withErrorHandling(async () => {
-    await db.projects.delete(id);
+    await db.transaction("rw", db.projects, db.chatMessages, async () => {
+      await db.chatMessages.where("projectId").equals(id).delete();
+      await db.projects.delete(id);
+    });
   });
 }

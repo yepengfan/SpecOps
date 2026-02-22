@@ -9,6 +9,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-22
 - IndexedDB via Dexie.js (evaluation results stored alongside project data) (011-spec-score)
 - TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4 (012-rename-project)
 - IndexedDB via Dexie.js (client-side only) (012-rename-project)
+- TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown (013-ai-chat-assistant)
+- IndexedDB via Dexie.js (client-side only) — new `chatMessages` table (013-ai-chat-assistant)
 
 ## Project Structure
 
@@ -28,6 +30,7 @@ npm test && npm run lint
 TypeScript 5.x: Follow standard conventions
 
 ## Recent Changes
+- 013-ai-chat-assistant: Added TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown
 - 012-rename-project: Added TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4
 - 011-spec-score: Added TypeScript 5.x + Next.js (App Router), Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), Anthropic SDK (server-side)
 - 001-sdd-cockpit: Added TypeScript 5.x + Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), react-markdown, client-zip, Anthropic SDK (server-side)
