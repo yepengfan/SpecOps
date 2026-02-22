@@ -15,12 +15,14 @@
 
 ## User Story Mapping
 
+> Table ordered by implementation sequence (see Dependencies & Execution Order).
+
 | Story | Requirements | Description                                          | Priority |
 |-------|--------------|------------------------------------------------------|----------|
 | US1   | Req 1, 2     | Project CRUD (create, list, delete, resume)          | Critical |
-| US4   | Req 7        | Phase gate enforcement                               | Critical |
 | US2   | Req 9        | API key configuration (server-side `.env.local`)     | High     |
 | US3   | Req 3, 6     | AI-assisted requirements generation                  | Critical |
+| US4   | Req 7        | Phase gate enforcement                               | Critical |
 | US5   | Req 4, 6     | AI-assisted design generation                        | Critical |
 | US6   | Req 5, 6     | AI-assisted task breakdown generation                | Critical |
 | US7   | Req 8        | Export specs as markdown/zip                          | High     |
