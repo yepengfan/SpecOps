@@ -25,6 +25,7 @@ interface Project {
     design: Phase;
     tasks: Phase;
   };
+  traceabilityMappings: TraceabilityMapping[]; // Defaults to [] for existing projects
 }
 
 interface Phase {
@@ -38,7 +39,21 @@ interface Section {
   title: string;                       // e.g., "Problem Statement"
   content: string;                     // Markdown content
 }
+
+interface TraceabilityMapping {
+  id: string;                          // UUID v4
+  requirementId: string;               // Slug, e.g., "req-1", "req-10"
+  requirementLabel: string;            // e.g., "Req 1: Create New Project"
+  targetType: "design" | "task";       // Which phase the target belongs to
+  targetId: string;                    // Section id, e.g., "architecture"
+  targetLabel: string;                 // e.g., "Architecture"
+  origin: "ai" | "manual";            // AI-generated or manually added
+  createdAt: number;                   // Unix timestamp (ms)
+  // No updatedAt — mappings are toggled (add/remove), not edited in place
+}
 ```
+
+**Migration**: The `traceabilityMappings` field is embedded (not indexed), so no Dexie version bump is required. Existing projects without this field should be treated as having an empty array. Code should default to `project.traceabilityMappings ?? []`.
 
 **Dexie schema**: `"id, updatedAt"`
 

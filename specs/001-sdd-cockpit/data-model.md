@@ -16,6 +16,7 @@ The top-level entity representing one SDD workflow.
 | createdAt | number (timestamp) | Set on creation, immutable | Req 1 |
 | updatedAt | number (timestamp) | Updated on any save, indexed for sorting | Req 2 |
 | phases | Record<PhaseType, Phase> | Three phases: requirements, design, tasks | Req 1, 7 |
+| traceabilityMappings | TraceabilityMapping[] | Requirement → design/task mappings. Defaults to `[]` for existing projects (no migration needed). | Req 10 |
 
 **Indexes**: `id` (primary), `updatedAt` (for sort by most recent)
 
@@ -38,6 +39,25 @@ One section within a phase. Content is editable markdown text.
 | id | string | Unique within the phase (e.g., "problem-statement") | Req 6 |
 | title | string | Display name (e.g., "Problem Statement") | Req 6 |
 | content | string | Markdown content, auto-saved on edit | Req 6 |
+
+### TraceabilityMapping
+
+Represents a link between an individual requirement and a design section or task. Embedded within a Project as an array. Mappings are always from a requirement to a design section or task (one direction).
+
+Individual requirements are identified by a slug derived from their heading in the EARS-format content (e.g., `"req-1"`, `"req-3"`). The AI parses these from the `ears-requirements` section content during generation; manual mappings use the same identifiers. The `requirementLabel` provides the human-readable display name.
+
+| Field | Type | Constraints | Source |
+|-------|------|-------------|--------|
+| id | string (UUID v4) | Primary key, generated via `crypto.randomUUID()` | Req 10 |
+| requirementId | string | Slug of the requirement (e.g., `"req-1"`, `"req-10"`) | Req 10 |
+| requirementLabel | string | Human-readable label (e.g., "Req 1: Create New Project") | Req 10 |
+| targetType | "design" \| "task" | Which phase the target belongs to | Req 10 |
+| targetId | string | Section id or task identifier in the target phase (e.g., `"architecture"`, `"task-list"`) | Req 10 |
+| targetLabel | string | Human-readable label (e.g., "Architecture", "Task List") | Req 10 |
+| origin | "ai" \| "manual" | Whether this mapping was AI-generated or manually added | Req 10 |
+| createdAt | number (timestamp) | Set on creation | Req 10 |
+
+**Design note**: `updatedAt` is intentionally omitted. Mappings are toggled (add/remove), not edited in place — there is no mutation path that would need a last-modified timestamp. If in-place editing is added in the future, `updatedAt` can be introduced then.
 
 ### API Key (server-side only)
 
@@ -82,6 +102,7 @@ Fixed sections per phase type (from README):
 ```
 Project (1) ──── (3) Phase (requirements, design, tasks)
 Phase   (1) ──── (N) Section (fixed set per phase type)
+Project (1) ──── (N) TraceabilityMapping (requirement → design/task links)
 ```
 
 ## State Transitions

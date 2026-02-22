@@ -26,10 +26,11 @@ POST /api/generate
 
 ```typescript
 interface GenerateRequest {
-  action: "validate" | "generate-requirements" | "generate-design" | "generate-tasks" | "regenerate-section";
+  action: "validate" | "generate-requirements" | "generate-design" | "generate-tasks" | "regenerate-section" | "re-analyze-mappings";
   projectDescription?: string;    // for generate-requirements
-  requirementsContent?: string;   // for generate-design, generate-tasks
-  designContent?: string;         // for generate-tasks
+  requirementsContent?: string;   // for generate-design, generate-tasks, re-analyze-mappings
+  designContent?: string;         // for generate-tasks, re-analyze-mappings
+  tasksContent?: string;          // for re-analyze-mappings
   sectionName?: string;           // for regenerate-section
   phaseContext?: string;          // for regenerate-section
 }
@@ -48,9 +49,11 @@ For generation actions (streamed):
 Content-Type: text/event-stream
 
 data: {"type": "content", "text": "..."}
-data: {"type": "done"}
+data: {"type": "done", "traceabilityMappings": []}       // always present; empty for actions that don't produce mappings
 data: {"type": "error", "message": "..."}
 ```
+
+The `done` event always includes a `traceabilityMappings` array. For `generate-design`, `generate-tasks`, and `re-analyze-mappings`, this array contains the AI-generated mappings (Req 10). For all other actions (`validate`, `generate-requirements`, `regenerate-section`), the array is empty. See [Operation 7](#7-re-analyze-mappings-req-10) for the mapping shape.
 
 ## API Route → Claude API
 
@@ -123,7 +126,7 @@ GET /api/key-status
 //   - Non-Functional Requirements
 ```
 
-### 4. Generate Design (Req 4)
+### 4. Generate Design (Req 4, 10)
 
 ```typescript
 // System prompt instructs design document format
@@ -136,9 +139,21 @@ GET /api/key-status
 //   - Data Model
 //   - Tech Decisions
 //   - Security & Edge Cases
+
+// Traceability metadata (Req 10):
+// The system prompt also instructs the AI to output a JSON traceability
+// mapping after the design content, mapping each design section to the
+// requirement(s) it addresses. The API route parses this and includes it
+// in the "done" SSE event as traceabilityMappings[].
+//
+// Example mapping output from AI:
+// {"traceability": [
+//   {"targetType": "design", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
+//   {"targetType": "design", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-4", "req-5"]}
+// ]}
 ```
 
-### 5. Generate Tasks (Req 5)
+### 5. Generate Tasks (Req 5, 10)
 
 ```typescript
 // System prompt instructs task breakdown format
@@ -150,6 +165,11 @@ GET /api/key-status
 //   - Dependencies
 //   - File Mapping
 //   - Test Expectations
+
+// Traceability metadata (Req 10):
+// Same as Generate Design — the AI also outputs a JSON mapping of each
+// task section to the requirement(s) and design section(s) it implements.
+// Included in the "done" SSE event as traceabilityMappings[].
 ```
 
 ### 6. Regenerate Section (Req 6)
@@ -159,6 +179,32 @@ GET /api/key-status
 //   - Only regenerate the named section
 //   - Keep output scoped to that section only
 // User message includes full phase context + section name to regenerate
+```
+
+### 7. Re-analyze Mappings (Req 10)
+
+```typescript
+// System prompt instructs the AI to analyze all phase content and output
+// traceability mappings as structured JSON — no prose content generated.
+// User message contains approved requirements, design, and tasks content.
+// Stream: true (for consistency), but response is short.
+
+// Request fields used:
+//   requirementsContent, designContent, tasksContent
+
+// Expected response: JSON only (no markdown sections), parsed by the API
+// route and returned in the "done" SSE event:
+//
+// {"traceability": [
+//   {"targetType": "design", "targetId": "architecture", "targetLabel": "Architecture", "requirementIds": ["req-1", "req-7"]},
+//   {"targetType": "design", "targetId": "api-contracts", "targetLabel": "API Contracts", "requirementIds": ["req-3", "req-9"]},
+//   {"targetType": "task", "targetId": "task-list", "targetLabel": "Task List", "requirementIds": ["req-1", "req-2", "req-3"]},
+//   ...
+// ]}
+//
+// The API route expands this into TraceabilityMapping records (one per
+// requirementId × target pair) with origin: "ai". Existing manual mappings
+// (origin: "manual") are preserved by the client — only AI mappings are replaced.
 ```
 
 ## Streaming Protocol
@@ -180,8 +226,9 @@ Claude API → SSE → API Route → ReadableStream → Browser (React state upd
 | Key not in `.env.local` | `{ error: "API key not configured" }` | Show setup instructions | Req 9 |
 | Invalid key (401) | `{ error: "Invalid API key" }` | Show error on settings page | Req 9 |
 | Rate limit (429) | `{ error: "Rate limit exceeded" }` | "Rate limit exceeded. Please wait." | Req 3 |
-| API error (500+) | `{ error: "API error" }` | "API error. Please try again." | Req 3, 4, 5 |
-| Network error | `{ error: "Network error" }` | "Unable to reach Claude API." | Req 3 |
+| API error (500+) | `{ error: "API error" }` | "API error. Please try again." | Req 3, 4, 5, 10 |
+| Network error | `{ error: "Network error" }` | "Unable to reach Claude API." | Req 3, 10 |
+| Mapping analysis fails | `{ error: "Mapping analysis failed" }` | "Mapping analysis failed. You can add mappings manually or retry." | Req 10 |
 
 ## Malformed Response Handling
 
