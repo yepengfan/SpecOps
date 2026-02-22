@@ -72,19 +72,12 @@ export function SectionEditor({
           {title}
         </h3>
         <div className="flex items-center gap-2">
-          {isRegenerating && (
-            <span className="text-sm text-muted-foreground" aria-live="polite">
-              Regenerating…
-            </span>
-          )}
-          {isSaving && (
-            <span
-              className="text-sm text-muted-foreground"
-              aria-live="polite"
-            >
-              Saving…
-            </span>
-          )}
+          <span className="text-sm text-muted-foreground" aria-live="polite">
+            {isRegenerating ? "Regenerating…" : ""}
+          </span>
+          <span className="text-sm text-muted-foreground" aria-live="polite">
+            {isSaving ? "Saving…" : ""}
+          </span>
           {!effectiveReadOnly && hasContent && (
             <>
               <Button

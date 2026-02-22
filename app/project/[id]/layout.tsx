@@ -6,6 +6,7 @@ import { getProject } from "@/lib/db/projects";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { PhaseNav } from "@/components/phase/phase-nav";
 import { ExportPanel } from "@/components/phase/export-panel";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProjectLayout({
   params,
@@ -43,7 +44,21 @@ export default function ProjectLayout({
   }, [id, router]);
 
   if (loading) {
-    return <p className="py-8 text-muted-foreground">Loading project…</p>;
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-9 w-24" />
+        </div>
+        <Skeleton className="h-9 w-72" />
+        {Array.from({ length: 3 }, (_, i) => (
+          <div key={i} className="space-y-2">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (
