@@ -64,12 +64,6 @@ A user attempts to rename a project to an invalid name (empty or whitespace-only
 
 - **Project**: Existing entity. The `name` field (string, required, non-empty) is the attribute being updated by this feature.
 
-## Assumptions
-
-- There are no restrictions on project name uniqueness — multiple projects may share the same name.
-- There is no maximum character limit enforced on project names beyond what the storage layer supports.
-- The rename operation does not affect any other project data (phases, evaluations, traceability mappings).
-
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
@@ -78,3 +72,9 @@ A user attempts to rename a project to an invalid name (empty or whitespace-only
 - **SC-002**: 100% of rename operations are persisted immediately — navigating away and returning shows the updated name.
 - **SC-003**: Invalid rename attempts (empty name) are blocked with zero data loss — the original name is always preserved.
 - **SC-004**: The rename interaction is fully keyboard accessible — no mouse required to initiate, confirm, or cancel a rename.
+
+## Assumptions
+
+- There are no restrictions on project name uniqueness — multiple projects may share the same name.
+- There is no maximum character limit enforced on project names beyond what the storage layer supports.
+- The rename operation does not affect any other project data (phases, evaluations, traceability mappings).
