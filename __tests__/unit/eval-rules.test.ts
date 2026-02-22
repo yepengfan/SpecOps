@@ -2,28 +2,15 @@ import { evaluateSpec, evaluatePlan, evaluateTasks } from "@/lib/eval/rules";
 
 describe("evaluateSpec", () => {
   it("passes when requirements contain EARS keywords", () => {
-    const content = `## Requirements
+    const content = `## Problem Statement
+Users need a login system.
+
+## EARS Requirements
 - **REQ-1**: System SHALL display a login form WHEN the user navigates to /login
 - **REQ-2**: IF the user enters invalid credentials, THEN the system SHALL display an error
 
-## Priority
-High
-
-## Rationale
-User authentication is needed
-
-## Main Flow
-1. User navigates to login
-2. User enters credentials
-
-## Validation Rules
-- Email must be valid format
-
-## Error Handling
-- Invalid credentials show error message
-
-## Performance
-- Login page loads in under 2 seconds`;
+## Non-Functional Requirements
+- **NFR-1**: The login page SHALL load in under 2 seconds (performance)`;
 
     const results = evaluateSpec(content);
     const earsCheck = results.find((r) => r.id === "spec-ears-keywords");
@@ -31,72 +18,79 @@ User authentication is needed
   });
 
   it("fails when requirements lack EARS keywords", () => {
-    const content = `## Requirements
+    const content = `## Problem Statement
+Users need a login system.
+
+## EARS Requirements
 - **REQ-1**: Display a login form
 - **REQ-2**: Show an error message
 
-## Priority
-High
-
-## Rationale
-Needed
-
-## Main Flow
-1. User logs in
-
-## Validation Rules
-- Valid format
-
-## Error Handling
-- Show error
-
-## Performance
-- Fast loading`;
+## Non-Functional Requirements
+- **NFR-1**: The system should be fast (performance)`;
 
     const results = evaluateSpec(content);
     const earsCheck = results.find((r) => r.id === "spec-ears-keywords");
     expect(earsCheck?.passed).toBe(false);
-    expect(earsCheck?.explanation).toBeTruthy();
+    expect(earsCheck?.explanation).toContain("REQ-1");
+  });
+
+  it("only checks EARS keywords on REQ lines, not NFR lines", () => {
+    const content = `## Problem Statement
+Description.
+
+## EARS Requirements
+- **REQ-1**: WHEN the user logs in, the system SHALL create a session
+
+## Non-Functional Requirements
+- **NFR-1**: The system must support 1000 concurrent users`;
+
+    const results = evaluateSpec(content);
+    const earsCheck = results.find((r) => r.id === "spec-ears-keywords");
+    expect(earsCheck?.passed).toBe(true);
   });
 
   it("checks required sections are present", () => {
-    const content = `## Requirements
-- **REQ-1**: System SHALL do something
+    const content = `## Problem Statement
+Some description.
 
-## Priority
-High
-
-## Rationale
-Because`;
+## EARS Requirements
+- **REQ-1**: System SHALL do something`;
+    // Missing Non-Functional Requirements section
 
     const results = evaluateSpec(content);
     const sectionCheck = results.find((r) => r.id === "spec-required-sections");
     expect(sectionCheck?.passed).toBe(false);
-    expect(sectionCheck?.explanation).toContain("Main Flow");
+    expect(sectionCheck?.explanation).toContain("Non-Functional Requirements");
   });
 
   it("checks performance target exists", () => {
-    const content = `## Requirements
+    const content = `## Problem Statement
+Description.
+
+## EARS Requirements
 - **REQ-1**: System SHALL do something
 
-## Priority
-High
-
-## Rationale
-Because
-
-## Main Flow
-1. Do something
-
-## Validation Rules
-- Must be valid
-
-## Error Handling
-- Show error`;
+## Non-Functional Requirements
+- **NFR-1**: The system must be secure`;
 
     const results = evaluateSpec(content);
     const perfCheck = results.find((r) => r.id === "spec-performance-target");
     expect(perfCheck?.passed).toBe(false);
+  });
+
+  it("detects performance keywords in NFR content", () => {
+    const content = `## Problem Statement
+Description.
+
+## EARS Requirements
+- **REQ-1**: System SHALL do something
+
+## Non-Functional Requirements
+- **NFR-1**: The system response time must be under 200ms`;
+
+    const results = evaluateSpec(content);
+    const perfCheck = results.find((r) => r.id === "spec-performance-target");
+    expect(perfCheck?.passed).toBe(true);
   });
 
   it("handles empty content", () => {
@@ -168,40 +162,57 @@ Some architecture`;
 
 describe("evaluateTasks", () => {
   it("passes for well-formed tasks with valid dependencies", () => {
-    const content = `- [ ] T001 Setup project structure
-  - Dependencies: None
-  - Files: src/index.ts
-  - Tests: Unit test for setup
+    const content = `## Task List
+- **T1**: Setup project structure
+- **T2**: Implement authentication
 
-- [ ] T002 [P] Implement feature
-  - Dependencies: T001
-  - Files: src/feature.ts
-  - Tests: Unit test for feature`;
+## Dependencies
+- T1 → T2 (setup before implementation)
+
+## File Mapping
+- T1: src/index.ts
+- T2: src/auth.ts
+
+## Test Expectations
+- T1: Verify project scaffolding
+- T2: Unit test for auth middleware`;
 
     const results = evaluateTasks(content);
-    const structureCheck = results.find(
-      (r) => r.id === "tasks-structure"
-    );
+    const structureCheck = results.find((r) => r.id === "tasks-structure");
     expect(structureCheck?.passed).toBe(true);
+    const depCheck = results.find((r) => r.id === "tasks-dependency-valid");
+    expect(depCheck?.passed).toBe(true);
   });
 
   it("fails when task references non-existent dependency", () => {
-    const content = `- [ ] T001 Setup project
-  - Dependencies: None
-  - Files: src/index.ts
-  - Tests: Unit test
+    const content = `## Task List
+- **T1**: Setup project
+- **T2**: Implement feature
 
-- [ ] T002 Implement feature
-  - Dependencies: T099
-  - Files: src/feature.ts
-  - Tests: Unit test`;
+## Dependencies
+- T1 → T99 (invalid reference)
+
+## File Mapping
+- T1: src/index.ts
+
+## Test Expectations
+- T1: Unit test`;
 
     const results = evaluateTasks(content);
-    const depCheck = results.find(
-      (r) => r.id === "tasks-dependency-valid"
-    );
+    const depCheck = results.find((r) => r.id === "tasks-dependency-valid");
     expect(depCheck?.passed).toBe(false);
-    expect(depCheck?.explanation).toContain("T099");
+    expect(depCheck?.explanation).toContain("T99");
+  });
+
+  it("checks required sections exist", () => {
+    const content = `## Task List
+- **T1**: Some task`;
+    // Missing Dependencies, File Mapping, Test Expectations
+
+    const results = evaluateTasks(content);
+    const sectionCheck = results.find((r) => r.id === "tasks-required-sections");
+    expect(sectionCheck?.passed).toBe(false);
+    expect(sectionCheck?.explanation).toContain("Dependencies");
   });
 
   it("handles empty content", () => {

@@ -2,20 +2,28 @@ import type { RuleCheckResult } from "@/lib/eval/types";
 
 const EARS_KEYWORDS = /\b(WHEN|THEN|SHALL|WHERE|IF)\b/;
 
+// Must match SPEC_SECTIONS in lib/types/sections.ts
 const SPEC_REQUIRED_SECTIONS = [
-  "Priority",
-  "Rationale",
-  "Main Flow",
-  "Validation Rules",
-  "Error Handling",
+  "Problem Statement",
+  "EARS Requirements",
+  "Non-Functional Requirements",
 ];
 
+// Must match PLAN_SECTIONS in lib/types/sections.ts
 const PLAN_REQUIRED_SECTIONS = [
   "Architecture",
   "API Contracts",
   "Data Model",
   "Tech Decisions",
   "Security & Edge Cases",
+];
+
+// Must match TASKS_SECTIONS in lib/types/sections.ts
+const TASKS_REQUIRED_SECTIONS = [
+  "Task List",
+  "Dependencies",
+  "File Mapping",
+  "Test Expectations",
 ];
 
 function hasSection(content: string, sectionName: string): boolean {
@@ -40,7 +48,7 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
   const results: RuleCheckResult[] = [];
 
   // Check EARS keywords in requirements
-  // The spec prompt generates REQ-<number> format; also match NFR-<number>
+  // The spec prompt generates REQ-<number> and NFR-<number> format
   const reqLines = content
     .split("\n")
     .filter((line) => /^\s*-\s+\*\*(REQ|NFR)-\d+\*\*:/.test(line));
@@ -53,7 +61,9 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
       explanation: "No requirements found (expected lines starting with REQ-N or NFR-N)",
     });
   } else {
-    const missing = reqLines.filter((line) => !EARS_KEYWORDS.test(line));
+    // Only check EARS keywords on REQ lines (NFR lines don't require EARS format)
+    const reqOnlyLines = reqLines.filter((line) => /\*\*REQ-/.test(line));
+    const missing = reqOnlyLines.filter((line) => !EARS_KEYWORDS.test(line));
     if (missing.length === 0) {
       results.push({
         id: "spec-ears-keywords",
@@ -66,28 +76,36 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
         id: "spec-ears-keywords",
         name: "EARS Keywords Present",
         passed: false,
-        explanation: `${missing.length} requirement(s) missing EARS keywords (WHEN, THEN, SHALL, WHERE, IF): ${missing.map((l) => l.match(/(REQ|NFR)-\d+/)?.[0] ?? "unknown").join(", ")}`,
+        explanation: `${missing.length} requirement(s) missing EARS keywords (WHEN, THEN, SHALL, WHERE, IF): ${missing.map((l) => l.match(/REQ-\d+/)?.[0] ?? "unknown").join(", ")}`,
       });
     }
   }
 
-  // Check required sections
+  // Check required sections exist and have content
   const missingSections = SPEC_REQUIRED_SECTIONS.filter(
     (s) => !hasSection(content, s)
   );
+  const emptySections = SPEC_REQUIRED_SECTIONS.filter(
+    (s) => hasSection(content, s) && !getSectionContent(content, s)
+  );
+  const problemSections = [...missingSections, ...emptySections];
+
   results.push({
     id: "spec-required-sections",
     name: "Required Sections Present",
-    passed: missingSections.length === 0,
+    passed: problemSections.length === 0,
     explanation:
-      missingSections.length === 0
+      problemSections.length === 0
         ? ""
-        : `Missing sections: ${missingSections.join(", ")}`,
+        : missingSections.length > 0 && emptySections.length > 0
+          ? `Missing sections: ${missingSections.join(", ")}; Empty sections: ${emptySections.join(", ")}`
+          : missingSections.length > 0
+            ? `Missing sections: ${missingSections.join(", ")}`
+            : `Empty sections: ${emptySections.join(", ")}`,
   });
 
-  // Check performance target
+  // Check performance target exists (in NFR section or as keyword anywhere)
   const hasPerf =
-    hasSection(content, "Performance") ||
     /\b(performance|latency|response time|throughput|load time)\b/i.test(
       content
     );
@@ -97,7 +115,7 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
     passed: hasPerf,
     explanation: hasPerf
       ? ""
-      : "No performance target found (expected a Performance section or performance-related keywords)",
+      : "No performance target found (expected performance-related keywords in Non-Functional Requirements)",
   });
 
   return results;
@@ -140,74 +158,47 @@ export function evaluatePlan(content: string): RuleCheckResult[] {
 export function evaluateTasks(content: string): RuleCheckResult[] {
   const results: RuleCheckResult[] = [];
 
-  // Parse tasks: find lines like "- [ ] T001 ..." or "- [X] T001 ..."
-  const taskPattern = /^-\s+\[[ xX]\]\s+(T\d+)/gm;
+  // Check required sections exist and have content
+  const missingSections = TASKS_REQUIRED_SECTIONS.filter(
+    (s) => !hasSection(content, s)
+  );
+  results.push({
+    id: "tasks-required-sections",
+    name: "Required Sections Present",
+    passed: missingSections.length === 0,
+    explanation:
+      missingSections.length === 0
+        ? ""
+        : `Missing sections: ${missingSections.join(", ")}`,
+  });
+
+  // Check tasks exist in Task List section (format: **T<number>**: description)
+  const taskPattern = /\*\*T(\d+)\*\*:/g;
   const taskIds: string[] = [];
   let match;
   while ((match = taskPattern.exec(content)) !== null) {
-    taskIds.push(match[1]);
-  }
-
-  if (taskIds.length === 0) {
-    results.push({
-      id: "tasks-structure",
-      name: "Task Structure Valid",
-      passed: false,
-      explanation: "No tasks found (expected lines like '- [ ] T001 ...')",
-    });
-    results.push({
-      id: "tasks-dependency-valid",
-      name: "Task Dependencies Valid",
-      passed: false,
-      explanation: "No tasks found to validate dependencies",
-    });
-    return results;
-  }
-
-  // Check task structure — each task should have dependencies, files, tests references
-  // We check for lines following each task that contain these keywords
-  const taskBlocks = content.split(/(?=^-\s+\[[ xX]\]\s+T\d+)/m).filter(Boolean);
-  const missingInfo: string[] = [];
-
-  for (const block of taskBlocks) {
-    const idMatch = block.match(/^-\s+\[[ xX]\]\s+(T\d+)/);
-    if (!idMatch) continue;
-    const id = idMatch[1];
-    const hasDepRef =
-      /dependencies|depends|dep/i.test(block) ||
-      /\bT\d+\b/.test(block.slice(block.indexOf(id) + id.length));
-    const hasFileRef = /files?[:\s]|\.tsx?|\.js|\.ts|\.py/i.test(block);
-    const hasTestRef = /tests?[:\s]|test|spec/i.test(block);
-
-    if (!hasDepRef && !hasFileRef && !hasTestRef) {
-      missingInfo.push(id);
-    }
+    taskIds.push(`T${match[1]}`);
   }
 
   results.push({
     id: "tasks-structure",
     name: "Task Structure Valid",
-    passed: missingInfo.length === 0,
+    passed: taskIds.length > 0,
     explanation:
-      missingInfo.length === 0
+      taskIds.length > 0
         ? ""
-        : `Tasks missing dependency/file/test info: ${missingInfo.join(", ")}`,
+        : "No tasks found (expected lines like '**T1**: description')",
   });
 
   // Check dependency references point to existing tasks
-  const depPattern = /Dependencies:\s*([^\n]+)/gi;
+  const depRefPattern = /\bT(\d+)\s*→\s*T(\d+)/g;
   const invalidDeps: string[] = [];
   let depMatch;
-  while ((depMatch = depPattern.exec(content)) !== null) {
-    const depLine = depMatch[1];
-    const refs = depLine.match(/T\d+/g);
-    if (refs) {
-      for (const ref of refs) {
-        if (!taskIds.includes(ref)) {
-          invalidDeps.push(ref);
-        }
-      }
-    }
+  while ((depMatch = depRefPattern.exec(content)) !== null) {
+    const from = `T${depMatch[1]}`;
+    const to = `T${depMatch[2]}`;
+    if (!taskIds.includes(from)) invalidDeps.push(from);
+    if (!taskIds.includes(to)) invalidDeps.push(to);
   }
 
   results.push({
