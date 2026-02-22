@@ -43,7 +43,6 @@ If the section is "Task List", use the format:
 
 If the section is "Dependencies", use the format:
 - T<number> → T<number> (reason)
-
 Also include a mermaid dependency graph (\`\`\`mermaid ... \`\`\`) showing task execution order.
 
 If the section is "File Mapping", use the format:

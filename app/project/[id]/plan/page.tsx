@@ -62,6 +62,7 @@ export default function PlanPage() {
           parsed.securityEdgeCases,
         );
       }
+      setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
       const message =
         err instanceof StreamError
@@ -70,7 +71,6 @@ export default function PlanPage() {
       setError(message);
     } finally {
       setIsGenerating(false);
-      setGenerationKey((k) => k + 1);
     }
   }, [project, updateSection]);
 

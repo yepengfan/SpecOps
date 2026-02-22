@@ -66,6 +66,7 @@ export default function TasksPage() {
         updateSection("tasks", "file-mapping", parsed.fileMapping);
         updateSection("tasks", "test-expectations", parsed.testExpectations);
       }
+      setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
       const message =
         err instanceof StreamError
@@ -74,7 +75,6 @@ export default function TasksPage() {
       setError(message);
     } finally {
       setIsGenerating(false);
-      setGenerationKey((k) => k + 1);
     }
   }, [project, updateSection, editReviewedPhase]);
 
