@@ -4,9 +4,17 @@ A pure frontend web application that guides developers through the [Spec-Driven 
 
 ## Problem
 
-SDD separates planning from execution: you write specs before code. This prevents the "vibe coding" trap where developers jump straight into implementation, leading to scope creep, inconsistent architecture, and specs that AI agents can't reliably follow.
+SDD (Spec-Driven Development) is one of the most effective ways to work with AI coding agents — you write structured specs before code, so the agent has a clear, reliable blueprint to implement against. But adopting SDD in practice is surprisingly hard, and most teams hit the same walls:
 
-However, managing SDD manually is painful. You need to create the right documents in the right order, ensure each phase is complete before moving on, and produce specs that are both human-reviewable and machine-consumable. This app automates that workflow.
+**1. High learning curve, no guided tooling.** SDD knowledge is scattered across blog posts (Addy Osmani, Martin Fowler), open-source repos (spec-kit, cc-sdd, OpenSpec), and individual practitioner write-ups. There's no tool that walks you through the process step by step. A developer staring at a blank `requirements.md` has no idea what sections to include, how detailed to be, or when it's "done enough" to move on.
+
+**2. Phase skipping breaks the whole point of SDD.** In practice, developers instinctively jump from a vague idea straight to design, or from a half-baked design straight to task breakdown — essentially falling back to vibe coding with extra files. Without enforced phase gates, the discipline of "requirements first, then design, then tasks" erodes quickly, especially under delivery pressure.
+
+**3. Inconsistent spec quality leads to unpredictable AI agent output.** The same feature requirement, written by two different developers, can produce wildly different specs — one missing API contracts, another missing acceptance criteria. This inconsistency directly impacts AI agent performance: garbage spec in, garbage code out. There's no structural validation to ensure completeness before handoff to an agent.
+
+**4. Poor reproducibility.** If a spec isn't structured and complete, running the same requirement through an AI agent twice can produce fundamentally different implementations. SDD promises reproducibility — given the same spec, any agent should produce a consistent result — but this only works when the spec itself is rigorous. Without templates and validation, reproducibility is aspirational, not actual.
+
+This app solves these problems by providing a guided, gate-enforced workflow that produces consistent, AI-agent-optimized spec documents every time.
 
 ## SDD Workflow
 
