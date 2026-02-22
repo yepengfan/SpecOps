@@ -24,6 +24,13 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ error: "Messages are required" }, { status: 400 });
   }
 
+  const validRoles = new Set(["user", "assistant"]);
+  if (body.messages.some((m: { role?: string; content?: unknown }) =>
+    !validRoles.has(m.role ?? "") || typeof m.content !== "string" || !m.content
+  )) {
+    return Response.json({ error: "Invalid message format" }, { status: 400 });
+  }
+
   if (!body.phaseType || !["spec", "plan", "tasks"].includes(body.phaseType)) {
     return Response.json({ error: "Invalid phaseType" }, { status: 400 });
   }
