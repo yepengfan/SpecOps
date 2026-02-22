@@ -40,16 +40,17 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
   const results: RuleCheckResult[] = [];
 
   // Check EARS keywords in requirements
+  // The spec prompt generates REQ-<number> format; also match NFR-<number>
   const reqLines = content
     .split("\n")
-    .filter((line) => /^\s*-\s+\*\*FR-\d+\*\*:/.test(line));
+    .filter((line) => /^\s*-\s+\*\*(REQ|NFR)-\d+\*\*:/.test(line));
 
   if (reqLines.length === 0) {
     results.push({
       id: "spec-ears-keywords",
       name: "EARS Keywords Present",
       passed: false,
-      explanation: "No requirements found (expected lines starting with FR-XXX)",
+      explanation: "No requirements found (expected lines starting with REQ-N or NFR-N)",
     });
   } else {
     const missing = reqLines.filter((line) => !EARS_KEYWORDS.test(line));
@@ -65,7 +66,7 @@ export function evaluateSpec(content: string): RuleCheckResult[] {
         id: "spec-ears-keywords",
         name: "EARS Keywords Present",
         passed: false,
-        explanation: `${missing.length} requirement(s) missing EARS keywords (WHEN, THEN, SHALL, WHERE, IF): ${missing.map((l) => l.match(/FR-\d+/)?.[0] ?? "unknown").join(", ")}`,
+        explanation: `${missing.length} requirement(s) missing EARS keywords (WHEN, THEN, SHALL, WHERE, IF): ${missing.map((l) => l.match(/(REQ|NFR)-\d+/)?.[0] ?? "unknown").join(", ")}`,
       });
     }
   }

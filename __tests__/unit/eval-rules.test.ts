@@ -3,8 +3,8 @@ import { evaluateSpec, evaluatePlan, evaluateTasks } from "@/lib/eval/rules";
 describe("evaluateSpec", () => {
   it("passes when requirements contain EARS keywords", () => {
     const content = `## Requirements
-- **FR-001**: System SHALL display a login form WHEN the user navigates to /login
-- **FR-002**: IF the user enters invalid credentials, THEN the system SHALL display an error
+- **REQ-1**: System SHALL display a login form WHEN the user navigates to /login
+- **REQ-2**: IF the user enters invalid credentials, THEN the system SHALL display an error
 
 ## Priority
 High
@@ -32,8 +32,8 @@ User authentication is needed
 
   it("fails when requirements lack EARS keywords", () => {
     const content = `## Requirements
-- **FR-001**: Display a login form
-- **FR-002**: Show an error message
+- **REQ-1**: Display a login form
+- **REQ-2**: Show an error message
 
 ## Priority
 High
@@ -61,7 +61,7 @@ Needed
 
   it("checks required sections are present", () => {
     const content = `## Requirements
-- **FR-001**: System SHALL do something
+- **REQ-1**: System SHALL do something
 
 ## Priority
 High
@@ -77,7 +77,7 @@ Because`;
 
   it("checks performance target exists", () => {
     const content = `## Requirements
-- **FR-001**: System SHALL do something
+- **REQ-1**: System SHALL do something
 
 ## Priority
 High
