@@ -5,7 +5,7 @@ import type { Project, TraceabilityMapping } from "@/lib/types";
 function makeMapping(overrides?: Partial<TraceabilityMapping>): TraceabilityMapping {
   return {
     id: "mapping-1",
-    requirementId: "req-1",
+    requirementId: "fr-001",
     requirementLabel: "Req 1: Create Project",
     targetType: "plan",
     targetId: "architecture",
@@ -32,7 +32,7 @@ function makeProject(mappings: TraceabilityMapping[] = []): Project {
           {
             id: "ears-requirements",
             title: "EARS Requirements",
-            content: "- **REQ-1**: WHEN user does A, the system SHALL do Feature A.\n- **REQ-2**: WHEN user does B, the system SHALL do Feature B.",
+            content: "- **FR-001**: WHEN user does A, the system SHALL do Feature A.\n- **FR-002**: WHEN user does B, the system SHALL do Feature B.",
           },
           { id: "non-functional-requirements", title: "Non-Functional Requirements", content: "" },
         ],
@@ -68,14 +68,14 @@ describe("traceability reanalyze flow", () => {
     const manualMapping = makeMapping({
       id: "manual-1",
       origin: "manual",
-      requirementId: "req-1",
+      requirementId: "fr-001",
       targetType: "plan",
       targetId: "data-model",
     });
     const aiMapping = makeMapping({
       id: "ai-old",
       origin: "ai",
-      requirementId: "req-1",
+      requirementId: "fr-001",
       targetType: "plan",
       targetId: "architecture",
     });
@@ -84,8 +84,8 @@ describe("traceability reanalyze flow", () => {
 
     // Simulate LLM response
     const llmResponse = JSON.stringify([
-      { sectionId: "architecture", sectionType: "plan", requirementIds: ["req-1", "req-2"] },
-      { sectionId: "task-list", sectionType: "task", requirementIds: ["req-1"] },
+      { sectionId: "architecture", sectionType: "plan", requirementIds: ["fr-001", "fr-002"] },
+      { sectionId: "task-list", sectionType: "task", requirementIds: ["fr-001"] },
     ]);
 
     const newMappings = parseReanalyzeResponse(llmResponse);
@@ -111,7 +111,7 @@ describe("traceability reanalyze flow", () => {
 
     // Verify new AI mappings are present
     const aiMappings = updated.traceabilityMappings.filter((m) => m.origin === "ai");
-    expect(aiMappings).toHaveLength(3); // req-1 + req-2 to architecture + req-1 to task-list
+    expect(aiMappings).toHaveLength(3); // fr-001 + fr-002 to architecture + fr-001 to task-list
 
     // Verify old AI mapping is gone
     expect(updated.traceabilityMappings.find((m) => m.id === "ai-old")).toBeUndefined();
@@ -124,7 +124,7 @@ describe("traceability reanalyze flow", () => {
     const project = makeProject();
 
     const llmResponse = JSON.stringify([
-      { sectionId: "architecture", sectionType: "plan", requirementIds: ["req-1"] },
+      { sectionId: "architecture", sectionType: "plan", requirementIds: ["fr-001"] },
     ]);
 
     const newMappings = parseReanalyzeResponse(llmResponse);

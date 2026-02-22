@@ -74,8 +74,8 @@ describe("parseDeepAnalysisResponse", () => {
       suggestions: [],
       crossPhaseFindings: {
         summary: "Good coverage",
-        coveredItems: ["REQ-1", "REQ-2"],
-        uncoveredItems: ["REQ-3"],
+        coveredItems: ["FR-001", "FR-002"],
+        uncoveredItems: ["FR-003"],
       },
     });
 
