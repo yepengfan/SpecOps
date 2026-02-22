@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db/database";
-import { StorageError } from "@/lib/db/projects";
+import { listProjects, StorageError } from "@/lib/db/projects";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/ui/project-card";
 import { NewProjectDialog } from "@/components/ui/new-project-dialog";
@@ -14,7 +14,7 @@ export function ProjectList() {
 
   const projects = useLiveQuery(async () => {
     try {
-      return await db.projects.orderBy("updatedAt").reverse().toArray();
+      return await listProjects();
     } catch (e) {
       if (e instanceof StorageError) {
         setError(e.message);

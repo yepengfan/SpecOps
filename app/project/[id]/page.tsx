@@ -14,13 +14,17 @@ export default function ProjectRedirect({
   const router = useRouter();
 
   useEffect(() => {
-    getProject(id).then((project) => {
-      if (!project) {
+    getProject(id)
+      .then((project) => {
+        if (!project) {
+          router.replace("/");
+          return;
+        }
+        router.replace(`/project/${id}/${getActivePhase(project)}`);
+      })
+      .catch(() => {
         router.replace("/");
-        return;
-      }
-      router.replace(`/project/${id}/${getActivePhase(project)}`);
-    });
+      });
   }, [id, router]);
 
   return <p className="py-8 text-muted-foreground">Loading project...</p>;

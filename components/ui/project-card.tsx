@@ -26,9 +26,15 @@ export function ProjectCard({ project }: { project: Project }) {
   const status = getProjectDisplayStatus(project);
   const activePhase = getActivePhase(project);
 
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
   async function handleDelete() {
-    await deleteProject(project.id);
-    setDeleteOpen(false);
+    try {
+      await deleteProject(project.id);
+      setDeleteOpen(false);
+    } catch {
+      setDeleteError("Failed to delete project");
+    }
   }
 
   return (
@@ -68,6 +74,9 @@ export function ProjectCard({ project }: { project: Project }) {
               Are you sure you want to delete &quot;{project.name}&quot;? This
               action cannot be undone.
             </DialogDescription>
+            {deleteError && (
+              <p className="text-sm text-destructive">{deleteError}</p>
+            )}
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteOpen(false)}>

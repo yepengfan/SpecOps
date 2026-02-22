@@ -28,6 +28,8 @@ const MINUTE = 60;
 const HOUR = 3600;
 const DAY = 86400;
 
+const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+
 export function formatRelativeTime(timestamp: number): string {
   const now = Date.now();
   const diffMs = now - timestamp;
@@ -36,8 +38,6 @@ export function formatRelativeTime(timestamp: number): string {
   if (diffSec < 0) {
     return "just now";
   }
-
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
   if (diffSec < MINUTE) {
     return rtf.format(-diffSec, "second");

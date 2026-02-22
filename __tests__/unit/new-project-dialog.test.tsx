@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { db } from "@/lib/db/database";
 import { NewProjectDialog } from "@/components/ui/new-project-dialog";
@@ -45,12 +45,11 @@ describe("NewProjectDialog", () => {
     await user.type(input, "  My Project  ");
     await user.click(screen.getByRole("button", { name: /create/i }));
 
-    // Wait for navigation (project created)
-    await screen.findByRole("button", { name: /create/i });
-
-    const projects = await db.projects.toArray();
-    expect(projects).toHaveLength(1);
-    expect(projects[0].name).toBe("My Project");
+    await waitFor(async () => {
+      const projects = await db.projects.toArray();
+      expect(projects).toHaveLength(1);
+      expect(projects[0].name).toBe("My Project");
+    });
   });
 
   it("creates project with UUID and navigates", async () => {
@@ -61,16 +60,15 @@ describe("NewProjectDialog", () => {
     await user.type(input, "Test Project");
     await user.click(screen.getByRole("button", { name: /create/i }));
 
-    // Wait for project creation
-    await screen.findByRole("button", { name: /create/i });
-
-    const projects = await db.projects.toArray();
-    expect(projects).toHaveLength(1);
-    expect(projects[0].id).toMatch(
+    await waitFor(async () => {
+      const projects = await db.projects.toArray();
+      expect(projects).toHaveLength(1);
+      expect(projects[0].id).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
     );
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringMatching(/\/project\/[a-f0-9-]+\/requirements/)
     );
+    });
   });
 });
