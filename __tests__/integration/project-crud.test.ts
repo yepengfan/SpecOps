@@ -90,6 +90,36 @@ describe("Project CRUD integration", () => {
     jest.useRealTimers();
   });
 
+  it("renameProject persists new name to database", async () => {
+    const project = await createProject("Before Rename");
+    useProjectStore.getState().setProject(project);
+
+    useProjectStore.getState().renameProject("After Rename");
+
+    // Wait for immediateSave to complete
+    await new Promise((r) => setTimeout(r, 50));
+
+    const persisted = await getProject(project.id);
+    expect(persisted).toBeDefined();
+    expect(persisted!.name).toBe("After Rename");
+  });
+
+  it("updatedAt advances on rename", async () => {
+    const project = await createProject("Rename Timestamp");
+    const originalUpdatedAt = project.updatedAt;
+
+    // Small delay so Date.now() differs
+    await new Promise((r) => setTimeout(r, 10));
+
+    useProjectStore.getState().setProject(project);
+    useProjectStore.getState().renameProject("Renamed");
+
+    await new Promise((r) => setTimeout(r, 50));
+
+    const persisted = await getProject(project.id);
+    expect(persisted!.updatedAt).toBeGreaterThan(originalUpdatedAt);
+  });
+
   it("updatedAt advances on save", async () => {
     jest.useFakeTimers();
 
