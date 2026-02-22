@@ -56,11 +56,18 @@ export function CellDetailDialog({
     const specContent = project.phases.spec.sections
       .map((s) => s.content)
       .join("\n");
-    const regex = new RegExp(
-      `## Req ${cell.requirementId.replace("req-", "")}:[^]*?(?=## Req \\d|$)`,
+    const reqNum = cell.requirementId.replace("req-", "");
+    // Match **REQ-N**: description format (primary) or ## Req N: format (fallback)
+    const boldRegex = new RegExp(
+      `\\*\\*REQ-${reqNum}\\*\\*:\\s*(.+)`,
     );
-    const match = specContent.match(regex);
-    return match ? match[0].trim() : null;
+    const boldMatch = specContent.match(boldRegex);
+    if (boldMatch) return boldMatch[0].trim();
+    const headingRegex = new RegExp(
+      `## Req ${reqNum}:[^]*?(?=## Req \\d|$)`,
+    );
+    const headingMatch = specContent.match(headingRegex);
+    return headingMatch ? headingMatch[0].trim() : null;
   })();
 
   const handleToggle = useCallback(async () => {

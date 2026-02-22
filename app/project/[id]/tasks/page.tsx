@@ -74,17 +74,21 @@ export default function TasksPage() {
         updateSection("tasks", "test-expectations", parsed.testExpectations);
       }
 
-      // Persist traceability mappings
-      if (newMappings.length > 0 && project) {
-        const cleared = clearAiMappings(project);
-        const withMappings = {
-          ...cleared,
-          traceabilityMappings: [
-            ...cleared.traceabilityMappings,
-            ...newMappings,
-          ],
-        };
-        await updateProject(withMappings);
+      // Persist traceability mappings using latest store state
+      if (newMappings.length > 0) {
+        const latestProject = useProjectStore.getState().currentProject;
+        if (latestProject) {
+          const cleared = clearAiMappings(latestProject);
+          const withMappings = {
+            ...cleared,
+            traceabilityMappings: [
+              ...cleared.traceabilityMappings,
+              ...newMappings,
+            ],
+          };
+          await updateProject(withMappings);
+          useProjectStore.getState().setProject(withMappings);
+        }
       }
       setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
