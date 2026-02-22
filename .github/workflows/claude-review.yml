@@ -30,3 +30,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_args: "--max-turns 5 --model claude-sonnet-4-6"
+          direct_prompt: |
+            Review this PR. Analyze the diff for code quality, correctness, security,
+            and consistency with project conventions. Post a structured review comment
+            with any critical issues, warnings, and suggestions.
