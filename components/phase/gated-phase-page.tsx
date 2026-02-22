@@ -18,9 +18,15 @@ import type { PhaseType } from "@/lib/types";
 
 interface GatedPhasePageProps {
   phaseType: PhaseType;
+  onRegenerate?: (sectionId: string) => void;
+  regeneratingSection?: string | null;
 }
 
-export function GatedPhasePage({ phaseType }: GatedPhasePageProps) {
+export function GatedPhasePage({
+  phaseType,
+  onRegenerate,
+  regeneratingSection,
+}: GatedPhasePageProps) {
   const project = useProjectStore((s) => s.currentProject);
   const editReviewedPhase = useProjectStore((s) => s.editReviewedPhase);
   const router = useRouter();
@@ -57,6 +63,10 @@ export function GatedPhasePage({ phaseType }: GatedPhasePageProps) {
           title={section.title}
           content={section.content}
           onRequestEdit={handleRequestEdit}
+          onRegenerate={
+            onRegenerate ? () => onRegenerate(section.id) : undefined
+          }
+          isRegenerating={regeneratingSection === section.id}
         />
       ))}
       <ApproveButton phaseType={phaseType} />

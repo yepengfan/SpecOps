@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useProjectStore } from "@/lib/stores/project-store";
 import type { PhaseType } from "@/lib/types";
@@ -13,6 +14,8 @@ interface SectionEditorProps {
   content: string;
   readOnly?: boolean;
   onRequestEdit?: () => void;
+  onRegenerate?: () => void;
+  isRegenerating?: boolean;
 }
 
 export function SectionEditor({
@@ -22,6 +25,8 @@ export function SectionEditor({
   content,
   readOnly,
   onRequestEdit,
+  onRegenerate,
+  isRegenerating,
 }: SectionEditorProps) {
   const updateSection = useProjectStore((s) => s.updateSection);
   const isSaving = useProjectStore((s) => s.isSaving);
@@ -53,24 +58,42 @@ export function SectionEditor({
         <h3 id={headingId} className="text-lg font-semibold">
           {title}
         </h3>
-        {isSaving && (
-          <span
-            className="text-sm text-muted-foreground"
-            aria-live="polite"
-          >
-            Saving…
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {isRegenerating && (
+            <span className="text-sm text-muted-foreground" aria-live="polite">
+              Regenerating…
+            </span>
+          )}
+          {isSaving && (
+            <span
+              className="text-sm text-muted-foreground"
+              aria-live="polite"
+            >
+              Saving…
+            </span>
+          )}
+          {onRegenerate && !effectiveReadOnly && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onRegenerate}
+              disabled={isRegenerating}
+            >
+              Regenerate
+            </Button>
+          )}
+        </div>
       </div>
       <Textarea
         aria-labelledby={headingId}
         value={content}
         onChange={handleChange}
-        readOnly={effectiveReadOnly}
+        readOnly={effectiveReadOnly || isRegenerating}
         onClick={handleTextareaClick}
         className={cn(
           "min-h-32 font-mono",
           isReviewed && "opacity-75 cursor-pointer",
+          isRegenerating && "opacity-50",
         )}
       />
     </div>
