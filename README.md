@@ -1,14 +1,14 @@
-# SDD Workflow App
+# SpecOps
 
 A Next.js web application that guides developers through the [Spec-Driven Development (SDD)](https://github.com/github/spec-kit) workflow — from idea to implementation-ready specs — with structured templates, phase gate enforcement, and markdown export for AI coding agents.
 
 ## Problem
 
-SDD (Spec-Driven Development) is one of the most effective ways to work with AI coding agents — you write structured specs before code, so the agent has a clear, reliable blueprint to implement against. But adopting SDD in practice is surprisingly hard, and most teams hit the same walls:
+Spec-Driven Development (SDD) is one of the most effective ways to work with AI coding agents — you write structured specs before code, so the agent has a clear, reliable blueprint to implement against. But adopting SDD in practice is surprisingly hard, and most teams hit the same walls:
 
-**1. High learning curve, no guided tooling.** SDD knowledge is scattered across blog posts (Addy Osmani, Martin Fowler), open-source repos (spec-kit, cc-sdd, OpenSpec), and individual practitioner write-ups. There's no tool that walks you through the process step by step. A developer staring at a blank `requirements.md` has no idea what sections to include, how detailed to be, or when it's "done enough" to move on.
+**1. High learning curve, no guided tooling.** SDD knowledge is scattered across blog posts (Addy Osmani, Martin Fowler), open-source repos (spec-kit, cc-sdd, OpenSpec), and individual practitioner write-ups. There's no tool that walks you through the process step by step. A developer staring at a blank `spec.md` has no idea what sections to include, how detailed to be, or when it's "done enough" to move on.
 
-**2. Phase skipping breaks the whole point of SDD.** In practice, developers instinctively jump from a vague idea straight to design, or from a half-baked design straight to task breakdown — essentially falling back to vibe coding with extra files. Without enforced phase gates, the discipline of "requirements first, then design, then tasks" erodes quickly, especially under delivery pressure.
+**2. Phase skipping breaks the whole point of SDD.** In practice, developers instinctively jump from a vague idea straight to planning, or from a half-baked plan straight to task breakdown — essentially falling back to vibe coding with extra files. Without enforced phase gates, the discipline of "spec first, then plan, then tasks" erodes quickly, especially under delivery pressure.
 
 **3. Inconsistent spec quality leads to unpredictable AI agent output.** The same feature requirement, written by two different developers, can produce wildly different specs — one missing API contracts, another missing acceptance criteria. This inconsistency directly impacts AI agent performance: garbage spec in, garbage code out. There's no structural validation to ensure completeness before handoff to an agent.
 
@@ -16,14 +16,14 @@ SDD (Spec-Driven Development) is one of the most effective ways to work with AI 
 
 This app solves these problems by providing a guided, gate-enforced workflow that produces consistent, AI-agent-optimized spec documents every time.
 
-## SDD Workflow
+## Workflow
 
-The core of SDD is a phased, gate-controlled pipeline. Each phase produces a specific spec document, and you cannot advance to the next phase until the current one is reviewed and approved. All specs are the **source of truth** — if requirements change, you update the spec first, then cascade changes down.
+The core workflow is a phased, gate-controlled pipeline. Each phase produces a specific document, and you cannot advance to the next phase until the current one is reviewed and approved. Specs are the **source of truth** — if requirements change, you update the spec first, then cascade changes down.
 
 ```mermaid
 graph LR
-    A["💡 Idea"] --> B["📋 Requirements"]
-    B -->|"✅ Review"| C["🏗️ Design"]
+    A["💡 Idea"] --> B["📋 Spec"]
+    B -->|"✅ Review"| C["🏗️ Plan"]
     C -->|"✅ Review"| D["📝 Tasks"]
     D -->|"📦 Export"| E["🚀 AI Agent"]
 
@@ -34,19 +34,19 @@ graph LR
     style E fill:#1e293b,stroke:#10b981,color:#e2e8f0
 ```
 
-### Phase 1 — Requirements (`requirements.md`)
+### Phase 1 — Spec (`spec.md`)
 
 Define **what** you're building and **why**. This is the problem space, not the solution space.
 
 | Section                      | Purpose                                                    |
 | ---------------------------- | ---------------------------------------------------------- |
 | Problem Statement            | What pain point or opportunity are we addressing?          |
-| EARS-format Requirements     | Structured requirements using WHEN/THEN/WHERE/IF keywords  |
+| EARS Requirements            | Structured requirements using WHEN/THEN/WHERE/IF keywords  |
 | Non-Functional Requirements  | Performance, accessibility, browser support, security      |
 
-**Gate:** Requirements must be reviewed before proceeding to Design. The app enforces this — you can't skip ahead.
+**Gate:** Spec must be reviewed before proceeding to Plan. The app enforces this — you can't skip ahead.
 
-### Phase 2 — Design (`design.md`)
+### Phase 2 — Plan (`plan.md`)
 
 Define **how** the system works. Translate requirements into a technical blueprint.
 
@@ -58,9 +58,9 @@ Define **how** the system works. Translate requirements into a technical bluepri
 | Tech Decisions     | Key choices and their rationale (e.g., "Why IndexedDB?")   |
 | Security & Edge Cases | Auth, validation, error handling strategies             |
 
-**Gate:** Design must be reviewed before proceeding to Task Breakdown.
+**Gate:** Plan must be reviewed before proceeding to Tasks.
 
-### Phase 3 — Task Breakdown (`tasks.md`)
+### Phase 3 — Tasks (`tasks.md`)
 
 Define the **step-by-step implementation plan**. Each task should be small enough for an AI agent to execute in one pass.
 
@@ -77,21 +77,21 @@ Define the **step-by-step implementation plan**. Each task should be small enoug
 
 The developer takes the exported spec documents, commits them to their project repo, and uses an AI coding agent (Claude Code, Copilot, Cursor, etc.) to implement against the specs. Steering happens in the developer's IDE, not in this app.
 
-## Spec Document Plan
+## Spec-Kit Design Documents
 
-The following design documents define how this app itself is built, following the same SDD methodology via [Spec-Kit](https://github.com/github/spec-kit):
+This app is built using the [Spec-Kit](https://github.com/github/spec-kit) methodology — the same spec-driven workflow it helps users follow. The design documents live in `specs/`:
 
 ```
-specs/001-sdd-cockpit/
-├── spec.md                  # EARS-format requirements specification
-├── plan.md                  # Implementation plan with tech context and constitution check
-├── research.md              # Technology research decisions
-├── data-model.md            # Entity definitions and schema
-├── tasks.md                 # TDD task breakdown (64 tasks, 10 phases)
-├── quickstart.md            # Setup guide and project structure
+specs/001-sdd-cockpit/           # Core application (historical directory name)
+├── spec.md                      # EARS-format requirements specification
+├── plan.md                      # Implementation plan with tech context
+├── research.md                  # Technology research decisions
+├── data-model.md                # Entity definitions and schema
+├── tasks.md                     # TDD task breakdown
+├── quickstart.md                # Setup guide and project structure
 └── contracts/
-    ├── llm-api.md           # Claude API proxy interface contract
-    └── indexeddb-schema.md  # IndexedDB schema contract
+    ├── llm-api.md               # Claude API proxy interface contract
+    └── indexeddb-schema.md      # IndexedDB schema contract
 ```
 
 ## Key Decisions

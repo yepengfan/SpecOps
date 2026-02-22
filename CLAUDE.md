@@ -1,10 +1,10 @@
-# sdd-cockpit Development Guidelines
+# spec-ops Development Guidelines
 
 Auto-generated from all feature plans. Last updated: 2026-02-22
 
 ## Active Technologies
-- TypeScript 5.x + Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), react-markdown, client-zip, Anthropic SDK (server-side) (001-sdd-cockpit)
-- IndexedDB via Dexie.js (client), `.env.local` for API key (server) (001-sdd-cockpit)
+- TypeScript 5.x + Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), react-markdown, client-zip, Anthropic SDK (server-side) (001-spec-ops-core)
+- IndexedDB via Dexie.js (client), `.env.local` for API key (server) (001-spec-ops-core)
 - TypeScript 5.x + Next.js (App Router), Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), Anthropic SDK (server-side) (011-spec-score)
 - IndexedDB via Dexie.js (evaluation results stored alongside project data) (011-spec-score)
 - TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4 (012-rename-project)
