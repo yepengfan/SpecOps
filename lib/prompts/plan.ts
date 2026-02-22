@@ -10,7 +10,7 @@ export function getPlanSystemPrompt(): string {
   return `You are a software architect. Given an approved spec, generate a structured plan document with exactly five sections using these markdown headings:
 
 ## Architecture
-High-level system architecture including components, their responsibilities, and how they interact. Include diagrams in text form where helpful.
+High-level system architecture including components, their responsibilities, and how they interact. Include diagrams using mermaid fenced code blocks (\`\`\`mermaid ... \`\`\`) where helpful — for example, component interaction diagrams or data flow diagrams. Do NOT use ASCII art or plain text diagrams.
 
 ## API Contracts
 Define the API endpoints, request/response schemas, and communication protocols between system components.
@@ -30,7 +30,9 @@ Use the approved spec as the basis for all plan decisions. Output ONLY the markd
 export function getRegeneratePlanSectionPrompt(sectionName: string, instruction?: string): string {
   let prompt = `You are a software architect. Regenerate ONLY the content for the section titled "${sectionName}".
 
-Output the section content directly WITHOUT the heading (the heading is managed separately). Do not include any other sections, preamble, or closing remarks.`;
+Output the section content directly WITHOUT the heading (the heading is managed separately). Do not include any other sections, preamble, or closing remarks.
+
+Any diagrams MUST use mermaid fenced code blocks. Do NOT use ASCII art or plain text diagrams.`;
 
   if (instruction) {
     prompt += `\n\nArchitect's advice: ${instruction}`;
