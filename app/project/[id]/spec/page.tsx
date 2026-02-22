@@ -16,6 +16,7 @@ export default function SpecPage() {
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
   );
+  const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const project = useProjectStore((s) => s.currentProject);
@@ -72,7 +73,7 @@ export default function SpecPage() {
   }, [description, updateSection]);
 
   const handleRegenerate = useCallback(
-    async (sectionId: string) => {
+    async (sectionId: string, instruction?: string) => {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
@@ -92,11 +93,17 @@ export default function SpecPage() {
           action: "regenerate-spec-section",
           sectionName,
           phaseContext,
+          instruction,
         })) {
           accumulated += chunk;
         }
 
         updateSection("spec", sectionId, accumulated);
+        setSectionInstructions((prev) => {
+          const next = { ...prev };
+          delete next[sectionId];
+          return next;
+        });
       } catch (err: unknown) {
         const message =
           err instanceof StreamError
@@ -108,6 +115,13 @@ export default function SpecPage() {
       }
     },
     [project, updateSection, isGenerating],
+  );
+
+  const handleInstructionChange = useCallback(
+    (sectionId: string, value: string) => {
+      setSectionInstructions((prev) => ({ ...prev, [sectionId]: value }));
+    },
+    [],
   );
 
   return (
@@ -154,6 +168,8 @@ export default function SpecPage() {
         phaseType="spec"
         onRegenerate={handleRegenerate}
         regeneratingSection={regeneratingSection}
+        sectionInstructions={sectionInstructions}
+        onInstructionChange={handleInstructionChange}
       />
     </div>
   );

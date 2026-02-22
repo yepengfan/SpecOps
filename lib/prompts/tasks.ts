@@ -33,8 +33,8 @@ Include unit tests, integration tests, and E2E tests as appropriate.
 Use the approved spec and plan document as the basis for all task decisions. Output ONLY the markdown content with the four headings above. Do not include any preamble or closing remarks.`;
 }
 
-export function getRegenerateTaskSectionPrompt(sectionName: string): string {
-  return `You are a software architect. Regenerate ONLY the content for the section titled "${sectionName}".
+export function getRegenerateTaskSectionPrompt(sectionName: string, instruction?: string): string {
+  let prompt = `You are a software architect. Regenerate ONLY the content for the section titled "${sectionName}".
 
 Output the section content directly WITHOUT the heading (the heading is managed separately). Do not include any other sections, preamble, or closing remarks.
 
@@ -49,6 +49,12 @@ If the section is "File Mapping", use the format:
 
 If the section is "Test Expectations", use the format:
 - T<number>: <test description>`;
+
+  if (instruction) {
+    prompt += `\n\nArchitect's advice: ${instruction}`;
+  }
+
+  return prompt;
 }
 
 interface ParsedTasks {

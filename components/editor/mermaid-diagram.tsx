@@ -1,31 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import mermaid from "mermaid";
 
 mermaid.initialize({ startOnLoad: false, theme: "default" });
-
-let mermaidIdCounter = 0;
 
 interface MermaidDiagramProps {
   code: string;
 }
 
 export function MermaidDiagram({ code }: MermaidDiagramProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const id = useId();
+  const [svg, setSvg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    const id = `mermaid-${++mermaidIdCounter}`;
     let cancelled = false;
 
+    // mermaid IDs must be alphanumeric — strip colons from useId() output
+    const mermaidId = `mermaid-${id.replace(/:/g, "")}`;
+
     mermaid
-      .render(id, code)
-      .then(({ svg }) => {
-        if (!cancelled && containerRef.current) {
-          containerRef.current.innerHTML = svg;
+      .render(mermaidId, code)
+      .then(({ svg: rendered }) => {
+        if (!cancelled) {
+          setSvg(rendered);
           setError(null);
         }
       })
@@ -33,16 +32,14 @@ export function MermaidDiagram({ code }: MermaidDiagramProps) {
         if (!cancelled) {
           const message = err instanceof Error ? err.message : "Failed to render diagram";
           setError(message);
-          if (containerRef.current) {
-            containerRef.current.innerHTML = "";
-          }
+          setSvg(null);
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [code]);
+  }, [code, id]);
 
   if (error) {
     return (
@@ -57,5 +54,8 @@ export function MermaidDiagram({ code }: MermaidDiagramProps) {
     );
   }
 
-  return <div ref={containerRef} className="overflow-x-auto" />;
+  if (!svg) return null;
+
+  // dangerouslySetInnerHTML is safe here — SVG is produced by mermaid's trusted renderer
+  return <div className="overflow-x-auto" dangerouslySetInnerHTML={{ __html: svg }} />;
 }

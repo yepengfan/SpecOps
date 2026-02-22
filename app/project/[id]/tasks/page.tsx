@@ -14,6 +14,7 @@ export default function TasksPage() {
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
   );
+  const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const editReviewedPhase = useProjectStore((s) => s.editReviewedPhase);
@@ -76,7 +77,7 @@ export default function TasksPage() {
   }, [project, updateSection, editReviewedPhase]);
 
   const handleRegenerate = useCallback(
-    async (sectionId: string) => {
+    async (sectionId: string, instruction?: string) => {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
@@ -97,6 +98,7 @@ export default function TasksPage() {
           action: "regenerate-task-section",
           sectionName,
           phaseContext,
+          instruction,
         })) {
           accumulated += chunk;
         }
@@ -105,6 +107,11 @@ export default function TasksPage() {
           editReviewedPhase("tasks");
         }
         updateSection("tasks", sectionId, accumulated);
+        setSectionInstructions((prev) => {
+          const next = { ...prev };
+          delete next[sectionId];
+          return next;
+        });
       } catch (err: unknown) {
         const message =
           err instanceof StreamError
@@ -116,6 +123,13 @@ export default function TasksPage() {
       }
     },
     [project, updateSection, editReviewedPhase, isGenerating],
+  );
+
+  const handleInstructionChange = useCallback(
+    (sectionId: string, value: string) => {
+      setSectionInstructions((prev) => ({ ...prev, [sectionId]: value }));
+    },
+    [],
   );
 
   return (
@@ -157,6 +171,8 @@ export default function TasksPage() {
         phaseType="tasks"
         onRegenerate={handleRegenerate}
         regeneratingSection={regeneratingSection}
+        sectionInstructions={sectionInstructions}
+        onInstructionChange={handleInstructionChange}
       />
     </div>
   );

@@ -29,8 +29,8 @@ Format each as:
 Output ONLY the markdown content with the three headings above. Do not include any preamble or closing remarks.`;
 }
 
-export function getRegenerateSpecSectionPrompt(sectionName: string): string {
-  return `You are a requirements engineer. Regenerate ONLY the content for the section titled "${sectionName}".
+export function getRegenerateSpecSectionPrompt(sectionName: string, instruction?: string): string {
+  let prompt = `You are a requirements engineer. Regenerate ONLY the content for the section titled "${sectionName}".
 
 Output the section content directly WITHOUT the heading (the heading is managed separately). Do not include any other sections, preamble, or closing remarks.
 
@@ -39,6 +39,12 @@ If the section is "EARS Requirements", use the EARS format with WHEN/THEN/SHALL/
 
 If the section is "Non-Functional Requirements", format as:
 - **NFR-<number>**: <requirement>`;
+
+  if (instruction) {
+    prompt += `\n\nArchitect's advice: ${instruction}`;
+  }
+
+  return prompt;
 }
 
 interface ParsedSpec {

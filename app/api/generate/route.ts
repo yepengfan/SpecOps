@@ -35,7 +35,7 @@ function buildPrompt(action: ValidAction, body: GenerateRequest): {
       };
     case "regenerate-spec-section":
       return {
-        system: getRegenerateSpecSectionPrompt(body.sectionName || ""),
+        system: getRegenerateSpecSectionPrompt(body.sectionName || "", body.instruction),
         userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
       };
     case "generate-plan":
@@ -55,7 +55,7 @@ function buildPrompt(action: ValidAction, body: GenerateRequest): {
       };
     case "regenerate-task-section":
       return {
-        system: getRegenerateTaskSectionPrompt(body.sectionName || ""),
+        system: getRegenerateTaskSectionPrompt(body.sectionName || "", body.instruction),
         userMessage: `Regenerate this section based on the following context:\n\n${body.phaseContext || ""}`,
       };
   }

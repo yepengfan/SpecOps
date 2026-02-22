@@ -128,6 +128,7 @@ export function SectionEditor({
           onClick={isReviewed ? handleTextareaClick : undefined}
           onKeyDown={isReviewed ? (e) => {
             if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
               handleTextareaClick();
             }
           } : undefined}
