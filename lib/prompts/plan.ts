@@ -27,8 +27,8 @@ Security considerations, authentication/authorization approach, input validation
 Use the approved spec as the basis for all plan decisions. Output ONLY the markdown content with the five headings above. Do not include any preamble or closing remarks.
 
 After the five sections, output a traceability comment in this exact format:
-<!-- TRACEABILITY: [{"sectionId":"architecture","requirementIds":["req-1"]},{"sectionId":"api-contracts","requirementIds":["req-2"]},...] -->
-Map each section to the requirement IDs (e.g. "req-1", "req-2") from the spec that it addresses. Derive IDs from "**REQ-N**:" items in the spec (e.g., **REQ-1** becomes "req-1").`;
+<!-- TRACEABILITY: [{"sectionId":"architecture","requirementIds":["fr-001"]},{"sectionId":"api-contracts","requirementIds":["fr-002"]},...] -->
+Map each section to the requirement IDs (e.g. "fr-001", "fr-002") from the spec that it addresses. Derive IDs from "**FR-NNN**:" items in the spec (e.g., **FR-001** becomes "fr-001").`;
 }
 
 export function getRegeneratePlanSectionPrompt(sectionName: string, instruction?: string): string {

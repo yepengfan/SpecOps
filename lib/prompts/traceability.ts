@@ -5,14 +5,15 @@ export function getReanalyzeMappingsPrompt(): string {
 
 Output ONLY a JSON array in this exact format (no markdown fencing, no explanation):
 [
-  {"sectionId":"architecture","sectionType":"plan","requirementIds":["req-1","req-3"]},
-  {"sectionId":"api-contracts","sectionType":"plan","requirementIds":["req-2"]},
-  {"sectionId":"task-list","sectionType":"task","requirementIds":["req-1","req-2","req-3"]},
+  {"sectionId":"architecture","sectionType":"plan","requirementIds":["fr-001","fr-003"]},
+  {"sectionId":"api-contracts","sectionType":"plan","requirementIds":["fr-002"]},
+  {"sectionId":"task-list","sectionType":"task","requirementIds":["fr-001","fr-002","fr-003"]},
   ...
 ]
 
 Rules:
-- Use requirement IDs in the format "req-N" where N matches the number from "**REQ-N**:" in the spec (e.g., **REQ-1** becomes "req-1")
+- Use requirement IDs in the format "fr-NNN" where NNN is the zero-padded number from "**FR-NNN**:" in the spec (e.g., **FR-001** becomes "fr-001")
+- For non-functional requirements, use "nfr-NNN" (e.g., **NFR-001** becomes "nfr-001")
 - sectionType must be "plan" or "task"
 - sectionId must match the section slug (e.g., "architecture", "api-contracts", "data-model", "tech-decisions", "security-edge-cases", "task-list", "dependencies", "file-mapping", "test-expectations")
 - Map every requirement to at least one section if possible
