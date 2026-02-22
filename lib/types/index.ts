@@ -36,6 +36,11 @@ export interface Project {
     tasks: Phase;
   };
   traceabilityMappings: TraceabilityMapping[];
+  evaluations?: {
+    spec?: import("@/lib/eval/types").PhaseEvaluation;
+    plan?: import("@/lib/eval/types").PhaseEvaluation;
+    tasks?: import("@/lib/eval/types").PhaseEvaluation;
+  };
 }
 
 export const PHASE_TYPES: readonly PhaseType[] = [
