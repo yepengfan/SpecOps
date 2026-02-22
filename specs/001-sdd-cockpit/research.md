@@ -4,54 +4,50 @@
 
 ## R1: Frontend Framework
 
-**Decision**: Svelte 5 + SvelteKit (SPA mode)
+**Decision**: Next.js (App Router) with React
 
 **Rationale**:
-- Simplicity aligns with YAGNI principle — components are `.svelte` files with minimal ceremony
-- Svelte 5 runes (`$state`, `$derived`, `$effect`) provide clean reactive state management for the phase gate state machine without external libraries
-- Deep reactivity proxy handles nested project state (e.g., `project.phases.requirements.status = 'draft'`) without immutability gymnastics
-- Compiler produces smallest bundles (~2-3 KB baseline vs React's ~42 KB)
-- Built-in compile-time accessibility warnings catch WCAG issues automatically
-- SvelteKit in SPA mode (`adapter-static` with `fallback: 'index.html'`) provides routing, build tooling (Vite), and project structure with zero server requirements
-- Dexie.js `liveQuery()` returns Observables that work as Svelte stores directly — zero adapter code
+- Developer familiarity — team has strong React/Next.js experience, enabling faster development
+- Next.js App Router provides file-based routing with layouts, loading states, and error boundaries built in
+- API routes (`app/api/`) enable a server-side proxy for the Claude API, keeping the API key on the server in `.env.local` instead of exposing it in the browser
+- Largest ecosystem of any frontend framework — best AI agent familiarity for code generation
+- `dexie-react-hooks` provides `useLiveQuery()` for reactive IndexedDB queries
+- Turbopack for fast HMR in development
 
 **Alternatives considered**:
-- **React**: Overengineered for 5 screens. More boilerplate for state management (useState/useEffect/useReducer + Zustand/XState). Larger bundle. The ecosystem advantages are less relevant at this project's scale.
-- **Vue 3**: Composition API is clean, deep reactivity works. Occupies a middle ground — not as simple as Svelte, not as ecosystem-rich as React. No compelling unique advantage.
-- **SolidJS**: Best raw performance, but ecosystem too immature. Weaker AI agent familiarity. Performance advantage over Svelte negligible for this use case.
+- **Svelte 5 + SvelteKit**: Simpler, smaller bundles, built-in a11y warnings. Rejected due to less developer familiarity and smaller ecosystem. Would require `anthropic-dangerous-direct-browser-access` for API calls without a backend.
+- **Vue 3**: Composition API is clean, deep reactivity works. Occupies a middle ground — not as familiar as React, not as simple as Svelte. No compelling unique advantage.
+- **SolidJS**: Best raw performance, but ecosystem too immature. Weaker AI agent familiarity.
 - **Vanilla TypeScript**: Sounds simple but you end up building routing, reactive updates, component lifecycle from scratch. Violates YAGNI in the opposite direction.
 
 ## R2: Build Tool
 
-**Decision**: Vite (via SvelteKit)
+**Decision**: Turbopack (via Next.js)
 
 **Rationale**:
-- Included with SvelteKit — zero additional setup
-- Cold start ~1.2s vs webpack's 7+s; HMR updates in 10-20ms
-- Native TypeScript transpilation via esbuild (20-30x faster than tsc)
-- Rollup production builds with tree-shaking and code-splitting
-- Configuration is near-zero (~20 lines of `vite.config.ts`)
-- `build.target` supports "last 2 versions" browser requirement via browserslist
+- Included with Next.js — zero additional setup (`next dev --turbopack`)
+- Fast HMR with incremental compilation
+- Native TypeScript support via SWC (faster than Babel)
+- Handles both client and server bundles (needed for API routes)
+- No separate configuration required
 
 **Alternatives considered**:
-- **webpack**: Significantly slower. 5-10x more configuration. No advantage for greenfield SPA.
-- **esbuild**: Extremely fast but low-level — no dev server, no HMR framework. Vite already uses esbuild internally.
-- **Parcel**: Zero-config appealing but slower HMR, smaller plugin ecosystem, less optimized production output.
+- **Vite**: Excellent standalone, but Next.js has its own build system. Using Vite with Next.js requires workarounds and loses API route support.
+- **webpack**: Next.js legacy bundler. Slower than Turbopack. Still available as fallback if needed.
 
 ## R3: Testing Framework
 
-**Decision**: Vitest (unit/integration) + Playwright (E2E, added later)
+**Decision**: Jest (unit/integration) + Playwright (E2E)
 
 **Rationale**:
-- Vitest runs 10-20x faster than Jest in watch mode, 3.3x faster in CI
-- Reuses `vite.config.ts` directly — same path aliases, TypeScript transform, plugins
-- Native ESM and TypeScript — no `transformIgnorePatterns` hacks
-- `fake-indexeddb` works via setup file for IndexedDB mocking
-- Playwright for E2E later — tests real browsers (Chromium, Firefox, WebKit) covering browser support requirements
-- YAGNI: start with Vitest only, add Playwright when there are actual user flows
+- Jest has built-in Next.js support via `next/jest` — uses SWC for fast TypeScript transpilation, zero manual config
+- `fake-indexeddb` works via Jest setup file for IndexedDB mocking
+- Playwright for E2E — tests real browser flows (project creation, phase gates, export) in Chromium, Firefox, WebKit
+- E2E tests can validate the full API route proxy flow (frontend → API route → Claude API mock)
+- React Testing Library for component-level tests
 
 **Alternatives considered**:
-- **Jest**: Slower TypeScript execution, no native ESM, requires separate configuration duplicating Vite's.
+- **Vitest**: Faster in isolation, but doesn't share Next.js's SWC config. Requires separate setup for path aliases and module resolution.
 - **Playwright as sole framework**: Too heavyweight for unit testing pure functions (state machine, markdown generation).
 
 ## R4: IndexedDB Wrapper
@@ -63,7 +59,7 @@
 - Fluent query API: `db.projects.orderBy('updatedAt').reverse().toArray()` — trivial for "sort by last updated" (Req 2)
 - Typed error hierarchy: `Dexie.QuotaExceededError` (Req 1 error handling), `Dexie.OpenFailedError` (Req 2 corruption handling)
 - Declarative migration system: `db.version(2).stores({...}).upgrade(tx => { ... })` for schema evolution
-- `liveQuery()` returns Observables that integrate natively with Svelte stores
+- `useLiveQuery()` React hook via `dexie-react-hooks` for reactive queries
 - Active maintenance (v4.x, ~712K weekly downloads, ~13.7K GitHub stars)
 - ~27 KB gzipped — acceptable for an SPA
 
@@ -74,39 +70,60 @@
 
 ## R5: Accessibility Approach
 
-**Decision**: Svelte compile-time warnings + Bits UI headless primitives
+**Decision**: shadcn/ui (Radix UI + Tailwind CSS) + eslint-plugin-jsx-a11y
 
 **Rationale**:
-- Svelte compiler produces accessibility warnings at build time (missing alt text, non-interactive elements with click handlers, missing form labels)
-- Bits UI provides unstyled, accessible headless primitives built for Svelte 5 (dialogs, tabs, buttons)
+- shadcn/ui is built on Radix UI primitives — battle-tested WCAG-compliant components (dialogs, tabs, buttons, forms)
+- Copy-paste component model — components live in the project, fully customizable
+- Tailwind CSS for styling — utility-first, no CSS-in-JS runtime
+- eslint-plugin-jsx-a11y catches accessibility issues at lint time (missing alt text, non-interactive handlers, missing ARIA attributes)
 - WCAG 2.1 AA scope is narrow: keyboard navigation, focus management, accessible labels
 - The app has ~6-8 interactive patterns (inputs, buttons, tabs, dialogs, text editors, loading indicators)
-- Native `<dialog>` for confirmations, `role="tablist"` for phase navigation, `aria-live` for status updates
 
 **Alternatives considered**:
-- **React Aria / Radix UI**: React-only. Not applicable with Svelte.
-- **No library (pure ARIA)**: Viable but Bits UI provides well-tested patterns for dialogs and tabs without reinventing the wheel.
+- **Radix UI (unstyled)**: Full control over styling but requires more manual work. shadcn/ui provides a sensible starting point.
+- **React Aria (Adobe)**: Most thorough WCAG implementation but more verbose API. Overkill for this scope.
+- **No library (pure ARIA)**: Viable but Radix provides well-tested patterns for dialogs, tabs, and focus management.
 
 ## R6: Additional Libraries
 
 | Concern | Library | Rationale |
 |---------|---------|-----------|
-| Markdown rendering | marked + svelte-markdown | Lightweight, well-maintained, Svelte wrapper available |
+| State management | Zustand | Lightweight (~1KB), simple API, works well with React and Dexie.js |
+| Markdown rendering | react-markdown | React component for rendering markdown, well-maintained |
 | Zip export | client-zip or JSZip | Client-side zip generation for Req 8 |
 | UUID generation | crypto.randomUUID() | Built-in browser API, no library needed (Req 1) |
-| Streaming | Native fetch + ReadableStream | Framework-agnostic, no library needed for Claude API SSE |
+| Streaming | Anthropic SDK (server-side) | Official SDK handles auth, streaming, and error types on the server |
+| A11y linting | eslint-plugin-jsx-a11y | Catches accessibility issues at lint time |
+
+## R7: API Key Architecture
+
+**Decision**: Server-side API route proxy with `.env.local`
+
+**Rationale**:
+- API key stored in `.env.local` on the server — never reaches the browser
+- Next.js API routes (`app/api/generate/route.ts`) proxy requests to Claude API
+- Frontend calls `/api/generate` instead of `api.anthropic.com` directly
+- Eliminates need for `anthropic-dangerous-direct-browser-access` header
+- The Anthropic SDK can be used server-side for proper auth, streaming, and typed errors
+- Secure by default — even if the app is exposed on a network, the key is not in the browser
+- Settings page shows key status (configured / not configured) without storing the key in IndexedDB
+
+**Alternatives considered**:
+- **Direct browser calls**: Requires `anthropic-dangerous-direct-browser-access` header, exposes API key in browser Network tab and IndexedDB. Simpler but less secure.
+- **Separate backend service**: Overkill — Next.js API routes provide the same protection without a separate deployment.
 
 ## Resolved Technical Context
 
 | Field | Value |
 |-------|-------|
 | Language/Version | TypeScript 5.x |
-| Framework | Svelte 5 + SvelteKit (SPA mode, adapter-static) |
-| Primary Dependencies | Dexie.js, Bits UI, marked, client-zip |
-| Storage | IndexedDB via Dexie.js |
-| Testing | Vitest + fake-indexeddb (E2E: Playwright, added later) |
+| Framework | Next.js (App Router) with React |
+| Primary Dependencies | Zustand, shadcn/ui, Dexie.js, react-markdown, client-zip, Anthropic SDK |
+| Storage | IndexedDB via Dexie.js (client), `.env.local` for API key (server) |
+| Testing | Jest + fake-indexeddb (E2E: Playwright) |
 | Target Platform | Web browser (last 2 versions Chrome/FF/Safari/Edge) |
-| Project Type | Web application (SPA) |
+| Project Type | Web application (Next.js with API routes) |
 | Performance Goals | List <1s, create <500ms, nav <500ms, export <2s |
-| Constraints | Offline-capable (no backend), WCAG 2.1 AA |
+| Constraints | API key server-side only, WCAG 2.1 AA |
 | Scale/Scope | Single user, ~5 screens, 9 requirements |

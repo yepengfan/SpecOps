@@ -5,19 +5,19 @@
 
 ## Summary
 
-Build a pure frontend SPA that guides developers through the Spec-Driven Development workflow (Requirements → Design → Tasks) with AI-assisted generation via the Claude API, phase gate enforcement, section-level editing with auto-save, and markdown export. Built with Svelte 5 + SvelteKit (SPA mode), Dexie.js for IndexedDB storage, and Vitest for testing.
+Build a Next.js web application that guides developers through the Spec-Driven Development workflow (Requirements → Design → Tasks) with AI-assisted generation via server-side Claude API proxy, phase gate enforcement, section-level editing with auto-save, and markdown export. Built with Next.js (App Router), React, Zustand, shadcn/ui, Dexie.js for IndexedDB storage, and Jest + Playwright for testing.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x
-**Framework**: Svelte 5 + SvelteKit (SPA mode, adapter-static)
-**Primary Dependencies**: Dexie.js (IndexedDB), Bits UI (accessible primitives), marked (markdown), client-zip (export)
-**Storage**: IndexedDB via Dexie.js
-**Testing**: Vitest + fake-indexeddb (E2E: Playwright, added later)
+**Framework**: Next.js (App Router) with React
+**Primary Dependencies**: Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), react-markdown, client-zip, Anthropic SDK (server-side)
+**Storage**: IndexedDB via Dexie.js (client), `.env.local` for API key (server)
+**Testing**: Jest + fake-indexeddb (E2E: Playwright)
 **Target Platform**: Web browser (last 2 versions of Chrome, Firefox, Safari, Edge)
-**Project Type**: Web application (SPA)
+**Project Type**: Web application (Next.js with API routes)
 **Performance Goals**: Project list <1s, creation <500ms, navigation <500ms, export <2s, auto-save debounced within 1s
-**Constraints**: No backend, WCAG 2.1 AA, offline-capable (IndexedDB only)
+**Constraints**: API key server-side only, WCAG 2.1 AA
 **Scale/Scope**: Single user, ~5 screens, 9 requirements
 
 ## Constitution Check
@@ -28,7 +28,7 @@ Build a pure frontend SPA that guides developers through the Spec-Driven Develop
 
 | # | Principle | Status | Evidence |
 |---|-----------|--------|----------|
-| I | Pure Frontend, Zero Backend | PASS | No backend in spec. All storage via IndexedDB. API key at runtime. |
+| I | Minimal Server, Secure API Proxy | PASS | Next.js API routes proxy Claude API calls. API key stays server-side in `.env.local`. |
 | II | Phase Gate Discipline | PASS | Req 7 enforces strict locked→draft→reviewed transitions with cascading resets. |
 | III | Spec as Source of Truth | PASS | Req 7 Alt Flow handles edit-cascading. Auto-save in Req 6. Content preserved on reset. |
 | IV | EARS Format | PASS | Spec uses EARS. Req 3 generates EARS output. Req 8 exports EARS. |
@@ -39,12 +39,12 @@ Build a pure frontend SPA that guides developers through the Spec-Driven Develop
 
 | # | Principle | Status | Evidence |
 |---|-----------|--------|----------|
-| I | Pure Frontend, Zero Backend | PASS | SvelteKit SPA mode with adapter-static. Dexie.js for storage. Direct browser API calls to Claude. |
-| II | Phase Gate Discipline | PASS | Phase status state machine (locked→draft→reviewed) modeled in data-model.md. |
+| I | Minimal Server, Secure API Proxy | PASS | Next.js API routes proxy Claude API calls. API key in `.env.local` server-side. Dexie.js for client storage. No separate backend deployment. |
+| II | Phase Gate Discipline | PASS | Phase status state machine (locked→draft→reviewed) modeled in data-model.md. Zustand store enforces transitions. |
 | III | Spec as Source of Truth | PASS | Project entity embeds all phase/section data. Single `put()` persists state. |
 | IV | EARS Format | PASS | LLM prompts instruct EARS output. Section templates match spec. |
 | V | AI-Agent-Optimized Output | PASS | Fixed section templates per phase. Export generates exact markdown structure. |
-| VI | Simplicity and YAGNI | PASS | 4 runtime deps (Dexie, Bits UI, marked, client-zip). No state management library — Svelte 5 runes suffice. No backend proxy — direct browser API calls with `anthropic-dangerous-direct-browser-access` header. |
+| VI | Simplicity and YAGNI | PASS | Minimal deps (Zustand, shadcn/ui, Dexie, react-markdown, client-zip, Anthropic SDK). API routes are thin proxies — no custom backend logic beyond forwarding. |
 
 **Gate result**: ALL PASS. No violations.
 
@@ -67,45 +67,50 @@ specs/001-sdd-cockpit/
 ### Source Code (repository root)
 
 ```text
-src/
-├── lib/
-│   ├── db/                 # Dexie database, schema, CRUD operations
-│   ├── api/                # Claude API client, SSE streaming
-│   ├── stores/             # Svelte stores for reactive app state
-│   ├── components/
-│   │   ├── ui/             # Bits UI wrappers, accessible primitives
-│   │   ├── editor/         # Section editor, markdown preview
-│   │   └── phase/          # Phase gate UI, status indicators
-│   ├── prompts/            # LLM system prompts per phase
-│   └── types/              # TypeScript interfaces and enums
-├── routes/
-│   ├── +layout.svelte      # App shell, navigation
-│   ├── +page.svelte        # Project list (home)
-│   ├── settings/
-│   │   └── +page.svelte    # API key configuration
-│   └── project/
-│       └── [id]/
-│           ├── +page.svelte          # Project redirect to active phase
-│           ├── requirements/
-│           │   └── +page.svelte      # Requirements phase editor
-│           ├── design/
-│           │   └── +page.svelte      # Design phase editor
-│           └── tasks/
-│               └── +page.svelte      # Tasks phase editor
-├── app.html                # HTML entry point
-└── app.css                 # Global styles
+app/
+├── layout.tsx              # Root layout, navigation shell
+├── page.tsx                # Project list (home)
+├── settings/
+│   └── page.tsx            # API key status page
+├── project/
+│   └── [id]/
+│       ├── page.tsx        # Project redirect to active phase
+│       ├── requirements/
+│       │   └── page.tsx    # Requirements phase editor
+│       ├── design/
+│       │   └── page.tsx    # Design phase editor
+│       └── tasks/
+│           └── page.tsx    # Tasks phase editor
+└── api/
+    ├── generate/
+    │   └── route.ts        # LLM proxy: POST /api/generate (streaming)
+    └── key-status/
+        └── route.ts        # GET /api/key-status
 
-tests/
+components/
+├── ui/                     # shadcn/ui components (Button, Dialog, Tabs, etc.)
+├── editor/                 # Section editor, markdown preview
+└── phase/                  # Phase gate UI, status indicators
+
+lib/
+├── db/                     # Dexie database, schema, CRUD operations
+├── stores/                 # Zustand stores for app state
+├── prompts/                # LLM system prompts per phase
+└── types/                  # TypeScript interfaces and enums
+
+__tests__/
 ├── unit/
 │   ├── db.test.ts          # IndexedDB operations
 │   ├── phase-gate.test.ts  # Phase status state machine
 │   └── export.test.ts      # Markdown export logic
-└── integration/
-    ├── project-crud.test.ts
-    └── phase-workflow.test.ts
+├── integration/
+│   ├── project-crud.test.ts
+│   └── phase-workflow.test.ts
+└── e2e/
+    └── workflow.spec.ts    # Playwright E2E tests
 ```
 
-**Structure Decision**: SvelteKit SPA with file-based routing. All source lives under `src/` with `lib/` for shared logic and `routes/` for pages. Tests are co-located under `tests/` at the repo root. This is the standard SvelteKit layout — no custom structure needed.
+**Structure Decision**: Next.js App Router with file-based routing. `app/` for pages and API routes, `components/` for UI, `lib/` for shared logic, `__tests__/` for all tests. This is the standard Next.js layout.
 
 ## Complexity Tracking
 
