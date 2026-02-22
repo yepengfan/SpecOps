@@ -1,4 +1,4 @@
-# Data Model: SDD Cockpit
+# Data Model: SpecOps
 
 **Branch**: `001-sdd-cockpit` | **Date**: 2026-02-22
 
@@ -155,7 +155,7 @@ For "Complete" projects, clicking navigates to the Tasks phase (Req 2).
 ## IndexedDB Schema (Dexie.js)
 
 ```
-Database: sdd-cockpit
+Database: spec-ops
 
 Table: projects
   Primary key: id
