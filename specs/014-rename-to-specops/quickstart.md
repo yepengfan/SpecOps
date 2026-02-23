@@ -36,7 +36,7 @@ This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, data
 
 ## What Does NOT Change
 
-- `specs/001-spec-ops-core/` directory name (preserved as historical record)
+- `specs/001-sdd-cockpit/` directory name (preserved as historical record) *(Note: later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - Any application logic, phase gates, or feature behavior
 - The constitution (already updated prior to this feature)
 
@@ -51,7 +51,7 @@ This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, data
 1. Open the app — browser tab should read "SpecOps"
 2. Check navigation header — should display "SpecOps"
 3. Create a project, close and reopen — data persists in the new "spec-ops" database
-4. Run `grep -r "SDD Cockpit" --include="*.ts" --include="*.tsx" --include="*.md" --include="*.json" . | grep -v node_modules | grep -v .next | grep -v specs/014` — should return only matches within `specs/001-spec-ops-core/` directory paths, not in file content
+4. Run `grep -r "SDD Cockpit" --include="*.ts" --include="*.tsx" --include="*.md" --include="*.json" . | grep -v node_modules | grep -v .next | grep -v specs/014` — should return only matches within `specs/001-sdd-cockpit/` directory paths, not in file content *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ### Verification Script
 ```bash

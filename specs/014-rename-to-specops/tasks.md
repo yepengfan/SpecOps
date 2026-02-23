@@ -50,7 +50,7 @@
 
 **Goal**: Update all documentation references from "SDD Cockpit" / "sdd-cockpit" to "SpecOps" / "spec-ops"
 
-**Independent Test**: Grep for "SDD Cockpit" returns zero matches in file content; grep for "sdd-cockpit" returns only the `specs/001-spec-ops-core/` directory path
+**Independent Test**: Grep for "SDD Cockpit" returns zero matches in file content; grep for "sdd-cockpit" returns only the `specs/001-sdd-cockpit/` directory path *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ### Implementation
 
@@ -64,7 +64,7 @@
 - [X] T013 [P] [US3] Update DB name reference text in `specs/001-spec-ops-core/contracts/indexeddb-schema.md`
 - [X] T014 [P] [US3] Update "SDD Cockpit" text reference in `specs/011-spec-score/quickstart.md`
 
-**Checkpoint**: All documentation references updated. Directory name `specs/001-spec-ops-core/` preserved.
+**Checkpoint**: All documentation references updated. Directory name `specs/001-sdd-cockpit/` preserved. *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ---
 
@@ -74,7 +74,7 @@
 
 - [X] T015 Run `npm test` — all existing tests must pass with zero regressions
 - [X] T016 Run `npm run lint` — zero errors
-- [X] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-spec-ops-core/` directory paths
+- [X] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-sdd-cockpit/` directory paths *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - [X] T018 Run `npm run build` — successful build with no old-name references in output
 
 ---
@@ -139,5 +139,5 @@ Since this is a simple text-replacement feature with no logic changes:
 - [P] tasks = different files, no dependencies
 - T001 and T002 target the same file — combine into a single edit
 - The DB name is changed from `"sdd-cockpit"` to `"spec-ops"` — data loss is acceptable (see research.md)
-- The directory `specs/001-spec-ops-core/` is intentionally preserved (historical record)
+- The directory `specs/001-sdd-cockpit/` is intentionally preserved (historical record) *(Note: later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - Total files modified: 12 source/doc files + 1 auto-generated (package-lock.json)

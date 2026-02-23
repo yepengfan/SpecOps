@@ -16,7 +16,7 @@
 
 ## Research Question 2: What is the scope of "sdd-cockpit" references in the codebase?
 
-**Decision**: Update all content references; preserve the `specs/001-spec-ops-core/` directory name.
+**Decision**: Update all content references; preserve the `specs/001-sdd-cockpit/` directory name. *(Note: this decision was later reversed — directory renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 **Findings**: A grep of the codebase reveals references in:
 
@@ -27,7 +27,7 @@
 
 Total: ~13 files to modify (+ package-lock.json auto-regenerated).
 
-The `specs/001-spec-ops-core/` directory name is preserved because it reflects the historical feature branch name — renaming it would break git history references and provide no value.
+The `specs/001-sdd-cockpit/` directory name is preserved because it reflects the historical feature branch name — renaming it would break git history references and provide no value. *(Note: this decision was later reversed — directory renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ## Research Question 3: Does the README need structural changes or just name substitution?
 
