@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ const UPSTREAM_PHASE: Record<PhaseType, PhaseType | null> = {
 
 export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasAutoExpanded, setHasAutoExpanded] = useState(false);
   const [isEvaluating, setEvaluating] = useState(false);
   const [isAnalyzing, setAnalyzing] = useState(false);
   const project = useProjectStore((s) => s.currentProject);
@@ -42,6 +43,13 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
   const phase = project?.phases[phaseType];
   const evaluation = project?.evaluations?.[phaseType];
   const hasContent = phase?.sections.some((s) => s.content.trim() !== "") ?? false;
+
+  useEffect(() => {
+    if (evaluation && !hasAutoExpanded) {
+      setIsOpen(true);
+      setHasAutoExpanded(true);
+    }
+  }, [evaluation, hasAutoExpanded]);
 
   const handleEvaluate = useCallback(async () => {
     if (!project || !phase) return;

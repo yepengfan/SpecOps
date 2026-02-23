@@ -2,6 +2,16 @@
 
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useProjectStore } from "@/lib/stores/project-store";
@@ -46,6 +56,7 @@ export function SectionEditor({
   const effectiveReadOnly = readOnly || isReviewed;
 
   const [viewMode, setViewMode] = useState<"edit" | "preview">(defaultViewMode ?? "edit");
+  const [confirmRegenOpen, setConfirmRegenOpen] = useState(false);
 
   const headingId = `section-heading-${sectionId}`;
 
@@ -100,7 +111,13 @@ export function SectionEditor({
             <Button
               variant="outline"
               size="sm"
-              onClick={onRegenerate}
+              onClick={() => {
+                if (hasContent) {
+                  setConfirmRegenOpen(true);
+                } else {
+                  onRegenerate();
+                }
+              }}
               disabled={isRegenerating}
             >
               Regenerate
@@ -148,6 +165,28 @@ export function SectionEditor({
           )}
         />
       )}
+
+      <AlertDialog open={confirmRegenOpen} onOpenChange={setConfirmRegenOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Regenerate this section?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Current content will be replaced. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                onRegenerate?.();
+                setConfirmRegenOpen(false);
+              }}
+            >
+              Regenerate
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
