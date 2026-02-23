@@ -16,18 +16,18 @@
 
 ## Research Question 2: What is the scope of "sdd-cockpit" references in the codebase?
 
-**Decision**: Update all content references; preserve the `specs/001-sdd-cockpit/` directory name.
+**Decision**: Update all content references; preserve the `specs/001-spec-ops-core/` directory name.
 
 **Findings**: A grep of the codebase reveals references in:
 
 - **Source code** (2 files): `app/layout.tsx` (UI text), `lib/db/database.ts` (class name + DB name)
 - **Configuration** (2 files): `package.json`, `package-lock.json`
 - **Documentation** (2 files): `CLAUDE.md`, `README.md`
-- **Spec documents** (7 files): Titles and text in `specs/001-sdd-cockpit/*.md` and `specs/011-spec-score/quickstart.md`
+- **Spec documents** (7 files): Titles and text in `specs/001-spec-ops-core/*.md` and `specs/011-spec-score/quickstart.md`
 
 Total: ~13 files to modify (+ package-lock.json auto-regenerated).
 
-The `specs/001-sdd-cockpit/` directory name is preserved because it reflects the historical feature branch name — renaming it would break git history references and provide no value.
+The `specs/001-spec-ops-core/` directory name is preserved because it reflects the historical feature branch name — renaming it would break git history references and provide no value.
 
 ## Research Question 3: Does the README need structural changes or just name substitution?
 
@@ -35,5 +35,5 @@ The `specs/001-sdd-cockpit/` directory name is preserved because it reflects the
 
 **Rationale**: The current README accurately describes the project's purpose and workflow. The changes needed are:
 - Replace "SDD Workflow App" / "SDD Cockpit" with "SpecOps"
-- Update the `specs/001-sdd-cockpit/` tree listing to reflect correct name references
+- Update the `specs/001-spec-ops-core/` tree listing to reflect correct name references
 - The spec-kit methodology description is already well-represented — the README describes the SDD workflow, phase gates, and export format clearly
