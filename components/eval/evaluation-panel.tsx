@@ -42,8 +42,16 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
   const evaluation = project?.evaluations?.[phaseType];
   const hasContent = phase?.sections.some((s) => s.content.trim() !== "") ?? false;
 
-  // Auto-expand if evaluation already exists (e.g. loaded from DB)
-  const [isOpen, setIsOpen] = useState(() => !!evaluation);
+  // Auto-expand panel when evaluation first becomes available (e.g. loaded from DB).
+  // Uses React's "derived state from props" pattern to avoid useEffect/useRef.
+  const [isOpen, setIsOpen] = useState(false);
+  const [prevEvaluation, setPrevEvaluation] = useState(evaluation);
+  if (evaluation !== prevEvaluation) {
+    setPrevEvaluation(evaluation);
+    if (evaluation && !isOpen) {
+      setIsOpen(true);
+    }
+  }
 
   const handleEvaluate = useCallback(async () => {
     if (!project || !phase) return;

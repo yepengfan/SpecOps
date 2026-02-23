@@ -1,11 +1,13 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Check, Lock, FileText, Layers, ListTodo, GitBranch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProjectStore } from "@/lib/stores/project-store";
+import { parseRequirementIds } from "@/lib/db/traceability";
 import { PHASE_TYPES, type PhaseType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -29,26 +31,24 @@ export default function OverviewPage() {
   const params = useParams<{ id: string }>();
   const projectId = params.id;
 
-  if (!project) return null;
+  // Compute traceability coverage using canonical parsing (hook must be before early return)
+  const { coveredCount, totalRequirements, coveragePercent } =
+    useMemo(() => {
+      if (!project) return { coveredCount: 0, totalRequirements: 0, coveragePercent: 0 };
+      const reqs = parseRequirementIds(project);
+      const mapped = new Set(
+        project.traceabilityMappings.map((m) => m.requirementId),
+      );
+      const covered = reqs.filter((r) => mapped.has(r.id)).length;
+      const total = reqs.length;
+      return {
+        coveredCount: covered,
+        totalRequirements: total,
+        coveragePercent: total > 0 ? Math.round((covered / total) * 100) : 0,
+      };
+    }, [project]);
 
-  // Compute traceability coverage
-  const specContent = project.phases.spec.sections
-    .map((s) => s.content)
-    .join("\n");
-  const requirementIds = new Set(
-    [...specContent.matchAll(/\b(FR-\d{3}|NFR-\d{3})\b/g)].map((m) => m[1]),
-  );
-  const mappedRequirements = new Set(
-    project.traceabilityMappings.map((m) => m.requirementId),
-  );
-  const coveredCount = [...requirementIds].filter((id) =>
-    mappedRequirements.has(id),
-  ).length;
-  const totalRequirements = requirementIds.size;
-  const coveragePercent =
-    totalRequirements > 0
-      ? Math.round((coveredCount / totalRequirements) * 100)
-      : 0;
+  if (!project) return null;
 
   return (
     <div className="space-y-6">

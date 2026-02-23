@@ -49,6 +49,12 @@ export function GatedPhasePage({
   const [confirmOpen, setConfirmOpen] = useState(false);
   // null means "all sections open" (default before user interacts)
   const [openSections, setOpenSections] = useState<Set<string> | null>(null);
+  // Reset collapsible state when content is regenerated
+  const [prevGenerationKey, setPrevGenerationKey] = useState(generationKey);
+  if (generationKey !== prevGenerationKey) {
+    setPrevGenerationKey(generationKey);
+    if (openSections !== null) setOpenSections(null);
+  }
 
   const phase = project?.phases[phaseType];
   const isLocked = phase?.status === "locked";

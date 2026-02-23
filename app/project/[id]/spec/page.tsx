@@ -18,6 +18,7 @@ export default function SpecPage() {
     null,
   );
   const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
+  const [generationKey, setGenerationKey] = useState(0);
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const project = useProjectStore((s) => s.currentProject);
@@ -64,6 +65,7 @@ export default function SpecPage() {
           parsed.nonFunctionalRequirements,
         );
       }
+      setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
       const message =
         err instanceof StreamError
@@ -173,6 +175,7 @@ export default function SpecPage() {
         regeneratingSection={regeneratingSection}
         sectionInstructions={sectionInstructions}
         onInstructionChange={handleInstructionChange}
+        generationKey={generationKey}
       />
     </div>
   );
