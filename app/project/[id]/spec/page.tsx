@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { GatedPhasePage } from "@/components/phase/gated-phase-page";
+import { WorkflowIndicator } from "@/components/phase/workflow-indicator";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { streamGenerate, StreamError } from "@/lib/api/stream-client";
 import { parseSpecSections } from "@/lib/prompts/spec";
@@ -23,6 +24,9 @@ export default function SpecPage() {
 
   const isBusy = isGenerating || regeneratingSection !== null;
   const canGenerate = description.trim().length >= 10 && !isBusy;
+  const isEmpty = project?.phases.spec.sections.every(
+    (s) => s.content.trim() === "",
+  ) ?? true;
 
   const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
@@ -141,6 +145,16 @@ export default function SpecPage() {
       <Button onClick={handleGenerate} disabled={!canGenerate}>
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
+
+      {isEmpty && !isGenerating && (
+        <div className="space-y-3">
+          <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+            Start by describing your project above, then click Generate to create
+            a specification.
+          </div>
+          <WorkflowIndicator />
+        </div>
+      )}
 
       {malformedWarning && (
         <div
