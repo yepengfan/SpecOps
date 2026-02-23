@@ -50,9 +50,17 @@ export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
   };
 
   return (
+    <>
+    {/* Backdrop overlay for mobile */}
+    <button
+      type="button"
+      aria-label="Dismiss"
+      className="fixed inset-0 z-40 bg-black/50 md:hidden"
+      onClick={togglePanel}
+    />
     <div
       data-testid="chat-panel"
-      className="fixed right-0 top-0 z-50 flex h-full w-96 flex-col border-l bg-background shadow-lg"
+      className="fixed right-0 top-0 z-50 flex h-full w-full md:w-96 flex-col border-l bg-background shadow-lg"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
@@ -133,5 +141,6 @@ export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
       {/* Input */}
       <ChatInput onSend={handleSend} isStreaming={isStreaming} />
     </div>
+    </>
   );
 }

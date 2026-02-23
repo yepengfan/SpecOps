@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { GatedPhasePage } from "@/components/phase/gated-phase-page";
+import { WorkflowIndicator } from "@/components/phase/workflow-indicator";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { streamGenerate, StreamError } from "@/lib/api/stream-client";
 import { parseSpecSections } from "@/lib/prompts/spec";
@@ -11,22 +13,24 @@ import { parseSpecSections } from "@/lib/prompts/spec";
 export default function SpecPage() {
   const [description, setDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [malformedWarning, setMalformedWarning] = useState(false);
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
   );
   const [sectionInstructions, setSectionInstructions] = useState<Record<string, string>>({});
+  const [generationKey, setGenerationKey] = useState(0);
 
   const updateSection = useProjectStore((s) => s.updateSection);
   const project = useProjectStore((s) => s.currentProject);
 
   const isBusy = isGenerating || regeneratingSection !== null;
   const canGenerate = description.trim().length >= 10 && !isBusy;
+  const isEmpty = project?.phases.spec.sections.every(
+    (s) => s.content.trim() === "",
+  ) ?? true;
 
   const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
-    setError(null);
     setMalformedWarning(false);
 
     try {
@@ -61,12 +65,13 @@ export default function SpecPage() {
           parsed.nonFunctionalRequirements,
         );
       }
+      setGenerationKey((k) => k + 1);
     } catch (err: unknown) {
       const message =
         err instanceof StreamError
           ? err.message
           : "An unexpected error occurred";
-      setError(message);
+      toast.error(message);
     } finally {
       setIsGenerating(false);
     }
@@ -77,7 +82,6 @@ export default function SpecPage() {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
-      setError(null);
 
       const phase = project.phases.spec;
       const phaseContext = phase.sections
@@ -109,7 +113,7 @@ export default function SpecPage() {
           err instanceof StreamError
             ? err.message
             : "An unexpected error occurred";
-        setError(message);
+        toast.error(message);
       } finally {
         setRegeneratingSection(null);
       }
@@ -144,12 +148,13 @@ export default function SpecPage() {
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
 
-      {error && (
-        <div
-          className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800"
-          role="alert"
-        >
-          {error}
+      {isEmpty && !isGenerating && (
+        <div className="space-y-3">
+          <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+            Start by describing your project above, then click Generate to create
+            a specification.
+          </div>
+          <WorkflowIndicator />
         </div>
       )}
 
@@ -170,6 +175,7 @@ export default function SpecPage() {
         regeneratingSection={regeneratingSection}
         sectionInstructions={sectionInstructions}
         onInstructionChange={handleInstructionChange}
+        generationKey={generationKey}
       />
     </div>
   );

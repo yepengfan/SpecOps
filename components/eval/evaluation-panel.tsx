@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RuleChecklist } from "@/components/eval/rule-checklist";
@@ -32,16 +33,25 @@ const UPSTREAM_PHASE: Record<PhaseType, PhaseType | null> = {
 };
 
 export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [isEvaluating, setEvaluating] = useState(false);
   const [isAnalyzing, setAnalyzing] = useState(false);
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
   const project = useProjectStore((s) => s.currentProject);
   const setProject = useProjectStore((s) => s.setProject);
 
   const phase = project?.phases[phaseType];
   const evaluation = project?.evaluations?.[phaseType];
   const hasContent = phase?.sections.some((s) => s.content.trim() !== "") ?? false;
+
+  // Auto-expand panel when evaluation first becomes available (e.g. loaded from DB).
+  // Uses React's "derived state from props" pattern to avoid useEffect/useRef.
+  const [isOpen, setIsOpen] = useState(false);
+  const [prevEvaluation, setPrevEvaluation] = useState(evaluation);
+  if (evaluation !== prevEvaluation) {
+    setPrevEvaluation(evaluation);
+    if (evaluation && !isOpen) {
+      setIsOpen(true);
+    }
+  }
 
   const handleEvaluate = useCallback(async () => {
     if (!project || !phase) return;
@@ -75,7 +85,6 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
     if (!project || !phase || !evaluation) return;
 
     setAnalyzing(true);
-    setAnalysisError(null);
 
     try {
       const phaseContent = phase.sections
@@ -128,7 +137,9 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
           : err instanceof Error
             ? err.message
             : "Deep analysis failed";
-      setAnalysisError(message);
+      toast.error(message, {
+        action: { label: "Retry", onClick: handleDeepAnalysis },
+      });
     } finally {
       setAnalyzing(false);
     }
@@ -192,23 +203,6 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
           ) : evaluation ? (
             <>
               <RuleChecklist results={evaluation.ruleResults} />
-              {analysisError && (
-                <div
-                  className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
-                  role="alert"
-                >
-                  {analysisError}
-                  <Button
-                    size="xs"
-                    variant="outline"
-                    className="ml-2"
-                    onClick={handleDeepAnalysis}
-                    disabled={isAnalyzing}
-                  >
-                    Retry
-                  </Button>
-                </div>
-              )}
               {evaluation.deepAnalysis && (
                 <DeepAnalysisResults result={evaluation.deepAnalysis} />
               )}
