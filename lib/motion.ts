@@ -32,3 +32,15 @@ export const pageTransition: Transition = {
   duration: 0.2,
   ease: "easeOut",
 };
+
+/** Collapsible expand transition (200ms easeOut) */
+export const collapsibleExpandTransition: Transition = {
+  duration: 0.2,
+  ease: "easeOut",
+};
+
+/** Collapsible collapse transition (150ms easeIn) */
+export const collapsibleCollapseTransition: Transition = {
+  duration: 0.15,
+  ease: "easeIn",
+};

@@ -3,6 +3,8 @@ import {
   staggerContainerVariants,
   staggerItemVariants,
   pageTransition,
+  collapsibleExpandTransition,
+  collapsibleCollapseTransition,
 } from "@/lib/motion";
 
 describe("fadeSlideVariants", () => {
@@ -64,5 +66,25 @@ describe("pageTransition", () => {
 
   it("has ease defined", () => {
     expect(pageTransition).toHaveProperty("ease");
+  });
+});
+
+describe("collapsibleExpandTransition", () => {
+  it("has duration at most 0.3s", () => {
+    expect(collapsibleExpandTransition.duration).toBeLessThanOrEqual(0.3);
+  });
+
+  it("has ease defined", () => {
+    expect(collapsibleExpandTransition).toHaveProperty("ease");
+  });
+});
+
+describe("collapsibleCollapseTransition", () => {
+  it("has duration at most 0.3s", () => {
+    expect(collapsibleCollapseTransition.duration).toBeLessThanOrEqual(0.3);
+  });
+
+  it("has ease defined", () => {
+    expect(collapsibleCollapseTransition).toHaveProperty("ease");
   });
 });

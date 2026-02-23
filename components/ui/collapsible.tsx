@@ -1,7 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { Collapsible as CollapsiblePrimitive } from "radix-ui"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import {
+  collapsibleExpandTransition,
+  collapsibleCollapseTransition,
+} from "@/lib/motion"
 
 const Collapsible = CollapsiblePrimitive.Root
 const CollapsibleTrigger = CollapsiblePrimitive.Trigger
@@ -15,13 +20,17 @@ function AnimatedCollapsibleContent({
   children: React.ReactNode;
 }) {
   const reducedMotion = useReducedMotion();
+  const [expanded, setExpanded] = useState(false);
 
   if (reducedMotion) {
     return isOpen ? <div>{children}</div> : null;
   }
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence
+      initial={false}
+      onExitComplete={() => setExpanded(false)}
+    >
       {isOpen && (
         <motion.div
           key="collapsible-content"
@@ -29,23 +38,22 @@ function AnimatedCollapsibleContent({
           animate={{
             height: "auto",
             opacity: 1,
-            transition: { duration: 0.2, ease: "easeOut" },
+            transition: collapsibleExpandTransition,
           }}
           exit={{
             height: 0,
             opacity: 0,
-            transition: { duration: 0.15, ease: "easeIn" },
+            transition: collapsibleCollapseTransition,
           }}
-          style={{ overflow: "hidden" }}
+          style={{ overflow: expanded ? "visible" : "hidden" }}
           onAnimationComplete={(definition) => {
-            // After expand completes, allow overflow for dropdowns/tooltips
             if (
               typeof definition === "object" &&
               definition !== null &&
               "height" in definition &&
               definition.height === "auto"
             ) {
-              // overflow is managed by style prop during animation
+              setExpanded(true);
             }
           }}
         >
