@@ -2,16 +2,22 @@
 
 import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
+import { motion, useReducedMotion } from "framer-motion";
 import { db } from "@/lib/db/database";
 import { listProjects, StorageError } from "@/lib/db/projects";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectCard } from "@/components/ui/project-card";
 import { NewProjectDialog } from "@/components/ui/new-project-dialog";
+import {
+  staggerContainerVariants,
+  staggerItemVariants,
+} from "@/lib/motion";
 
 export function ProjectList() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const reducedMotion = useReducedMotion();
 
   const projects = useLiveQuery(async () => {
     try {
@@ -78,11 +84,18 @@ export function ProjectList() {
         <h1 className="text-2xl font-bold">Projects</h1>
         <Button onClick={() => setDialogOpen(true)}>New Project</Button>
       </div>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <motion.div
+        className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        variants={staggerContainerVariants}
+        initial={reducedMotion ? false : "initial"}
+        animate="animate"
+      >
         {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <motion.div key={project.id} variants={staggerItemVariants}>
+            <ProjectCard project={project} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
       <NewProjectDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   );

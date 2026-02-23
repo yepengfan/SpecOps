@@ -15,6 +15,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-22
 - IndexedDB via Dexie.js (no schema changes) (015-align-requirement-ids)
 - TypeScript 5.x + Next.js 16, React 19, shadcn/ui (017-default-overview-tab)
 - IndexedDB via Dexie.js (no changes) (017-default-overview-tab)
+- TypeScript 5.x + React 19 + Next.js 16 (App Router) + Framer Motion (new), shadcn/ui (existing), Radix UI Collapsible (existing), Zustand 5 (existing) (018-framer-motion-animations)
+- N/A — no storage changes (018-framer-motion-animations)
 
 ## Project Structure
 
@@ -34,6 +36,7 @@ npm test && npm run lint
 TypeScript 5.x: Follow standard conventions
 
 ## Recent Changes
+- 018-framer-motion-animations: Added TypeScript 5.x + React 19 + Next.js 16 (App Router) + Framer Motion (new), shadcn/ui (existing), Radix UI Collapsible (existing), Zustand 5 (existing)
 - 017-default-overview-tab: Added TypeScript 5.x + Next.js 16, React 19, shadcn/ui
 - 016-ux-ui-enhancements: Added TypeScript 5.x + Next.js 16, React 19, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, sonner, next-themes
 - 016-ux-ui-enhancements: IndexedDB via Dexie.js (no schema changes)
