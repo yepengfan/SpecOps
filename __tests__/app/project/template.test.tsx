@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { AnimatePresence, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 
 const mockUsePathname = jest.fn<() => string>();
 jest.mock("next/navigation", () => ({
@@ -14,39 +14,35 @@ beforeEach(() => {
 });
 
 describe("ProjectTemplate", () => {
-  it("renders children", () => {
-    render(
+  it("renders children inside a motion wrapper when animations are enabled", () => {
+    const { container } = render(
       <ProjectTemplate>
         <div data-testid="child">Tab content</div>
       </ProjectTemplate>,
     );
     expect(screen.getByTestId("child")).toBeInTheDocument();
     expect(screen.getByText("Tab content")).toBeInTheDocument();
+
+    // With animations enabled, children are wrapped in a motion.div (mocked as div)
+    // The wrapper div sits between the container root and the child content
+    const child = screen.getByTestId("child");
+    const wrapper = child.parentElement;
+    expect(wrapper).not.toBe(container);
+    expect(wrapper?.tagName).toBe("DIV");
   });
 
-  it("uses AnimatePresence and motion.div from framer-motion", () => {
-    // Verify the component imports and uses AnimatePresence
-    expect(AnimatePresence).toBeDefined();
-
-    const { container } = render(
-      <ProjectTemplate>
-        <p>Content</p>
-      </ProjectTemplate>,
-    );
-    // motion.div is mocked as a plain div — children should be inside a div wrapper
-    expect(container.querySelector("div")).toBeInTheDocument();
-    expect(screen.getByText("Content")).toBeInTheDocument();
-  });
-
-  it("renders plain children when reduced motion is preferred", () => {
-    // Override useReducedMotion to return true
+  it("renders children directly (no wrapper) when reduced motion is preferred", () => {
     (useReducedMotion as jest.Mock).mockReturnValueOnce(true);
 
-    render(
+    const { container } = render(
       <ProjectTemplate>
         <div data-testid="reduced-child">No animation</div>
       </ProjectTemplate>,
     );
     expect(screen.getByTestId("reduced-child")).toBeInTheDocument();
+
+    // With reduced motion, children render as a fragment — no intermediate wrapper div
+    const child = screen.getByTestId("reduced-child");
+    expect(child.parentElement).toBe(container);
   });
 });

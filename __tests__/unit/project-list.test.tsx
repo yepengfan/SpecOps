@@ -64,19 +64,22 @@ describe("ProjectList", () => {
     expect(card).toHaveTextContent("Complete");
   });
 
-  it("wraps project cards in motion containers for stagger animation", async () => {
+  it("wraps each project card in an individual motion wrapper for stagger", async () => {
     await createProject("Project A");
     await createProject("Project B");
 
-    const { container } = render(<ProjectList />);
+    render(<ProjectList />);
     const cards = await screen.findAllByRole("article");
     expect(cards).toHaveLength(2);
 
-    // Each card should be inside a div wrapper (motion.div mocked as div)
-    // The grid container itself should also be a div (motion.div mocked as div)
-    const grid = container.querySelector(".grid");
-    expect(grid).toBeInTheDocument();
-    expect(grid?.tagName).toBe("DIV");
+    // Each article (ProjectCard) should have an intermediate wrapper div
+    // between it and the grid container (motion.div → motion.div → ProjectCard)
+    for (const card of cards) {
+      const wrapper = card.parentElement;
+      const grid = wrapper?.parentElement;
+      expect(wrapper?.tagName).toBe("DIV");
+      expect(grid?.classList.contains("grid")).toBe(true);
+    }
   });
 
   it("renders cards without animation when reduced motion is preferred", async () => {
