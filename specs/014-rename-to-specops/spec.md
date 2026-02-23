@@ -44,14 +44,14 @@ A developer cloning the repository reads accurate documentation that references 
 
 **Why this priority**: Documentation accuracy matters for onboarding and project credibility but does not affect the running application. It is important but secondary to the live app identity and database alignment.
 
-**Independent Test**: Clone the repository, read the README, CLAUDE.md, and spec documents — verify all references use "SpecOps" or "spec-ops" and no stale "SDD Cockpit" or "sdd-cockpit" references remain (except in the historical `specs/001-sdd-cockpit/` directory name, which is preserved).
+**Independent Test**: Clone the repository, read the README, CLAUDE.md, and spec documents — verify all references use "SpecOps" or "spec-ops" and no stale "SDD Cockpit" or "sdd-cockpit" references remain (except in the historical `specs/001-sdd-cockpit/` directory name, which is preserved). *(Note: this directory was later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 **Acceptance Scenarios**:
 
 1. **Given** a developer reads the README, **When** they look for the project name, **Then** it reads "SpecOps" and the content aligns with the spec-kit development methodology
 2. **Given** a developer reads CLAUDE.md, **When** they look at the guidelines header and feature references, **Then** all references use "SpecOps" or "spec-ops"
-3. **Given** a developer reads any spec document in the specs/ directory, **When** they look at document titles and text references, **Then** all references use "SpecOps" instead of "SDD Cockpit" (the directory name `specs/001-sdd-cockpit/` is preserved as historical record)
-4. **Given** a developer runs a full-text search for "sdd-cockpit" on the repository (excluding node_modules, .git, .next, and the `specs/001-sdd-cockpit/` directory name itself), **When** they review the results, **Then** no matches are found in any file content
+3. **Given** a developer reads any spec document in the specs/ directory, **When** they look at document titles and text references, **Then** all references use "SpecOps" instead of "SDD Cockpit" (the directory name `specs/001-sdd-cockpit/` is preserved as historical record) *(Note: this directory was later renamed to `specs/001-spec-ops-core/` in feature 018.)*
+4. **Given** a developer runs a full-text search for "sdd-cockpit" on the repository (excluding node_modules, .git, .next, and the `specs/001-sdd-cockpit/` directory name itself), **When** they review the results, **Then** no matches are found in any file content *(Note: this directory was later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ---
 
@@ -75,7 +75,7 @@ A developer working on the project sees the correct package name in configuratio
 
 - What happens if a user has no existing data (fresh install)? The application works normally with a fresh "spec-ops" database.
 - What happens to existing data under the old "sdd-cockpit" database name? It becomes inaccessible. This is acceptable as the app is only running locally in development.
-- What happens if a developer searches for "sdd-cockpit" in the codebase? They should find matches only in the `specs/001-sdd-cockpit/` directory path and not in any file content, configuration, or source code.
+- What happens if a developer searches for "sdd-cockpit" in the codebase? They should find matches only in the `specs/001-sdd-cockpit/` directory path and not in any file content, configuration, or source code. *(Note: this directory was later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - What happens to the constitution document? The constitution has already been updated to reference "SpecOps" — no further changes needed.
 
 ## Requirements *(mandatory)*
@@ -90,9 +90,9 @@ A developer working on the project sees the correct package name in configuratio
 - **FR-006**: The README MUST reference "SpecOps" consistently and describe the project in alignment with the spec-kit development methodology
 - **FR-007**: The development guidelines file MUST reference "SpecOps" or "spec-ops" in all name references
 - **FR-008**: All spec document titles and text references in the specs/ directory MUST use "SpecOps" instead of "SDD Cockpit"
-- **FR-009**: The `specs/001-sdd-cockpit/` directory MUST NOT be renamed (preserved as historical record)
+- **FR-009**: The `specs/001-sdd-cockpit/` directory MUST NOT be renamed (preserved as historical record) *(Note: this decision was later reversed — directory renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - **FR-010**: No visible occurrence of "SDD Cockpit" or "sdd-cockpit" SHALL remain in the running application UI
-- **FR-011**: No occurrence of "SDD Cockpit" or "sdd-cockpit" SHALL remain in source code, configuration, or documentation content (excluding the historical directory path `specs/001-sdd-cockpit/`)
+- **FR-011**: No occurrence of "SDD Cockpit" or "sdd-cockpit" SHALL remain in source code, configuration, or documentation content (excluding the historical directory path `specs/001-sdd-cockpit/`) *(Note: this directory was later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ### Key Entities
 
@@ -104,7 +104,7 @@ A developer working on the project sees the correct package name in configuratio
 
 - **SC-001**: 100% of visible UI text references display "SpecOps" with zero occurrences of "SDD Cockpit"
 - **SC-002**: The IndexedDB database is named "spec-ops" in the running application
-- **SC-003**: A full-text search of the repository for "sdd-cockpit" returns matches only in the `specs/001-sdd-cockpit/` directory path, not in any file content
+- **SC-003**: A full-text search of the repository for "sdd-cockpit" returns matches only in the `specs/001-sdd-cockpit/` directory path, not in any file content *(Note: this directory was later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - **SC-004**: A full-text search of the repository for "SDD Cockpit" returns zero matches across all files
 - **SC-005**: All automated tests pass after the rename with zero regressions
 - **SC-006**: The application builds and runs successfully with the new name
@@ -113,6 +113,6 @@ A developer working on the project sees the correct package name in configuratio
 
 - The GitHub repository has already been renamed to "SpecOps" — no Git remote URL changes are needed as part of this feature
 - The constitution has already been updated to reference "SpecOps" — no constitution changes are in scope
-- The `specs/001-sdd-cockpit/` directory name is preserved as a historical record of the original feature branch name — this is intentional, not an oversight
+- The `specs/001-sdd-cockpit/` directory name is preserved as a historical record of the original feature branch name — this is intentional, not an oversight *(Note: this decision was later reversed — directory renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - "SpecOps" is the display name (title case), "spec-ops" is the kebab-case identifier used in package names and configuration
 - Data loss from the database rename is acceptable — the application is only running locally in development with no production users

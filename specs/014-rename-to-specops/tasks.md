@@ -50,21 +50,21 @@
 
 **Goal**: Update all documentation references from "SDD Cockpit" / "sdd-cockpit" to "SpecOps" / "spec-ops"
 
-**Independent Test**: Grep for "SDD Cockpit" returns zero matches in file content; grep for "sdd-cockpit" returns only the `specs/001-sdd-cockpit/` directory path
+**Independent Test**: Grep for "SDD Cockpit" returns zero matches in file content; grep for "sdd-cockpit" returns only the `specs/001-sdd-cockpit/` directory path *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ### Implementation
 
 - [X] T006 [P] [US3] Update project name, header, and references in `README.md` — replace "SDD Cockpit" / "SDD Workflow App" with "SpecOps", align content with spec-kit methodology
 - [X] T007 [P] [US3] Update guidelines header and feature references in `CLAUDE.md` — header to "spec-ops Development Guidelines", update `(001-sdd-cockpit)` references
-- [X] T008 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/plan.md`
-- [X] T009 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/data-model.md`
-- [X] T010 [P] [US3] Update document title, text references, and clone example in `specs/001-sdd-cockpit/quickstart.md`
-- [X] T011 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/research.md`
-- [X] T012 [P] [US3] Update document title and text references in `specs/001-sdd-cockpit/tasks.md`
-- [X] T013 [P] [US3] Update DB name reference text in `specs/001-sdd-cockpit/contracts/indexeddb-schema.md`
+- [X] T008 [P] [US3] Update document title and text references in `specs/001-spec-ops-core/plan.md`
+- [X] T009 [P] [US3] Update document title and text references in `specs/001-spec-ops-core/data-model.md`
+- [X] T010 [P] [US3] Update document title, text references, and clone example in `specs/001-spec-ops-core/quickstart.md`
+- [X] T011 [P] [US3] Update document title and text references in `specs/001-spec-ops-core/research.md`
+- [X] T012 [P] [US3] Update document title and text references in `specs/001-spec-ops-core/tasks.md`
+- [X] T013 [P] [US3] Update DB name reference text in `specs/001-spec-ops-core/contracts/indexeddb-schema.md`
 - [X] T014 [P] [US3] Update "SDD Cockpit" text reference in `specs/011-spec-score/quickstart.md`
 
-**Checkpoint**: All documentation references updated. Directory name `specs/001-sdd-cockpit/` preserved.
+**Checkpoint**: All documentation references updated. Directory name `specs/001-sdd-cockpit/` preserved. *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ---
 
@@ -74,7 +74,7 @@
 
 - [X] T015 Run `npm test` — all existing tests must pass with zero regressions
 - [X] T016 Run `npm run lint` — zero errors
-- [X] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-sdd-cockpit/` directory paths
+- [X] T017 Run verification grep: confirm no "SDD Cockpit" matches remain in file content and "sdd-cockpit" appears only in `specs/001-sdd-cockpit/` directory paths *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - [X] T018 Run `npm run build` — successful build with no old-name references in output
 
 ---
@@ -139,5 +139,5 @@ Since this is a simple text-replacement feature with no logic changes:
 - [P] tasks = different files, no dependencies
 - T001 and T002 target the same file — combine into a single edit
 - The DB name is changed from `"sdd-cockpit"` to `"spec-ops"` — data loss is acceptable (see research.md)
-- The directory `specs/001-sdd-cockpit/` is intentionally preserved (historical record)
+- The directory `specs/001-sdd-cockpit/` is intentionally preserved (historical record) *(Note: later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - Total files modified: 12 source/doc files + 1 auto-generated (package-lock.json)

@@ -1,6 +1,6 @@
 # Data Model: SpecOps
 
-**Branch**: `001-sdd-cockpit` | **Date**: 2026-02-22
+**Branch**: `001-spec-ops-core` | **Date**: 2026-02-22
 
 ## Entities
 

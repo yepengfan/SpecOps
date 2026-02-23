@@ -26,17 +26,17 @@ This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, data
 - `CLAUDE.md` — Development guidelines header and feature references
 
 ### Spec Documents (7 files)
-- `specs/001-sdd-cockpit/plan.md` — Document title and references
-- `specs/001-sdd-cockpit/data-model.md` — Document title and references
-- `specs/001-sdd-cockpit/quickstart.md` — Document title, references, clone example
-- `specs/001-sdd-cockpit/research.md` — Document title and references
-- `specs/001-sdd-cockpit/tasks.md` — Document title and references
-- `specs/001-sdd-cockpit/contracts/indexeddb-schema.md` — DB name reference
+- `specs/001-spec-ops-core/plan.md` — Document title and references
+- `specs/001-spec-ops-core/data-model.md` — Document title and references
+- `specs/001-spec-ops-core/quickstart.md` — Document title, references, clone example
+- `specs/001-spec-ops-core/research.md` — Document title and references
+- `specs/001-spec-ops-core/tasks.md` — Document title and references
+- `specs/001-spec-ops-core/contracts/indexeddb-schema.md` — DB name reference
 - `specs/011-spec-score/quickstart.md` — "SDD Cockpit" text reference
 
 ## What Does NOT Change
 
-- `specs/001-sdd-cockpit/` directory name (preserved as historical record)
+- `specs/001-sdd-cockpit/` directory name (preserved as historical record) *(Note: later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 - Any application logic, phase gates, or feature behavior
 - The constitution (already updated prior to this feature)
 
@@ -51,7 +51,7 @@ This feature renames the project from "SDD Cockpit" to "SpecOps" across UI, data
 1. Open the app — browser tab should read "SpecOps"
 2. Check navigation header — should display "SpecOps"
 3. Create a project, close and reopen — data persists in the new "spec-ops" database
-4. Run `grep -r "SDD Cockpit" --include="*.ts" --include="*.tsx" --include="*.md" --include="*.json" . | grep -v node_modules | grep -v .next | grep -v specs/014` — should return only matches within `specs/001-sdd-cockpit/` directory paths, not in file content
+4. Run `grep -r "SDD Cockpit" --include="*.ts" --include="*.tsx" --include="*.md" --include="*.json" . | grep -v node_modules | grep -v .next | grep -v specs/014` — should return only matches within `specs/001-sdd-cockpit/` directory paths, not in file content *(Note: directory later renamed to `specs/001-spec-ops-core/` in feature 018.)*
 
 ### Verification Script
 ```bash

@@ -5,7 +5,7 @@
 ## Database
 
 ```
-Name: spec-ops (renamed from sdd-cockpit in feature 014)
+Name: spec-ops
 Version: 1
 ```
 
