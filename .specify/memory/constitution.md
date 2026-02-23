@@ -31,7 +31,10 @@ Start simple. No features beyond what the current requirements specify. No GitHu
 
 ## Development Workflow
 
-- **Spec-Driven Development**: This project follows its own SDD methodology — requirements first, then design, then tasks.
+- **Spec-Driven Development**: This project follows its own SDD methodology — requirements first, then design, then tasks. Spec artifacts (spec.md, plan.md, tasks.md) must be created and reviewed before any implementation code is written.
+- **Branch-Per-Requirement**: When a new requirement or feature is added, a dedicated branch must be created for that work (e.g., `019-feature-name`). All spec artifacts and implementation for that requirement live on its branch until merged.
+- **Test-Driven Development (TDD)**: All implementation must follow TDD — write a failing test first, write the minimal code to make it pass, then refactor. No production code without a corresponding test written beforehand.
+- **Atomic Commits**: Each commit must be a single, self-contained logical change. One commit per test addition, one commit per implementation to pass that test, one commit per refactor. Avoid bundling unrelated changes. Commit messages must clearly describe the single change.
 - **EARS format**: All requirements use EARS structured keywords (WHEN/THEN/WHERE/IF).
 - **Fixed section templates**: Each phase has a fixed set of sections defined in the README. Do not add or remove sections without updating the template definition.
 - **Export format**: Three markdown files (requirements.md, design.md, tasks.md) matching the section templates exactly.
@@ -40,4 +43,4 @@ Start simple. No features beyond what the current requirements specify. No GitHu
 
 This constitution defines the non-negotiable principles for the SpecOps project. All implementation decisions must align with these principles. Phase gate enforcement is the single most critical feature — it must never be weakened or bypassed. Amendments to this constitution require updating this document, reviewing the change, and verifying no existing implementation violates the new rules.
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-22
+**Version**: 1.1.0 | **Ratified**: 2026-02-22 | **Amended**: 2026-02-24
