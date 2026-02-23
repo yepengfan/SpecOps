@@ -54,7 +54,7 @@ describe("PhaseNav", () => {
     render(<PhaseNav projectId="proj-1" />);
 
     const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(4); // 3 phases + traceability
+    expect(tabs).toHaveLength(5); // overview + 3 phases + traceability
   });
 
   it("locked tabs show lock icon and are not links", () => {
@@ -62,9 +62,9 @@ describe("PhaseNav", () => {
     render(<PhaseNav projectId="proj-1" />);
 
     const tabs = screen.getAllByRole("tab");
-    // Plan and Tasks are locked
-    const planTab = tabs[1];
-    const tasksTab = tabs[2];
+    // Plan and Tasks are locked (indices shifted by 1 for Overview)
+    const planTab = tabs[2];
+    const tasksTab = tabs[3];
 
     expect(planTab).toHaveAttribute("aria-disabled", "true");
     expect(tasksTab).toHaveAttribute("aria-disabled", "true");
@@ -79,7 +79,8 @@ describe("PhaseNav", () => {
     render(<PhaseNav projectId="proj-1" />);
 
     const tabs = screen.getAllByRole("tab");
-    const specTab = tabs[0];
+    // tabs[0] is Overview, tabs[1] is Spec
+    const specTab = tabs[1];
     // The check icon should be present (lucide-react renders an svg)
     expect(specTab.querySelector("svg")).toBeInTheDocument();
   });
@@ -90,8 +91,9 @@ describe("PhaseNav", () => {
     render(<PhaseNav projectId="proj-1" />);
 
     const tabs = screen.getAllByRole("tab");
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    expect(tabs[1]).not.toHaveAttribute("aria-selected", "true");
+    // tabs[0] is Overview, tabs[1] is Spec
+    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[2]).not.toHaveAttribute("aria-selected", "true");
   });
 
   it("non-locked tabs are navigable links", () => {
@@ -101,11 +103,13 @@ describe("PhaseNav", () => {
     render(<PhaseNav projectId="proj-1" />);
 
     const tabs = screen.getAllByRole("tab");
-    // Spec (reviewed) and Plan (draft) should be links
+    // tabs[0] is Overview, tabs[1] is Spec (reviewed), tabs[2] is Plan (draft)
     expect(tabs[0].tagName).toBe("A");
-    expect(tabs[0]).toHaveAttribute("href", "/project/proj-1/spec");
+    expect(tabs[0]).toHaveAttribute("href", "/project/proj-1/overview");
     expect(tabs[1].tagName).toBe("A");
-    expect(tabs[1]).toHaveAttribute("href", "/project/proj-1/plan");
+    expect(tabs[1]).toHaveAttribute("href", "/project/proj-1/spec");
+    expect(tabs[2].tagName).toBe("A");
+    expect(tabs[2]).toHaveAttribute("href", "/project/proj-1/plan");
   });
 
   describe("keyboard navigation", () => {
@@ -188,12 +192,12 @@ describe("PhaseNav", () => {
         '[role="tab"]:not([aria-disabled="true"])',
       );
 
-      // Only spec + traceability should be focusable
-      expect(focusableTabs).toHaveLength(2);
+      // Overview + spec + traceability should be focusable
+      expect(focusableTabs).toHaveLength(3);
 
       focusableTabs[0].focus();
       fireEvent.keyDown(tablist, { key: "ArrowRight" });
-      // Should jump straight to traceability, skipping locked plan/tasks
+      // Should move to spec, then traceability skipping locked plan/tasks
       expect(document.activeElement).toBe(focusableTabs[1]);
     });
 
@@ -208,8 +212,8 @@ describe("PhaseNav", () => {
         '[role="tab"]:not([aria-disabled="true"])',
       );
 
-      // Focus the plan tab (second focusable)
-      focusableTabs[1].focus();
+      // Focus the plan tab (third focusable: overview, spec, plan)
+      focusableTabs[2].focus();
 
       fireEvent.keyDown(tablist, { key: "Enter" });
       expect(mockPush).toHaveBeenCalledWith("/project/proj-1/plan");

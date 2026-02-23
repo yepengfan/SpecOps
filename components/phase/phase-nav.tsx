@@ -3,7 +3,7 @@
 import { useCallback, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Check, Lock, GitBranch } from "lucide-react";
+import { Check, Lock, GitBranch, LayoutDashboard } from "lucide-react";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { PHASE_TYPES, type PhaseType } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -30,9 +30,14 @@ export function PhaseNav({ projectId }: PhaseNavProps) {
   const router = useRouter();
   const tablistRef = useRef<HTMLDivElement>(null);
 
-  // Build full tab list (phases + traceability)
+  // Build full tab list (overview + phases + traceability)
   const allTabs: TabEntry[] = project
     ? [
+        {
+          key: "overview",
+          href: `/project/${projectId}/overview`,
+          locked: false,
+        },
         ...PHASE_TYPES.map((phase) => ({
           key: phase,
           href: `/project/${projectId}/${phase}`,
@@ -118,6 +123,38 @@ export function PhaseNav({ projectId }: PhaseNavProps) {
         className="inline-flex h-9 items-center gap-1 rounded-lg bg-muted p-1"
         onKeyDown={onKeyDown}
       >
+        {(() => {
+          const overviewHref = `/project/${projectId}/overview`;
+          const isOverviewActive = pathname === overviewHref;
+          const focusableIdx = focusableTabs.findIndex(
+            (t) => t.key === "overview",
+          );
+
+          return (
+            <Link
+              href={overviewHref}
+              role="tab"
+              aria-selected={isOverviewActive}
+              tabIndex={
+                focusableIdx === (activeFocusableIdx >= 0 ? activeFocusableIdx : 0)
+                  ? 0
+                  : -1
+              }
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-sm font-medium transition-colors",
+                isOverviewActive
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <LayoutDashboard className="size-3.5" />
+              Overview
+            </Link>
+          );
+        })()}
+
+        <span className="mx-1 text-muted-foreground/40">|</span>
+
         {PHASE_TYPES.map((phase) => {
           const status = project.phases[phase].status;
           const href = `/project/${projectId}/${phase}`;

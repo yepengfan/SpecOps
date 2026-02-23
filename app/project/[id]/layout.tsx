@@ -14,6 +14,7 @@ import { EditableProjectName } from "@/components/ui/editable-project-name";
 import type { PhaseType } from "@/lib/types";
 
 const SEGMENT_TO_PHASE: Record<string, PhaseType> = {
+  overview: "spec",
   requirements: "spec",
   plan: "plan",
   tasks: "tasks",

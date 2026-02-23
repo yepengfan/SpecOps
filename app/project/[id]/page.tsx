@@ -3,7 +3,6 @@
 import { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getProject } from "@/lib/db/projects";
-import { getActivePhase } from "@/lib/utils/project";
 
 export default function ProjectRedirect({
   params,
@@ -20,7 +19,7 @@ export default function ProjectRedirect({
           router.replace("/");
           return;
         }
-        router.replace(`/project/${id}/${getActivePhase(project)}`);
+        router.replace(`/project/${id}/overview`);
       })
       .catch(() => {
         router.replace("/");
