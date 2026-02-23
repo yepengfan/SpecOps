@@ -32,7 +32,7 @@ Start simple. No features beyond what the current requirements specify. No GitHu
 ## Development Workflow
 
 - **Spec-Driven Development**: This project follows its own SDD methodology — requirements first, then design, then tasks. Spec artifacts (spec.md, plan.md, tasks.md) must be created and reviewed before any implementation code is written.
-- **Branch-Per-Requirement**: When a new requirement or feature is added, a dedicated branch must be created for that work (e.g., `019-feature-name`). All spec artifacts and implementation for that requirement live on its branch until merged.
+- **Branch-Per-Requirement**: When a new requirement or feature is added, a dedicated branch must be created for that work. Branch names must follow the `NNN-kebab-case-name` convention (e.g., `019-constitution-workflow-rules`). All spec artifacts and implementation for that requirement live on its branch until merged.
 - **Test-Driven Development (TDD)**: All implementation must follow TDD — write a failing test first, write the minimal code to make it pass, then refactor. No production code without a corresponding test written beforehand.
 - **Atomic Commits**: Each commit must be a single, self-contained logical change. One commit per test addition, one commit per implementation to pass that test, one commit per refactor. Avoid bundling unrelated changes. Commit messages must clearly describe the single change.
 - **EARS format**: All requirements use EARS structured keywords (WHEN/THEN/WHERE/IF).
