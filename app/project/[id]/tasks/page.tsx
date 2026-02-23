@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { GatedPhasePage } from "@/components/phase/gated-phase-page";
 import { useProjectStore } from "@/lib/stores/project-store";
@@ -12,7 +13,6 @@ import { updateProject } from "@/lib/db/projects";
 
 export default function TasksPage() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [malformedWarning, setMalformedWarning] = useState(false);
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
@@ -32,7 +32,6 @@ export default function TasksPage() {
     if (!project) return;
 
     setIsGenerating(true);
-    setError(null);
     setMalformedWarning(false);
 
     const specContent = project.phases.spec.sections
@@ -96,7 +95,7 @@ export default function TasksPage() {
         err instanceof StreamError
           ? err.message
           : "An unexpected error occurred";
-      setError(message);
+      toast.error(message);
     } finally {
       setIsGenerating(false);
     }
@@ -107,8 +106,7 @@ export default function TasksPage() {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
-      setError(null);
-      setMalformedWarning(false);
+        setMalformedWarning(false);
 
       const phase = project.phases.tasks;
       const phaseContext = phase.sections
@@ -143,7 +141,7 @@ export default function TasksPage() {
           err instanceof StreamError
             ? err.message
             : "An unexpected error occurred";
-        setError(message);
+        toast.error(message);
       } finally {
         setRegeneratingSection(null);
       }
@@ -170,15 +168,6 @@ export default function TasksPage() {
           role="status"
         >
           Plan must be reviewed before generating tasks.
-        </div>
-      )}
-
-      {error && (
-        <div
-          className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800"
-          role="alert"
-        >
-          {error}
         </div>
       )}
 

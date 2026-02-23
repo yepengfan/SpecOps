@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { GatedPhasePage } from "@/components/phase/gated-phase-page";
@@ -11,7 +12,6 @@ import { parseSpecSections } from "@/lib/prompts/spec";
 export default function SpecPage() {
   const [description, setDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [malformedWarning, setMalformedWarning] = useState(false);
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
@@ -26,7 +26,6 @@ export default function SpecPage() {
 
   const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
-    setError(null);
     setMalformedWarning(false);
 
     try {
@@ -66,7 +65,7 @@ export default function SpecPage() {
         err instanceof StreamError
           ? err.message
           : "An unexpected error occurred";
-      setError(message);
+      toast.error(message);
     } finally {
       setIsGenerating(false);
     }
@@ -77,8 +76,7 @@ export default function SpecPage() {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
-      setError(null);
-
+  
       const phase = project.phases.spec;
       const phaseContext = phase.sections
         .map((s) => `## ${s.title}\n${s.content}`)
@@ -109,7 +107,7 @@ export default function SpecPage() {
           err instanceof StreamError
             ? err.message
             : "An unexpected error occurred";
-        setError(message);
+        toast.error(message);
       } finally {
         setRegeneratingSection(null);
       }
@@ -143,15 +141,6 @@ export default function SpecPage() {
       <Button onClick={handleGenerate} disabled={!canGenerate}>
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
-
-      {error && (
-        <div
-          className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800"
-          role="alert"
-        >
-          {error}
-        </div>
-      )}
 
       {malformedWarning && (
         <div

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/lib/stores/project-store";
@@ -13,7 +14,6 @@ import { CellDetailDialog } from "@/components/traceability/cell-detail";
 
 export default function TraceabilityPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedCell, setSelectedCell] = useState<{
     requirementId: string;
     targetType: "plan" | "task";
@@ -27,7 +27,6 @@ export default function TraceabilityPage() {
     if (!project) return;
 
     setIsAnalyzing(true);
-    setError(null);
 
     const specContent = project.phases.spec.sections
       .map((s) => `## ${s.title}\n${s.content}`)
@@ -71,7 +70,7 @@ export default function TraceabilityPage() {
         err instanceof StreamError
           ? err.message
           : "An unexpected error occurred";
-      setError(message);
+      toast.error(message);
     } finally {
       setIsAnalyzing(false);
     }
@@ -100,15 +99,6 @@ export default function TraceabilityPage() {
           {isAnalyzing ? "Analyzing…" : "Re-analyze Mappings"}
         </Button>
       </div>
-
-      {error && (
-        <div
-          className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800"
-          role="alert"
-        >
-          {error}
-        </div>
-      )}
 
       <MatrixTable project={project} onCellClick={handleCellClick} />
 

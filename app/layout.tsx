@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Link from "next/link";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const inter = Inter({
@@ -44,6 +45,7 @@ export default function RootLayout({
           </nav>
         </header>
         <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
+        <Toaster />
       </body>
     </html>
   );
