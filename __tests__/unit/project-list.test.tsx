@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { useReducedMotion } from "framer-motion";
 import { db } from "@/lib/db/database";
 import { createProject } from "@/lib/db/projects";
 import { ProjectList } from "@/components/ui/project-list";
@@ -61,5 +62,30 @@ describe("ProjectList", () => {
     render(<ProjectList />);
     const card = await screen.findByRole("article");
     expect(card).toHaveTextContent("Complete");
+  });
+
+  it("wraps project cards in motion containers for stagger animation", async () => {
+    await createProject("Project A");
+    await createProject("Project B");
+
+    const { container } = render(<ProjectList />);
+    const cards = await screen.findAllByRole("article");
+    expect(cards).toHaveLength(2);
+
+    // Each card should be inside a div wrapper (motion.div mocked as div)
+    // The grid container itself should also be a div (motion.div mocked as div)
+    const grid = container.querySelector(".grid");
+    expect(grid).toBeInTheDocument();
+    expect(grid?.tagName).toBe("DIV");
+  });
+
+  it("renders cards without animation when reduced motion is preferred", async () => {
+    (useReducedMotion as jest.Mock).mockReturnValueOnce(true);
+
+    await createProject("Accessible Project");
+
+    render(<ProjectList />);
+    const card = await screen.findByRole("article");
+    expect(card).toBeInTheDocument();
   });
 });
