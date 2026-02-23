@@ -35,9 +35,9 @@
 
 **Purpose**: Verify all tests pass and no regressions
 
-- [ ] T003 Run `npm run lint` — zero errors, zero warnings
-- [ ] T004 Run `npm test` — all existing tests (313+) plus the new test must pass with zero regressions
-- [ ] T005 Run quickstart.md verification scenarios 1-2 manually — verify project card navigates to overview, verify direct phase URLs still work
+- [X] T003 Run `npm run lint` — zero errors, zero warnings
+- [X] T004 Run `npm test` — all existing tests (313+) plus the new test must pass with zero regressions
+- [X] T005 Run quickstart.md verification scenarios 1-2 manually — verify project card navigates to overview, verify direct phase URLs still work
 
 ---
 
