@@ -5,7 +5,7 @@
 
 ## Summary
 
-Add 9 UX/UI enhancements to the SpecOps application: toast notifications (sonner), button micro-interactions, auto-expand evaluation panel, regeneration confirmation dialog, mobile-responsive chat panel, collapsible sections (Radix Collapsible), dark mode toggle (next-themes), onboarding guidance, and a project overview dashboard page. Two new dependencies (`sonner`, `next-themes`), five new components, and modifications to thirteen existing files. No schema changes or server-side modifications.
+Add 9 UX/UI enhancements to the SpecOps application: toast notifications (sonner), button micro-interactions, auto-expand evaluation panel, regeneration confirmation dialog, mobile-responsive chat panel, collapsible sections (Radix Collapsible), dark mode toggle (next-themes), onboarding guidance, and a project overview dashboard page. Two new dependencies (`sonner`, `next-themes`), seven new files (six components and one page), and modifications to thirteen existing files. No schema changes or server-side modifications.
 
 ## Technical Context
 
@@ -18,7 +18,7 @@ Add 9 UX/UI enhancements to the SpecOps application: toast notifications (sonner
 **Project Type**: Web application (Next.js App Router)
 **Performance Goals**: No runtime performance impact — UI presentation changes only
 **Constraints**: React 19 lint rules prohibit `setState` in `useEffect` and ref access during render — must use "derived state from props" pattern (see research.md §5)
-**Scale/Scope**: 6 new files + 14 modified files = 20 files, ~+739/-137 lines
+**Scale/Scope**: 7 new files + 13 modified files = 20 files, ~+739/-137 lines
 
 ## Constitution Check
 
