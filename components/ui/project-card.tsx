@@ -7,7 +7,6 @@ import type { Project } from "@/lib/types";
 import { deleteProject } from "@/lib/db/projects";
 import {
   getProjectDisplayStatus,
-  getActivePhase,
   formatRelativeTime,
   computeHealthScore,
 } from "@/lib/utils/project";
@@ -26,7 +25,6 @@ export function ProjectCard({ project }: { project: Project }) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const status = getProjectDisplayStatus(project);
-  const activePhase = getActivePhase(project);
   const health = computeHealthScore(project);
 
   async function handleDelete() {
@@ -42,7 +40,7 @@ export function ProjectCard({ project }: { project: Project }) {
     <>
       <article className="relative rounded-lg border p-4 transition-colors hover:bg-accent">
         <Link
-          href={`/project/${project.id}/${activePhase}`}
+          href={`/project/${project.id}/overview`}
           className="absolute inset-0 rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 outline-none"
         >
           <span className="sr-only">{project.name}</span>
