@@ -1,7 +1,7 @@
 # Implementation Plan: SpecOps
 
-**Branch**: `001-sdd-cockpit` | **Date**: 2026-02-22 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `/specs/001-sdd-cockpit/spec.md`
+**Branch**: `001-spec-ops-core` | **Date**: 2026-02-22 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/001-spec-ops-core/spec.md`
 
 ## Summary
 
@@ -53,7 +53,7 @@ Build a Next.js web application that guides developers through the Spec-Driven D
 ### Documentation (this feature)
 
 ```text
-specs/001-sdd-cockpit/
+specs/001-spec-ops-core/
 ├── plan.md              # This file
 ├── research.md          # Phase 0: Technology decisions
 ├── data-model.md        # Phase 1: Entity definitions and schema

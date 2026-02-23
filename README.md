@@ -82,7 +82,7 @@ The developer takes the exported spec documents, commits them to their project r
 This app is built using the [Spec-Kit](https://github.com/github/spec-kit) methodology — the same spec-driven workflow it helps users follow. The design documents live in `specs/`:
 
 ```
-specs/001-sdd-cockpit/           # Core application (historical directory name)
+specs/001-spec-ops-core/         # Core application specification
 ├── spec.md                      # EARS-format requirements specification
 ├── plan.md                      # Implementation plan with tech context
 ├── research.md                  # Technology research decisions

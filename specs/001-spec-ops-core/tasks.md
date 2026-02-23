@@ -1,6 +1,6 @@
 # Tasks: SpecOps
 
-**Input**: Plan documents from `/specs/001-sdd-cockpit/`
+**Input**: Plan documents from `/specs/001-spec-ops-core/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md, contracts/
 
 **Tests**: TDD approach — write tests first, verify they fail, then implement. Unit tests are part of code review.
