@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleTrigger,
-  CollapsibleContent,
+  AnimatedCollapsibleContent,
 } from "@/components/ui/collapsible";
 import {
   Dialog,
@@ -135,7 +135,7 @@ export function GatedPhasePage({
             />
             {section.title}
           </CollapsibleTrigger>
-          <CollapsibleContent>
+          <AnimatedCollapsibleContent isOpen={isSectionOpen(section.id)}>
             <SectionEditor
               phaseType={phaseType}
               sectionId={section.id}
@@ -156,7 +156,7 @@ export function GatedPhasePage({
               }
               defaultViewMode={defaultViewMode}
             />
-          </CollapsibleContent>
+          </AnimatedCollapsibleContent>
         </Collapsible>
       ))}
       <EvaluationPanel phaseType={phaseType} />
