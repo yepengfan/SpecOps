@@ -106,7 +106,7 @@ export default function TasksPage() {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
-        setMalformedWarning(false);
+      setMalformedWarning(false);
 
       const phase = project.phases.tasks;
       const phaseContext = phase.sections

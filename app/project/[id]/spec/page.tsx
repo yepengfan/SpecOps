@@ -80,7 +80,7 @@ export default function SpecPage() {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
-  
+
       const phase = project.phases.spec;
       const phaseContext = phase.sections
         .map((s) => `## ${s.title}\n${s.content}`)

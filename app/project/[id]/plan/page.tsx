@@ -103,7 +103,7 @@ export default function PlanPage() {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
-  
+
       const phase = project.phases.plan;
       const phaseContext = phase.sections
         .map((s) => `## ${s.title}\n${s.content}`)
