@@ -27,7 +27,7 @@
 
 ### Implementation
 
-- [ ] T002 [US1] Change link href in `components/ui/project-card.tsx` — replace `href={\`/project/${project.id}/${activePhase}\`}` with `href={\`/project/${project.id}/overview\`}`; remove the `getActivePhase` import and `activePhase` variable if now unused
+- [X] T002 [US1] Change link href in `components/ui/project-card.tsx` — replace `href={\`/project/${project.id}/${activePhase}\`}` with `href={\`/project/${project.id}/overview\`}`; remove the `getActivePhase` import and `activePhase` variable if now unused
 
 ---
 
