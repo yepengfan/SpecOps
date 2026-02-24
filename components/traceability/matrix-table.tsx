@@ -71,7 +71,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="px-3 py-2 text-left font-medium">Requirement</th>
+              <th className="sticky left-0 z-10 bg-muted/50 px-3 py-2 text-left font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">Requirement</th>
               {planColumns.map((col) => (
                 <th
                   key={`plan-${col.id}`}
@@ -105,7 +105,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
                     !covered && "bg-amber-50",
                   )}
                 >
-                  <td className="px-3 py-2 font-medium whitespace-nowrap">
+                  <td className="sticky left-0 z-10 bg-background px-3 py-2 font-medium whitespace-nowrap shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">
                     {req.label}
                   </td>
                   {allColumns.map((col) => {

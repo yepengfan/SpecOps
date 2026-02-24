@@ -179,12 +179,12 @@
 
 ### Tests for User Story 7
 
-- [ ] T036 [US7] Write test verifying first column cells have `sticky left-0` classes in `__tests__/unit/matrix-table-sticky.test.tsx`
+- [x] T036 [US7] Write test verifying first column cells have `sticky left-0` classes in `__tests__/unit/matrix-table-sticky.test.tsx`
 
 ### Implementation for User Story 7
 
-- [ ] T037 [US7] Add `sticky left-0 z-10 bg-background` to first column th and td elements in `components/traceability/matrix-table.tsx`
-- [ ] T038 [US7] Add right border shadow on sticky column for visual separation in `components/traceability/matrix-table.tsx`
+- [x] T037 [US7] Add `sticky left-0 z-10 bg-background` to first column th and td elements in `components/traceability/matrix-table.tsx`
+- [x] T038 [US7] Add right border shadow on sticky column for visual separation in `components/traceability/matrix-table.tsx`
 
 **Checkpoint**: Traceability matrix is usable on narrow viewports with sticky requirement labels.
 
