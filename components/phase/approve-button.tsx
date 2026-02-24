@@ -1,10 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { LiveRegion } from "@/components/ui/live-region";
 import { useProjectStore } from "@/lib/stores/project-store";
 import type { PhaseType } from "@/lib/types";
+
+const PHASE_LABELS: Record<PhaseType, string> = {
+  spec: "Spec",
+  plan: "Plan",
+  tasks: "Tasks",
+};
 
 interface ApproveButtonProps {
   phaseType: PhaseType;
@@ -24,6 +31,7 @@ export function ApproveButton({ phaseType }: ApproveButtonProps) {
 
   const handleApprove = useCallback(() => {
     approvePhase(phaseType);
+    toast.success(`${PHASE_LABELS[phaseType]} phase approved`);
     setJustApproved(true);
     timerRef.current = setTimeout(() => setJustApproved(false), 3000);
   }, [approvePhase, phaseType]);

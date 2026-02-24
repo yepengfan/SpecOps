@@ -48,17 +48,17 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T007 [P] [US1] Write test verifying malformed AI response shows toast.warning() instead of inline banner in `__tests__/unit/toast-migration-spec.test.tsx`
-- [ ] T008 [P] [US1] Write test verifying phase approval triggers toast.success() in `__tests__/unit/toast-approval.test.tsx`
-- [ ] T009 [P] [US1] Write test verifying chat panel errors use toast.error() instead of inline display in `__tests__/unit/toast-chat-error.test.tsx`
+- [x] T007 [P] [US1] Write test verifying malformed AI response shows toast.warning() instead of inline banner in `__tests__/unit/toast-migration-spec.test.tsx`
+- [x] T008 [P] [US1] Write test verifying phase approval triggers toast.success() in `__tests__/unit/toast-approval.test.tsx`
+- [x] T009 [P] [US1] Write test verifying chat panel errors use toast.error() instead of inline display in `__tests__/unit/toast-chat-error.test.tsx`
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Replace malformed AI response inline banner with `toast.warning()` in `app/project/[id]/spec/page.tsx`
-- [ ] T011 [P] [US1] Replace malformed AI response inline banner with `toast.warning()` in `app/project/[id]/plan/page.tsx`
-- [ ] T012 [P] [US1] Replace malformed AI response inline banner with `toast.warning()` in `app/project/[id]/tasks/page.tsx`
-- [ ] T013 [US1] Replace chat panel inline error display with `toast.error()` in `components/chat/chat-panel.tsx`
-- [ ] T014 [US1] Add `toast.success()` for phase approval in `components/phase/approve-button.tsx`
+- [x] T010 [US1] Replace malformed AI response inline banner with `toast.warning()` in `app/project/[id]/spec/page.tsx`
+- [x] T011 [P] [US1] Replace malformed AI response inline banner with `toast.warning()` in `app/project/[id]/plan/page.tsx`
+- [x] T012 [P] [US1] Replace malformed AI response inline banner with `toast.warning()` in `app/project/[id]/tasks/page.tsx`
+- [x] T013 [US1] Replace chat panel inline error display with `toast.error()` in `components/chat/chat-panel.tsx`
+- [x] T014 [US1] Add `toast.success()` for phase approval in `components/phase/approve-button.tsx`
 
 **Checkpoint**: All transient feedback uses toast notifications. Prerequisite banners (plan/tasks pages) and empty-state banners (traceability) intentionally kept as inline UI.
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { X, Loader2, Trash2 } from "lucide-react";
 import { useChatStore } from "@/lib/stores/chat-store";
 import { ChatMessage } from "@/components/chat/chat-message";
@@ -42,6 +43,13 @@ export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Show error as toast instead of inline
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   if (!isOpen) return null;
 
@@ -130,13 +138,6 @@ export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
         )}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Error */}
-      {error && (
-        <div className="border-t px-4 py-2 text-sm text-destructive">
-          {error}
-        </div>
-      )}
 
       {/* Input */}
       <ChatInput onSend={handleSend} isStreaming={isStreaming} />
