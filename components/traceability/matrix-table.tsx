@@ -7,6 +7,8 @@ import { PLAN_SECTIONS } from "@/lib/types/sections";
 import { TASKS_SECTIONS } from "@/lib/types/sections";
 import { cn } from "@/lib/utils";
 
+const STICKY_COL_WIDTH = "w-[180px] min-w-[180px] max-w-[180px]";
+
 interface MatrixTableProps {
   project: Project;
   onCellClick?: (requirementId: string, targetType: "plan" | "task", targetId: string) => void;
@@ -74,7 +76,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
         <table className="w-full table-fixed text-sm">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="sticky left-0 z-10 w-[180px] min-w-[180px] max-w-[180px] bg-muted/50 px-3 py-2 text-left font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">Requirement</th>
+              <th className={`sticky left-0 z-10 ${STICKY_COL_WIDTH} bg-muted/50 px-3 py-2 text-left font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]`}>Requirement</th>
               {planColumns.map((col) => (
                 <th
                   key={`plan-${col.id}`}
@@ -110,7 +112,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
                 >
                   <td
                     className={cn(
-                      "sticky left-0 z-10 w-[180px] min-w-[180px] max-w-[180px] px-3 py-2 font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]",
+                      `sticky left-0 z-10 ${STICKY_COL_WIDTH} px-3 py-2 font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]`,
                       covered ? "bg-background" : "bg-muted/50"
                     )}
                     title={req.label}
