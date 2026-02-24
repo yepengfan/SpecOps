@@ -1,4 +1,4 @@
-import { sortProjects, type SortOption } from "@/components/ui/project-list-utils";
+import { sortProjects } from "@/components/ui/project-list-utils";
 import type { Project } from "@/lib/types";
 
 function makeProject(

@@ -1,4 +1,4 @@
-import { filterProjects, sortProjects, type SortOption } from "@/components/ui/project-list-utils";
+import { filterProjects } from "@/components/ui/project-list-utils";
 import type { Project } from "@/lib/types";
 
 function makeProject(overrides: Partial<Project> & { name: string }): Project {

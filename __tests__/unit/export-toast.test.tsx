@@ -1,10 +1,9 @@
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ExportPanel } from "@/components/phase/export-panel";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { toast } from "sonner";
 import * as zipExport from "@/lib/export/zip";
-import * as markdown from "@/lib/export/markdown";
 
 jest.mock("sonner", () => ({
   toast: {

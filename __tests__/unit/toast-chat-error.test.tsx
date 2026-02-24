@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { useChatStore } from "@/lib/stores/chat-store";
-import { toast } from "sonner";
 import type { Project } from "@/lib/types";
 
 jest.mock("sonner", () => ({
@@ -60,8 +59,6 @@ describe("ChatPanel toast for errors", () => {
       />
     );
 
-    // The inline error div should NOT be present
-    const errorDiv = screen.queryByText("Something went wrong");
     // After migration, error should be shown via toast, not inline
     // The inline error element with border-t should not exist
     const panel = screen.getByTestId("chat-panel");

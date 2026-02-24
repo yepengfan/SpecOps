@@ -246,11 +246,11 @@
 
 **Purpose**: Final verification and cleanup across all stories.
 
-- [ ] T053 [P] Verify all inline amber banners are replaced per the disposition table in `contracts/ui-contracts.md`
-- [ ] T054 [P] Verify accessibility: breadcrumb aria-label, toast aria-live, resize handle keyboard support across all new components
-- [ ] T055 [P] Verify prefers-reduced-motion is respected in skeleton loaders and toast animations
-- [ ] T056 Run full test suite (`npm test && npm run lint`) and fix any failures
-- [ ] T057 Run quickstart.md verification checklist
+- [x] T053 [P] Verify all inline amber banners are replaced per the disposition table in `contracts/ui-contracts.md`
+- [x] T054 [P] Verify accessibility: breadcrumb aria-label, toast aria-live, resize handle keyboard support across all new components
+- [x] T055 [P] Verify prefers-reduced-motion is respected in skeleton loaders and toast animations
+- [x] T056 Run full test suite (`npm test && npm run lint`) and fix any failures
+- [x] T057 Run quickstart.md verification checklist
 
 ---
 

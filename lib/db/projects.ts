@@ -95,9 +95,8 @@ export async function unarchiveProject(id: string): Promise<void> {
   return withErrorHandling(async () => {
     const project = await db.projects.get(id);
     if (!project) throw new Error(`Project not found: ${id}`);
-    const { archivedAt: _, ...rest } = project;
     await db.projects.put({
-      ...rest,
+      ...project,
       archivedAt: undefined,
       updatedAt: Date.now(),
     });

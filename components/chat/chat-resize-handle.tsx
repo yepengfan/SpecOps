@@ -76,6 +76,8 @@ export function ChatResizeHandle({
     [panelWidth, onWidthChange, onDragEnd],
   );
 
+  /* Focusable separator is an interactive widget per WAI-ARIA (aria-valuenow makes it a "valued separator") */
+  /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */
   return (
     <div
       role="separator"
