@@ -31,26 +31,29 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
 
   const allColumns = [...planColumns, ...taskColumns];
 
+  // Pre-compute lookup maps for O(1) cell access instead of O(n) per cell
+  const mappingIndex = new Map<string, TraceabilityMapping>();
+  const coveredReqs = new Set<string>();
+  for (const m of mappings) {
+    mappingIndex.set(`${m.requirementId}:${m.targetType}:${m.targetId}`, m);
+    coveredReqs.add(m.requirementId);
+  }
+
   function findMapping(
     reqId: string,
     targetType: "plan" | "task",
     targetId: string,
   ): TraceabilityMapping | undefined {
-    return mappings.find(
-      (m) =>
-        m.requirementId === reqId &&
-        m.targetType === targetType &&
-        m.targetId === targetId,
-    );
+    return mappingIndex.get(`${reqId}:${targetType}:${targetId}`);
   }
 
   function isRowCovered(reqId: string): boolean {
-    return mappings.some((m) => m.requirementId === reqId);
+    return coveredReqs.has(reqId);
   }
 
   if (requirements.length === 0) {
     return (
-      <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800" role="status">
+      <div className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground" role="status">
         No requirements found. Requirements should use the format &quot;**FR-NNN**: description&quot; in the EARS Requirements section of the spec.
       </div>
     );
@@ -71,7 +74,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="px-3 py-2 text-left font-medium">Requirement</th>
+              <th className="sticky left-0 z-10 bg-muted/50 px-3 py-2 text-left font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">Requirement</th>
               {planColumns.map((col) => (
                 <th
                   key={`plan-${col.id}`}
@@ -102,10 +105,10 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
                   key={req.id}
                   className={cn(
                     "border-b",
-                    !covered && "bg-amber-50",
+                    !covered && "bg-muted/50",
                   )}
                 >
-                  <td className="px-3 py-2 font-medium whitespace-nowrap">
+                  <td className="sticky left-0 z-10 bg-background px-3 py-2 font-medium whitespace-nowrap shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">
                     {req.label}
                   </td>
                   {allColumns.map((col) => {
@@ -145,7 +148,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
           <User className="size-3 text-green-600" /> Manual mapping
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block size-3 rounded bg-amber-50 border border-amber-200" /> Gap (no mappings)
+          <span className="inline-block size-3 rounded bg-muted/50 border border-border" /> Gap (no mappings)
         </span>
       </div>
     </div>

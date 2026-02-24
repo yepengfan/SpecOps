@@ -185,7 +185,7 @@ describe("ChatPanel", () => {
     expect(screen.queryByTestId("streaming-indicator")).not.toBeInTheDocument();
   });
 
-  it("displays error message when error is set", () => {
+  it("does not display inline error when error is set (uses toast instead)", () => {
     mockStore({ isOpen: true, error: "Failed to send message" });
     render(
       <ChatPanel
@@ -195,7 +195,10 @@ describe("ChatPanel", () => {
       />,
     );
 
-    expect(screen.getByText("Failed to send message")).toBeInTheDocument();
+    // Error should NOT be shown inline — it's shown via toast
+    const panel = screen.getByTestId("chat-panel");
+    const inlineError = panel.querySelector(".text-destructive");
+    expect(inlineError).toBeNull();
   });
 
   it("does not display error message when error is null", () => {

@@ -13,7 +13,6 @@ import { updateProject } from "@/lib/db/projects";
 
 export default function TasksPage() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [malformedWarning, setMalformedWarning] = useState(false);
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
   );
@@ -32,7 +31,7 @@ export default function TasksPage() {
     if (!project) return;
 
     setIsGenerating(true);
-    setMalformedWarning(false);
+
 
     const specContent = project.phases.spec.sections
       .map((s) => `## ${s.title}\n${s.content}`)
@@ -64,7 +63,9 @@ export default function TasksPage() {
       }
 
       if (parsed.malformed) {
-        setMalformedWarning(true);
+        toast.warning(
+          "AI response did not match expected format. Content placed in first section."
+        );
         updateSection("tasks", "task-list", cleanContent);
       } else {
         updateSection("tasks", "task-list", parsed.taskList);
@@ -106,7 +107,7 @@ export default function TasksPage() {
       if (!project || isGenerating) return;
 
       setRegeneratingSection(sectionId);
-      setMalformedWarning(false);
+  
 
       const phase = project.phases.tasks;
       const phaseContext = phase.sections
@@ -164,21 +165,10 @@ export default function TasksPage() {
 
       {project && !planReviewed && (
         <div
-          className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
+          className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground"
           role="status"
         >
           Plan must be reviewed before generating tasks.
-        </div>
-      )}
-
-      {malformedWarning && (
-        <div
-          className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
-          role="status"
-        >
-          The AI response did not match the expected section format. The raw
-          output has been placed in the first section. You can edit it manually
-          or try generating again.
         </div>
       )}
 

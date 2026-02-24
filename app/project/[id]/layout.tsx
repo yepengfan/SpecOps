@@ -11,20 +11,25 @@ import { ExportPanel } from "@/components/phase/export-panel";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EditableProjectName } from "@/components/ui/editable-project-name";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import type { PhaseType } from "@/lib/types";
 
 const SEGMENT_TO_PHASE: Record<string, PhaseType> = {
   overview: "spec",
+  spec: "spec",
   requirements: "spec",
   plan: "plan",
   tasks: "tasks",
   traceability: "tasks",
 };
 
-function usePhaseType(): PhaseType {
+function usePageSegment(): string {
   const pathname = usePathname();
-  // pathname like /project/<id>/requirements or /project/<id>/plan
-  const segment = pathname.split("/").pop() || "";
+  return pathname.split("/").pop() || "";
+}
+
+function usePhaseType(): PhaseType {
+  const segment = usePageSegment();
   return SEGMENT_TO_PHASE[segment] ?? "spec";
 }
 
@@ -38,6 +43,7 @@ export default function ProjectLayout({
   const { id } = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const pageSegment = usePageSegment();
   const phaseType = usePhaseType();
   const project = useProjectStore((s) => s.currentProject);
   const { isOpen, togglePanel, loadHistory } = useChatStore();
@@ -105,6 +111,13 @@ export default function ProjectLayout({
           <ExportPanel />
         </div>
       </div>
+      {project && (
+        <Breadcrumb
+          projectId={id}
+          projectName={project.name}
+          currentPhase={pageSegment as "overview" | "spec" | "plan" | "tasks" | "traceability"}
+        />
+      )}
       <PhaseNav projectId={id} />
       <div role="tabpanel">{children}</div>
       {project && (

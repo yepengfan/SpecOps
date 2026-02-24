@@ -1,11 +1,18 @@
 "use client";
 
 import { useCallback } from "react";
+import { toast } from "sonner";
 import { Download, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { generateMarkdown } from "@/lib/export/markdown";
 import { downloadProjectZip, downloadFile } from "@/lib/export/zip";
+
+const PHASE_LABELS: Record<string, string> = {
+  spec: "Spec",
+  plan: "Plan",
+  tasks: "Tasks",
+};
 
 export function ExportPanel() {
   const project = useProjectStore((s) => s.currentProject);
@@ -17,14 +24,26 @@ export function ExportPanel() {
 
   const handleExportZip = useCallback(async () => {
     if (!project) return;
-    await downloadProjectZip(project);
+    try {
+      await downloadProjectZip(project);
+      toast.success("All phases exported as ZIP");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      toast.error(`Export failed: ${message}`);
+    }
   }, [project]);
 
   const handleExportFile = useCallback(
     (phase: "spec" | "plan" | "tasks") => {
       if (!project) return;
-      const md = generateMarkdown(project);
-      downloadFile(`${phase}.md`, md[phase]);
+      try {
+        const md = generateMarkdown(project);
+        downloadFile(`${phase}.md`, md[phase]);
+        toast.success(`${PHASE_LABELS[phase]} exported successfully`);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Unknown error";
+        toast.error(`Export failed: ${message}`);
+      }
     },
     [project],
   );

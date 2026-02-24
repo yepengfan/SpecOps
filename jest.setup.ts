@@ -10,6 +10,20 @@ if (typeof Element !== "undefined") {
   Element.prototype.scrollIntoView = jest.fn();
 }
 
+// jsdom doesn't implement matchMedia
+if (typeof window !== "undefined" && !window.matchMedia) {
+  window.matchMedia = jest.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  }));
+}
+
 // framer-motion mock — avoid jsdom requestAnimationFrame issues
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const ReactForMock = require("react");

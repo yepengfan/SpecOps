@@ -17,6 +17,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-22
 - IndexedDB via Dexie.js (no changes) (017-default-overview-tab)
 - TypeScript 5.x + React 19 + Next.js 16 (App Router) + Framer Motion (new), shadcn/ui (existing), Radix UI Collapsible (existing), Zustand 5 (existing) (018-framer-motion-animations)
 - N/A — no storage changes (018-framer-motion-animations)
+- TypeScript 5.x + React 19 + Next.js 16 (App Router) + shadcn/ui, Radix UI, Framer Motion, Zustand 5, Sonner (toast), Dexie.js 4, dexie-react-hooks, Tailwind CSS 4, Lucide React (icons) (020-ux-ui-enhancements-v2)
+- IndexedDB via Dexie.js (client-side only) — schema migration from v4 to v5 for `archivedAt` field; localStorage for chat panel width preference (020-ux-ui-enhancements-v2)
 
 ## Project Structure
 
@@ -36,16 +38,9 @@ npm test && npm run lint
 TypeScript 5.x: Follow standard conventions
 
 ## Recent Changes
+- 020-ux-ui-enhancements-v2: Added TypeScript 5.x + React 19 + Next.js 16 (App Router) + shadcn/ui, Radix UI, Framer Motion, Zustand 5, Sonner (toast), Dexie.js 4, dexie-react-hooks, Tailwind CSS 4, Lucide React (icons)
 - 018-framer-motion-animations: Added TypeScript 5.x + React 19 + Next.js 16 (App Router) + Framer Motion (new), shadcn/ui (existing), Radix UI Collapsible (existing), Zustand 5 (existing)
 - 017-default-overview-tab: Added TypeScript 5.x + Next.js 16, React 19, shadcn/ui
-- 016-ux-ui-enhancements: Added TypeScript 5.x + Next.js 16, React 19, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, sonner, next-themes
-- 016-ux-ui-enhancements: IndexedDB via Dexie.js (no schema changes)
-- 015-align-requirement-ids: Added TypeScript 5.x + Next.js 16, React 19, Zustand 5, Dexie.js 4
-- 014-rename-to-specops: Added TypeScript 5.x + Next.js 16, React 19, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown
-- 013-ai-chat-assistant: Added TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4, Anthropic SDK 0.78.x, react-markdown
-- 012-rename-project: Added TypeScript 5.x + React 19, Next.js 16, Zustand 5, Dexie.js 4, shadcn/ui, Tailwind CSS 4
-- 011-spec-score: Added TypeScript 5.x + Next.js (App Router), Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), Anthropic SDK (server-side)
-- 001-spec-ops-core: Added TypeScript 5.x + Zustand (state), shadcn/ui (components), Dexie.js (IndexedDB), react-markdown, client-zip, Anthropic SDK (server-side)
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

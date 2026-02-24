@@ -13,7 +13,6 @@ import { parseSpecSections } from "@/lib/prompts/spec";
 export default function SpecPage() {
   const [description, setDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [malformedWarning, setMalformedWarning] = useState(false);
   const [regeneratingSection, setRegeneratingSection] = useState<string | null>(
     null,
   );
@@ -31,7 +30,6 @@ export default function SpecPage() {
 
   const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
-    setMalformedWarning(false);
 
     try {
       let accumulated = "";
@@ -45,7 +43,9 @@ export default function SpecPage() {
       const parsed = parseSpecSections(accumulated);
 
       if (parsed.malformed) {
-        setMalformedWarning(true);
+        toast.warning(
+          "AI response did not match expected format. Content placed in first section."
+        );
         // Fallback: put raw text in first section
         updateSection("spec", "problem-statement", accumulated);
       } else {
@@ -155,17 +155,6 @@ export default function SpecPage() {
             a specification.
           </div>
           <WorkflowIndicator />
-        </div>
-      )}
-
-      {malformedWarning && (
-        <div
-          className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
-          role="status"
-        >
-          The AI response did not match the expected section format. The raw
-          output has been placed in the first section. You can edit it manually
-          or try generating again.
         </div>
       )}
 

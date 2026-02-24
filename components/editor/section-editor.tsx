@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { MarkdownRenderer } from "@/components/editor/markdown-renderer";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { PhaseType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -133,7 +134,14 @@ export function SectionEditor({
           className="text-sm"
         />
       )}
-      {showMarkdown && hasContent && !isRegenerating ? (
+      {isRegenerating ? (
+        <div className="space-y-3 rounded-md border p-4">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-[85%]" />
+          <Skeleton className="h-4 w-[70%]" />
+          <Skeleton className="h-4 w-[90%]" />
+        </div>
+      ) : showMarkdown && hasContent ? (
         <div
           role={isReviewed ? "button" : undefined}
           tabIndex={isReviewed ? 0 : undefined}
@@ -156,12 +164,11 @@ export function SectionEditor({
           aria-labelledby={headingId}
           value={content}
           onChange={handleChange}
-          readOnly={effectiveReadOnly || isRegenerating}
+          readOnly={effectiveReadOnly}
           onClick={handleTextareaClick}
           className={cn(
             "min-h-32 font-mono",
             isReviewed && "opacity-75 cursor-pointer",
-            isRegenerating && "opacity-50",
           )}
         />
       )}
