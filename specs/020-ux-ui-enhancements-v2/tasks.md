@@ -160,12 +160,12 @@
 
 ### Tests for User Story 6
 
-- [ ] T033 [P] [US6] Write test for export success toast messages (per-phase and ZIP) in `__tests__/unit/export-toast.test.tsx`
-- [ ] T034 [P] [US6] Write test for export error toast on failure in `__tests__/unit/export-toast.test.tsx`
+- [x] T033 [P] [US6] Write test for export success toast messages (per-phase and ZIP) in `__tests__/unit/export-toast.test.tsx`
+- [x] T034 [P] [US6] Write test for export error toast on failure in `__tests__/unit/export-toast.test.tsx`
 
 ### Implementation for User Story 6
 
-- [ ] T035 [US6] Add `toast.success()` after each successful export and `toast.error()` on failure in `components/phase/export-panel.tsx`
+- [x] T035 [US6] Add `toast.success()` after each successful export and `toast.error()` on failure in `components/phase/export-panel.tsx`
 
 **Checkpoint**: All export actions provide toast feedback on success or failure.
 
