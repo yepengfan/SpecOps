@@ -48,6 +48,15 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className="flex items-start justify-between">
           <div className="min-w-0 flex-1">
             <h3 className="truncate font-semibold">{project.name}</h3>
+            {project.description ? (
+              <p className="mt-1 text-sm text-muted-foreground line-clamp-3">
+                {project.description}
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-muted-foreground italic">
+                No description
+              </p>
+            )}
             <p className="mt-1 text-sm text-muted-foreground">{status}</p>
             {health && (
               <p className="mt-1 text-xs text-muted-foreground">

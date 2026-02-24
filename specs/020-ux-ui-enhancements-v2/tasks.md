@@ -98,11 +98,11 @@
 
 ### Tests for User Story 3
 
-- [ ] T023 [P] [US3] Write test for description rendering (truncated, no description placeholder) in `__tests__/unit/project-card-description.test.tsx`
+- [x] T023 [P] [US3] Write test for description rendering (truncated, no description placeholder) in `__tests__/unit/project-card-description.test.tsx`
 
 ### Implementation for User Story 3
 
-- [ ] T024 [US3] Add description text with `line-clamp-3` and "No description" placeholder to `components/ui/project-card.tsx`
+- [x] T024 [US3] Add description text with `line-clamp-3` and "No description" placeholder to `components/ui/project-card.tsx`
 
 **Checkpoint**: Project cards display descriptions (or placeholder text) on the project list page.
 
