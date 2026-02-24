@@ -158,7 +158,7 @@ export default function PlanPage() {
 
       {project && !specReviewed && (
         <div
-          className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
+          className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground"
           role="status"
         >
           Spec must be reviewed before generating a plan.
