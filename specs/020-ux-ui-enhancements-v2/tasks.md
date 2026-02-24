@@ -74,17 +74,17 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T015 [P] [US2] Write test for search filtering (case-insensitive substring match by name) in `__tests__/unit/project-search.test.tsx`
-- [ ] T016 [P] [US2] Write test for sort options (all 5 options produce correct ordering) in `__tests__/unit/project-sort.test.tsx`
-- [ ] T017 [P] [US2] Write test for archive toggle (active-only vs all projects) in `__tests__/unit/project-archive-filter.test.tsx`
-- [ ] T018 [P] [US2] Write test for empty state when no projects match search in `__tests__/unit/project-search-empty.test.tsx`
+- [x] T015 [P] [US2] Write test for search filtering (case-insensitive substring match by name) in `__tests__/unit/project-search.test.tsx`
+- [x] T016 [P] [US2] Write test for sort options (all 5 options produce correct ordering) in `__tests__/unit/project-sort.test.tsx`
+- [x] T017 [P] [US2] Write test for archive toggle (active-only vs all projects) in `__tests__/unit/project-archive-filter.test.tsx`
+- [x] T018 [P] [US2] Write test for empty state when no projects match search in `__tests__/unit/project-search-empty.test.tsx`
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Add `SortOption` type and search/sort/archive state to `components/ui/project-list.tsx`
-- [ ] T020 [US2] Add search input with Search icon, sort dropdown (Select), and archive toggle button to `components/ui/project-list.tsx`
-- [ ] T021 [US2] Implement `useMemo` filtering and sorting logic (archive filter → search → sort) in `components/ui/project-list.tsx`
-- [ ] T022 [US2] Add empty state message for "no projects match search" in `components/ui/project-list.tsx`
+- [x] T019 [US2] Add `SortOption` type and search/sort/archive state to `components/ui/project-list.tsx`
+- [x] T020 [US2] Add search input with Search icon, sort dropdown (Select), and archive toggle button to `components/ui/project-list.tsx`
+- [x] T021 [US2] Implement `useMemo` filtering and sorting logic (archive filter → search → sort) in `components/ui/project-list.tsx`
+- [x] T022 [US2] Add empty state message for "no projects match search" in `components/ui/project-list.tsx`
 
 **Checkpoint**: Users can search, sort, and toggle archived project visibility on the project list page.
 

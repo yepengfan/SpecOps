@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { motion, useReducedMotion } from "framer-motion";
+import { Search, Archive } from "lucide-react";
 import { db } from "@/lib/db/database";
 import { listProjects, StorageError } from "@/lib/db/projects";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ProjectCard } from "@/components/ui/project-card";
 import { NewProjectDialog } from "@/components/ui/new-project-dialog";
+import {
+  filterProjects,
+  sortProjects,
+  type SortOption,
+} from "@/components/ui/project-list-utils";
 import {
   staggerContainerVariants,
   staggerItemVariants,
@@ -17,6 +31,9 @@ import {
 export function ProjectList() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortOption>("updated-desc");
+  const [showArchived, setShowArchived] = useState(false);
   const reducedMotion = useReducedMotion();
 
   const projects = useLiveQuery(async () => {
@@ -31,6 +48,11 @@ export function ProjectList() {
       return [];
     }
   });
+
+  const filtered = useMemo(
+    () => sortProjects(filterProjects(projects ?? [], search, showArchived), sort),
+    [projects, search, sort, showArchived],
+  );
 
   if (error) {
     return (
@@ -66,7 +88,7 @@ export function ProjectList() {
     );
   }
 
-  if (projects.length === 0) {
+  if (projects !== undefined && projects.length === 0) {
     return (
       <div className="py-8 text-center">
         <p className="text-muted-foreground">No projects yet</p>
@@ -84,18 +106,57 @@ export function ProjectList() {
         <h1 className="text-2xl font-bold">Projects</h1>
         <Button onClick={() => setDialogOpen(true)}>New Project</Button>
       </div>
-      <motion.div
-        className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        variants={staggerContainerVariants}
-        initial={reducedMotion ? false : "initial"}
-        animate="animate"
-      >
-        {projects.map((project) => (
-          <motion.div key={project.id} variants={staggerItemVariants}>
-            <ProjectCard project={project} />
-          </motion.div>
-        ))}
-      </motion.div>
+      {/* Search, sort, and archive filter controls */}
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search projects…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="updated-desc">Last updated</SelectItem>
+            <SelectItem value="name-asc">Name A–Z</SelectItem>
+            <SelectItem value="name-desc">Name Z–A</SelectItem>
+            <SelectItem value="created-desc">Newest first</SelectItem>
+            <SelectItem value="created-asc">Oldest first</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          variant={showArchived ? "secondary" : "outline"}
+          size="sm"
+          onClick={() => setShowArchived(!showArchived)}
+          aria-pressed={showArchived}
+        >
+          <Archive className="mr-1.5 h-4 w-4" />
+          {showArchived ? "Showing archived" : "Show archived"}
+        </Button>
+      </div>
+      {filtered.length === 0 ? (
+        <p className="mt-8 text-center text-sm text-muted-foreground">
+          No projects match your search.
+        </p>
+      ) : (
+        <motion.div
+          className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          variants={staggerContainerVariants}
+          initial={reducedMotion ? false : "initial"}
+          animate="animate"
+        >
+          {filtered.map((project) => (
+            <motion.div key={project.id} variants={staggerItemVariants}>
+              <ProjectCard project={project} />
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
       <NewProjectDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   );
