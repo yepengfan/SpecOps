@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { GatedPhasePage } from "@/components/phase/gated-phase-page";
+import { GenerationStatus } from "@/components/ui/generation-status";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { streamGenerate, StreamError } from "@/lib/api/stream-client";
 import { parseTaskSections } from "@/lib/prompts/tasks";
@@ -162,6 +163,8 @@ export default function TasksPage() {
       <Button onClick={handleGenerate} disabled={!canGenerate}>
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
+
+      <GenerationStatus phase="tasks" isActive={isGenerating} />
 
       {project && !planReviewed && (
         <div
