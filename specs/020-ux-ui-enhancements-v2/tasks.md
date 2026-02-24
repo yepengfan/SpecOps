@@ -27,12 +27,12 @@
 
 **CRITICAL**: No archiving or archive-aware UI work can begin until this phase is complete.
 
-- [ ] T001 Write test for `archivedAt` field on Project interface in `__tests__/unit/project-types.test.ts`
-- [ ] T002 Add `archivedAt?: number` field to Project interface in `lib/types/index.ts`
-- [ ] T003 Write test for Dexie v5 migration in `__tests__/unit/database-migration.test.ts`
-- [ ] T004 Add Dexie version 5 migration in `lib/db/database.ts` (no index change, no upgrade callback — existing projects default to undefined)
-- [ ] T005 Write tests for `archiveProject()` and `unarchiveProject()` functions in `__tests__/unit/project-archive.test.ts`
-- [ ] T006 Implement `archiveProject(id)` and `unarchiveProject(id)` in `lib/db/projects.ts`
+- [x] T001 Write test for `archivedAt` field on Project interface in `__tests__/unit/project-types.test.ts`
+- [x] T002 Add `archivedAt?: number` field to Project interface in `lib/types/index.ts`
+- [x] T003 Write test for Dexie v5 migration in `__tests__/unit/database-migration.test.ts`
+- [x] T004 Add Dexie version 5 migration in `lib/db/database.ts` (no index change, no upgrade callback — existing projects default to undefined)
+- [x] T005 Write tests for `archiveProject()` and `unarchiveProject()` functions in `__tests__/unit/project-archive.test.ts`
+- [x] T006 Implement `archiveProject(id)` and `unarchiveProject(id)` in `lib/db/projects.ts`
 
 **Checkpoint**: Foundation ready — data model supports archiving, user story implementation can begin.
 

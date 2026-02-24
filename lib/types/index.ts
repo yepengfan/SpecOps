@@ -32,6 +32,7 @@ export interface Project {
   description: string;
   createdAt: number;
   updatedAt: number;
+  archivedAt?: number;
   phases: {
     spec: Phase;
     plan: Phase;

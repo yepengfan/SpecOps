@@ -38,6 +38,10 @@ export class SpecOpsDatabase extends Dexie {
       projects: "id, updatedAt",
       chatMessages: "++id, projectId, timestamp",
     });
+    this.version(5).stores({
+      projects: "id, updatedAt",
+      chatMessages: "++id, projectId, timestamp",
+    });
   }
 }
 

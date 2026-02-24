@@ -79,6 +79,31 @@ export async function updateProject(project: Project): Promise<void> {
   });
 }
 
+export async function archiveProject(id: string): Promise<void> {
+  return withErrorHandling(async () => {
+    const project = await db.projects.get(id);
+    if (!project) throw new Error(`Project not found: ${id}`);
+    await db.projects.put({
+      ...project,
+      archivedAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+  });
+}
+
+export async function unarchiveProject(id: string): Promise<void> {
+  return withErrorHandling(async () => {
+    const project = await db.projects.get(id);
+    if (!project) throw new Error(`Project not found: ${id}`);
+    const { archivedAt: _, ...rest } = project;
+    await db.projects.put({
+      ...rest,
+      archivedAt: undefined,
+      updatedAt: Date.now(),
+    });
+  });
+}
+
 export async function deleteProject(id: string): Promise<void> {
   return withErrorHandling(async () => {
     await db.transaction("rw", db.projects, db.chatMessages, async () => {
