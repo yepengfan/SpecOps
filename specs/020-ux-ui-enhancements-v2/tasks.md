@@ -198,17 +198,17 @@
 
 ### Tests for User Story 8
 
-- [ ] T039 [P] [US8] Write test for ChatResizeHandle pointer event handling (pointerdown, pointermove, pointerup) in `__tests__/unit/chat-resize-handle.test.tsx`
-- [ ] T040 [P] [US8] Write test for width clamping to [320, 640] range in `__tests__/unit/chat-resize-handle.test.tsx`
-- [ ] T041 [P] [US8] Write test for localStorage persistence of chat panel width in `__tests__/unit/chat-panel-width.test.tsx`
-- [ ] T042a [P] [US8] Write test verifying resize handle is not rendered on mobile viewports in `__tests__/unit/chat-resize-handle.test.tsx`
+- [x] T039 [P] [US8] Write test for ChatResizeHandle pointer event handling (pointerdown, pointermove, pointerup) in `__tests__/unit/chat-resize-handle.test.tsx`
+- [x] T040 [P] [US8] Write test for width clamping to [320, 640] range in `__tests__/unit/chat-resize-handle.test.tsx`
+- [x] T041 [P] [US8] Write test for localStorage persistence of chat panel width in `__tests__/unit/chat-panel-width.test.tsx`
+- [x] T042a [P] [US8] Write test verifying resize handle is not rendered on mobile viewports in `__tests__/unit/chat-resize-handle.test.tsx`
 
 ### Implementation for User Story 8
 
-- [ ] T042 [US8] Create ChatResizeHandle component with pointer event handlers and cursor styling in `components/chat/chat-resize-handle.tsx`
-- [ ] T043 [US8] Integrate ChatResizeHandle into ChatPanel — replace fixed `w-96` with dynamic width from state, read initial width from localStorage in `components/chat/chat-panel.tsx`
-- [ ] T044 [US8] Add localStorage read/write for `specops-chat-panel-width` key in `components/chat/chat-panel.tsx`
-- [ ] T044a [US8] Add keyboard accessibility to ChatResizeHandle (arrow keys adjust width by 10px, focusable with tabindex) in `components/chat/chat-resize-handle.tsx`
+- [x] T042 [US8] Create ChatResizeHandle component with pointer event handlers and cursor styling in `components/chat/chat-resize-handle.tsx`
+- [x] T043 [US8] Integrate ChatResizeHandle into ChatPanel — replace fixed `w-96` with dynamic width from state, read initial width from localStorage in `components/chat/chat-panel.tsx`
+- [x] T044 [US8] Add localStorage read/write for `specops-chat-panel-width` key in `components/chat/chat-panel.tsx`
+- [x] T044a [US8] Add keyboard accessibility to ChatResizeHandle (arrow keys adjust width by 10px, focusable with tabindex) in `components/chat/chat-resize-handle.tsx`
 
 **Checkpoint**: Chat panel is resizable on desktop with persisted width preference. Resize handle is keyboard accessible per WCAG 2.1 AA.
 

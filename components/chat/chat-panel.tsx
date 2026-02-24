@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { X, Loader2, Trash2 } from "lucide-react";
 import { useChatStore } from "@/lib/stores/chat-store";
 import { ChatMessage } from "@/components/chat/chat-message";
 import { ChatInput } from "@/components/chat/chat-input";
+import { ChatResizeHandle } from "@/components/chat/chat-resize-handle";
 import { clearChatMessages } from "@/lib/db/chat-messages";
 import {
   Dialog,
@@ -25,6 +26,17 @@ interface ChatPanelProps {
   phaseType: PhaseType;
 }
 
+const STORAGE_KEY = "specops-chat-panel-width";
+const DEFAULT_WIDTH = 384;
+
+function getStoredWidth(): number {
+  if (typeof window === "undefined") return DEFAULT_WIDTH;
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) return DEFAULT_WIDTH;
+  const parsed = parseInt(stored, 10);
+  return isNaN(parsed) ? DEFAULT_WIDTH : parsed;
+}
+
 export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
   const {
     messages,
@@ -38,6 +50,16 @@ export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [panelWidth, setPanelWidth] = useState(getStoredWidth);
+
+  const handleWidthChange = useCallback((width: number) => {
+    setPanelWidth(width);
+  }, []);
+
+  const handleDragEnd = useCallback((width: number) => {
+    setPanelWidth(width);
+    localStorage.setItem(STORAGE_KEY, String(width));
+  }, []);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -68,7 +90,17 @@ export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
     />
     <div
       data-testid="chat-panel"
-      className="fixed right-0 top-0 z-50 flex h-full w-full md:w-96 flex-col border-l bg-background shadow-lg"
+      className="fixed right-0 top-0 z-50 flex h-full w-full md:w-auto flex-row"
+    >
+    {/* Resize handle (desktop only) */}
+    <ChatResizeHandle
+      panelWidth={panelWidth}
+      onWidthChange={handleWidthChange}
+      onDragEnd={handleDragEnd}
+    />
+    <div
+      className="flex h-full flex-1 md:flex-none flex-col border-l bg-background shadow-lg"
+      style={{ width: typeof window !== "undefined" && window.innerWidth >= 768 ? panelWidth : undefined }}
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
@@ -141,6 +173,7 @@ export function ChatPanel({ projectId, project, phaseType }: ChatPanelProps) {
 
       {/* Input */}
       <ChatInput onSend={handleSend} isStreaming={isStreaming} />
+    </div>
     </div>
     </>
   );
