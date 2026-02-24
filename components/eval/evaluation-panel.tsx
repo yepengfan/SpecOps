@@ -2,8 +2,9 @@
 
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import { ChevronDown, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { RuleChecklist } from "@/components/eval/rule-checklist";
 import { DeepAnalysisResults } from "@/components/eval/deep-analysis-results";
 import { useProjectStore } from "@/lib/stores/project-store";
@@ -182,20 +183,20 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
             disabled={!evaluation || isAnalyzing}
             onClick={handleDeepAnalysis}
           >
-            {isAnalyzing ? (
-              <>
-                <Loader2 className="size-3 animate-spin" />
-                Analyzing…
-              </>
-            ) : (
-              "Deep Analysis"
-            )}
+            {isAnalyzing ? "Analyzing…" : "Deep Analysis"}
           </Button>
         </div>
       </div>
 
       {isOpen && (
         <div className="border-t px-3 pb-3 pt-2 space-y-4">
+          {isAnalyzing && (
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-[85%]" />
+              <Skeleton className="h-4 w-[70%]" />
+            </div>
+          )}
           {!hasContent ? (
             <p className="text-sm text-muted-foreground">
               Nothing to evaluate — add content to the phase first.

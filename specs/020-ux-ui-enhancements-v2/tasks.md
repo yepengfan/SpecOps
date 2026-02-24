@@ -138,13 +138,13 @@
 
 ### Tests for User Story 5
 
-- [ ] T029 [P] [US5] Write test for skeleton loader appearing when `isRegenerating` is true in `__tests__/unit/section-editor-skeleton.test.tsx`
-- [ ] T030 [P] [US5] Write test for skeleton disappearing when `isRegenerating` becomes false in `__tests__/unit/section-editor-skeleton.test.tsx`
+- [x] T029 [P] [US5] Write test for skeleton loader appearing when `isRegenerating` is true in `__tests__/unit/section-editor-skeleton.test.tsx`
+- [x] T030 [P] [US5] Write test for skeleton disappearing when `isRegenerating` becomes false in `__tests__/unit/section-editor-skeleton.test.tsx`
 
 ### Implementation for User Story 5
 
-- [ ] T031 [US5] Replace "Regenerating..." text with Skeleton loader (4 lines of varying width) in `components/editor/section-editor.tsx`
-- [ ] T032 [US5] Add skeleton loader for deep analysis status in `components/eval/evaluation-panel.tsx`
+- [x] T031 [US5] Replace "Regenerating..." text with Skeleton loader (4 lines of varying width) in `components/editor/section-editor.tsx`
+- [x] T032 [US5] Add skeleton loader for deep analysis status in `components/eval/evaluation-panel.tsx`
 
 **Checkpoint**: All AI operations display animated skeleton progress indicators instead of static text.
 
