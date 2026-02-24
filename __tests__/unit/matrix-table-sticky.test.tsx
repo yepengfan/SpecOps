@@ -79,4 +79,56 @@ describe("MatrixTable sticky column", () => {
     const firstTh = container.querySelector("thead tr th:first-child");
     expect(firstTh!.className).toContain("z-10");
   });
+
+  it("truncates requirement labels and shows full text via title", () => {
+    const project = makeProject();
+    const { container } = render(<MatrixTable project={project} />);
+
+    const firstTds = container.querySelectorAll("tbody tr td:first-child");
+    firstTds.forEach((td) => {
+      expect(td.getAttribute("title")).toBeTruthy();
+      const span = td.querySelector("span");
+      expect(span).not.toBeNull();
+      expect(span!.className).toContain("truncate");
+    });
+  });
+
+  it("matches sticky column bg to row bg for uncovered rows", () => {
+    const project = makeProject();
+    // No mappings → all rows are uncovered
+    const { container } = render(<MatrixTable project={project} />);
+
+    const firstTds = container.querySelectorAll("tbody tr td:first-child");
+    firstTds.forEach((td) => {
+      expect(td.className).toContain("bg-muted/50");
+      expect(td.className).not.toContain("bg-background");
+    });
+  });
+
+  it("uses bg-background on sticky column for covered rows", () => {
+    const project = makeProject();
+    project.traceabilityMappings = [
+      {
+        id: "m1",
+        requirementId: "fr-001",
+        requirementLabel: "FR-001: The system shall do X",
+        targetType: "plan",
+        targetId: "architecture",
+        targetLabel: "Architecture",
+        origin: "manual",
+        createdAt: Date.now(),
+      },
+    ];
+    const { container } = render(<MatrixTable project={project} />);
+
+    const rows = container.querySelectorAll("tbody tr");
+    // First row (FR-001) is covered
+    const coveredTd = rows[0].querySelector("td:first-child");
+    expect(coveredTd!.className).toContain("bg-background");
+    expect(coveredTd!.className).not.toContain("bg-muted/50");
+
+    // Second row (FR-002) is uncovered
+    const uncoveredTd = rows[1].querySelector("td:first-child");
+    expect(uncoveredTd!.className).toContain("bg-muted/50");
+  });
 });

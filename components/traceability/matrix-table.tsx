@@ -7,6 +7,8 @@ import { PLAN_SECTIONS } from "@/lib/types/sections";
 import { TASKS_SECTIONS } from "@/lib/types/sections";
 import { cn } from "@/lib/utils";
 
+const STICKY_COL_WIDTH = "w-[180px] min-w-[180px] max-w-[180px]";
+
 interface MatrixTableProps {
   project: Project;
   onCellClick?: (requirementId: string, targetType: "plan" | "task", targetId: string) => void;
@@ -53,7 +55,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
 
   if (requirements.length === 0) {
     return (
-      <div className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground" role="status">
+      <div className="rounded-md border border-border bg-muted/60 p-4 text-sm text-foreground/70" role="status">
         No requirements found. Requirements should use the format &quot;**FR-NNN**: description&quot; in the EARS Requirements section of the spec.
       </div>
     );
@@ -71,10 +73,10 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
       </div>
 
       <div className="overflow-x-auto rounded-md border">
-        <table className="w-full text-sm">
+        <table className="w-full table-fixed text-sm">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="sticky left-0 z-10 bg-muted/50 px-3 py-2 text-left font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">Requirement</th>
+              <th className={`sticky left-0 z-10 ${STICKY_COL_WIDTH} bg-muted/50 px-3 py-2 text-left font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]`}>Requirement</th>
               {planColumns.map((col) => (
                 <th
                   key={`plan-${col.id}`}
@@ -108,8 +110,14 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
                     !covered && "bg-muted/50",
                   )}
                 >
-                  <td className="sticky left-0 z-10 bg-background px-3 py-2 font-medium whitespace-nowrap shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">
-                    {req.label}
+                  <td
+                    className={cn(
+                      `sticky left-0 z-10 ${STICKY_COL_WIDTH} px-3 py-2 font-medium shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]`,
+                      covered ? "bg-background" : "bg-muted/50"
+                    )}
+                    title={req.label}
+                  >
+                    <span className="block truncate">{req.label}</span>
                   </td>
                   {allColumns.map((col) => {
                     const mapping = findMapping(req.id, col.type, col.id);
@@ -148,7 +156,7 @@ export function MatrixTable({ project, onCellClick }: MatrixTableProps) {
           <User className="size-3 text-green-600" /> Manual mapping
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="inline-block size-3 rounded bg-muted/50 border border-border" /> Gap (no mappings)
+          <span className="inline-block size-3 rounded bg-muted border border-border" /> Gap (no mappings)
         </span>
       </div>
     </div>
