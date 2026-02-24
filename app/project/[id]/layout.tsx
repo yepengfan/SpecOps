@@ -16,6 +16,7 @@ import type { PhaseType } from "@/lib/types";
 
 const SEGMENT_TO_PHASE: Record<string, PhaseType> = {
   overview: "spec",
+  spec: "spec",
   requirements: "spec",
   plan: "plan",
   tasks: "tasks",

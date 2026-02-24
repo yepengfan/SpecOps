@@ -83,12 +83,16 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
   }, [project, phase, phaseType, evaluation, setProject]);
 
   const handleDeepAnalysis = useCallback(async () => {
-    if (!project || !phase || !evaluation) return;
+    // Read fresh state from store to avoid stale closures (e.g. from toast retry)
+    const currentProject = useProjectStore.getState().currentProject;
+    const currentPhase = currentProject?.phases[phaseType];
+    const currentEvaluation = currentProject?.evaluations?.[phaseType];
+    if (!currentProject || !currentPhase || !currentEvaluation) return;
 
     setAnalyzing(true);
 
     try {
-      const phaseContent = phase.sections
+      const phaseContent = currentPhase.sections
         .map((s) => `## ${s.title}\n${s.content}`)
         .join("\n\n");
 
@@ -96,7 +100,7 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
       const upstreamPhaseType = UPSTREAM_PHASE[phaseType];
       let upstreamContent: string | undefined;
       if (upstreamPhaseType) {
-        const upstreamPhase = project.phases[upstreamPhaseType];
+        const upstreamPhase = currentProject.phases[upstreamPhaseType];
         const hasUpstreamContent = upstreamPhase.sections.some(
           (s) => s.content.trim() !== ""
         );
@@ -124,11 +128,11 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
       };
 
       const phaseEvaluation: PhaseEvaluation = {
-        ...evaluation,
+        ...currentEvaluation,
         deepAnalysis,
       };
 
-      const updated = setEvaluation(project, phaseType, phaseEvaluation);
+      const updated = setEvaluation(currentProject, phaseType, phaseEvaluation);
       await updateProject(updated);
       setProject(updated);
     } catch (err: unknown) {
@@ -139,12 +143,12 @@ export function EvaluationPanel({ phaseType }: EvaluationPanelProps) {
             ? err.message
             : "Deep analysis failed";
       toast.error(message, {
-        action: { label: "Retry", onClick: handleDeepAnalysis },
+        action: { label: "Retry", onClick: () => handleDeepAnalysis() },
       });
     } finally {
       setAnalyzing(false);
     }
-  }, [project, phase, phaseType, evaluation, setProject]);
+  }, [phaseType, setProject]);
 
   return (
     <div className="rounded-lg border bg-card">

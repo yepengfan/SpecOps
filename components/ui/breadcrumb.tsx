@@ -24,15 +24,9 @@ export function Breadcrumb({ projectId, projectName, currentPhase }: BreadcrumbP
       <ol className="flex items-center gap-1.5 text-sm text-muted-foreground">
         {/* Projects segment */}
         <li>
-          {isOverview ? (
-            <Link href="/" className="hover:text-foreground transition-colors">
-              Projects
-            </Link>
-          ) : (
-            <Link href="/" className="hover:text-foreground transition-colors">
-              Projects
-            </Link>
-          )}
+          <Link href="/" className="hover:text-foreground transition-colors">
+            Projects
+          </Link>
         </li>
 
         <li aria-hidden="true">

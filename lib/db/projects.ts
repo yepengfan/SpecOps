@@ -81,25 +81,21 @@ export async function updateProject(project: Project): Promise<void> {
 
 export async function archiveProject(id: string): Promise<void> {
   return withErrorHandling(async () => {
-    const project = await db.projects.get(id);
-    if (!project) throw new Error(`Project not found: ${id}`);
-    await db.projects.put({
-      ...project,
+    const count = await db.projects.update(id, {
       archivedAt: Date.now(),
       updatedAt: Date.now(),
     });
+    if (count === 0) throw new Error(`Project not found: ${id}`);
   });
 }
 
 export async function unarchiveProject(id: string): Promise<void> {
   return withErrorHandling(async () => {
-    const project = await db.projects.get(id);
-    if (!project) throw new Error(`Project not found: ${id}`);
-    await db.projects.put({
-      ...project,
+    const count = await db.projects.update(id, {
       archivedAt: undefined,
       updatedAt: Date.now(),
     });
+    if (count === 0) throw new Error(`Project not found: ${id}`);
   });
 }
 

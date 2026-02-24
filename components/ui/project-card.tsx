@@ -30,12 +30,16 @@ export function ProjectCard({ project }: { project: Project }) {
   const health = computeHealthScore(project);
 
   async function handleArchiveToggle() {
-    if (isArchived) {
-      await unarchiveProject(project.id);
-      toast.success("Project restored");
-    } else {
-      await archiveProject(project.id);
-      toast.success("Project archived");
+    try {
+      if (isArchived) {
+        await unarchiveProject(project.id);
+        toast.success("Project restored");
+      } else {
+        await archiveProject(project.id);
+        toast.success("Project archived");
+      }
+    } catch {
+      toast.error("Failed to update project");
     }
   }
 
