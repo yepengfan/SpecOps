@@ -224,17 +224,17 @@
 
 ### Tests for User Story 9
 
-- [ ] T045 [P] [US9] Write test for archive button rendering and action on ProjectCard in `__tests__/unit/project-card-archive.test.tsx`
-- [ ] T046 [P] [US9] Write test for archived project visual indicator (opacity, badge) in `__tests__/unit/project-card-archive.test.tsx`
-- [ ] T047 [P] [US9] Write test for unarchive action on archived ProjectCard in `__tests__/unit/project-card-archive.test.tsx`
-- [ ] T048 [P] [US9] Write test for archive toast notifications ("Project archived" / "Project restored") in `__tests__/unit/project-card-archive.test.tsx`
+- [x] T045 [P] [US9] Write test for archive button rendering and action on ProjectCard in `__tests__/unit/project-card-archive.test.tsx`
+- [x] T046 [P] [US9] Write test for archived project visual indicator (opacity, badge) in `__tests__/unit/project-card-archive.test.tsx`
+- [x] T047 [P] [US9] Write test for unarchive action on archived ProjectCard in `__tests__/unit/project-card-archive.test.tsx`
+- [x] T048 [P] [US9] Write test for archive toast notifications ("Project archived" / "Project restored") in `__tests__/unit/project-card-archive.test.tsx`
 
 ### Implementation for User Story 9
 
-- [ ] T049 [US9] Add Archive/Unarchive button (with Archive/ArchiveRestore icons) to ProjectCard in `components/ui/project-card.tsx`
-- [ ] T050 [US9] Add archived visual indicator (opacity-75, "Archived" badge) to ProjectCard in `components/ui/project-card.tsx`
-- [ ] T051 [US9] Add archive/unarchive toast notifications to ProjectCard in `components/ui/project-card.tsx`
-- [ ] T052 [US9] Add empty state for "all active projects archived" with guidance to check archive in `components/ui/project-list.tsx`
+- [x] T049 [US9] Add Archive/Unarchive button (with Archive/ArchiveRestore icons) to ProjectCard in `components/ui/project-card.tsx`
+- [x] T050 [US9] Add archived visual indicator (opacity-75, "Archived" badge) to ProjectCard in `components/ui/project-card.tsx`
+- [x] T051 [US9] Add archive/unarchive toast notifications to ProjectCard in `components/ui/project-card.tsx`
+- [x] T052 [US9] Add empty state for "all active projects archived" with guidance to check archive in `components/ui/project-list.tsx`
 
 **Checkpoint**: Projects can be archived, unarchived, and filtered from the project list.
 
