@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { GatedPhasePage } from "@/components/phase/gated-phase-page";
+import { GenerationStatus } from "@/components/ui/generation-status";
 import { WorkflowIndicator } from "@/components/phase/workflow-indicator";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { streamGenerate, StreamError } from "@/lib/api/stream-client";
@@ -147,6 +148,8 @@ export default function SpecPage() {
       <Button onClick={handleGenerate} disabled={!canGenerate}>
         {isGenerating ? "Generating…" : "Generate"}
       </Button>
+
+      <GenerationStatus phase="spec" isActive={isGenerating} />
 
       {isEmpty && !isGenerating && (
         <div className="space-y-3">
