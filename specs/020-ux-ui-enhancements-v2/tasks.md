@@ -116,13 +116,13 @@
 
 ### Tests for User Story 4
 
-- [ ] T025 [P] [US4] Write test for Breadcrumb component rendering (3 segments, links, truncation, aria-current) in `__tests__/unit/breadcrumb.test.tsx`
-- [ ] T026 [P] [US4] Write test for overview page showing 2-segment breadcrumb (no phase segment) in `__tests__/unit/breadcrumb-overview.test.tsx`
+- [x] T025 [P] [US4] Write test for Breadcrumb component rendering (3 segments, links, truncation, aria-current) in `__tests__/unit/breadcrumb.test.tsx`
+- [x] T026 [P] [US4] Write test for overview page showing 2-segment breadcrumb (no phase segment) in `__tests__/unit/breadcrumb.test.tsx`
 
 ### Implementation for User Story 4
 
-- [ ] T027 [US4] Create Breadcrumb component with nav, ol, Link segments, ChevronRight separator, and truncation in `components/ui/breadcrumb.tsx`
-- [ ] T028 [US4] Integrate Breadcrumb into project layout between header and PhaseNav in `app/project/[id]/layout.tsx`
+- [x] T027 [US4] Create Breadcrumb component with nav, ol, Link segments, ChevronRight separator, and truncation in `components/ui/breadcrumb.tsx`
+- [x] T028 [US4] Integrate Breadcrumb into project layout between header and PhaseNav in `app/project/[id]/layout.tsx`
 
 **Checkpoint**: Breadcrumbs visible on all project subpages with correct navigation.
 
