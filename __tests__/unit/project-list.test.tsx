@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { useReducedMotion } from "framer-motion";
 import { db } from "@/lib/db/database";
 import { createProject } from "@/lib/db/projects";
@@ -90,5 +90,66 @@ describe("ProjectList", () => {
     render(<ProjectList />);
     const card = await screen.findByRole("article");
     expect(card).toBeInTheDocument();
+  });
+
+  it("shows only 4 projects initially when more exist", async () => {
+    for (let i = 1; i <= 6; i++) {
+      await createProject(`Project ${i}`);
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    render(<ProjectList />);
+    const cards = await screen.findAllByRole("article");
+    expect(cards).toHaveLength(4);
+  });
+
+  it('shows "View All" button when more than 4 projects exist', async () => {
+    for (let i = 1; i <= 6; i++) {
+      await createProject(`Project ${i}`);
+    }
+
+    render(<ProjectList />);
+    await screen.findAllByRole("article");
+    expect(screen.getByRole("button", { name: /view all/i })).toBeInTheDocument();
+  });
+
+  it('hides "View All" button when fewer than 4 projects exist', async () => {
+    for (let i = 1; i <= 3; i++) {
+      await createProject(`Project ${i}`);
+    }
+
+    render(<ProjectList />);
+    await screen.findAllByRole("article");
+    expect(screen.queryByRole("button", { name: /view all/i })).not.toBeInTheDocument();
+  });
+
+  it('hides "View All" button when exactly 4 projects exist', async () => {
+    for (let i = 1; i <= 4; i++) {
+      await createProject(`Project ${i}`);
+    }
+
+    render(<ProjectList />);
+    const cards = await screen.findAllByRole("article");
+    expect(cards).toHaveLength(4);
+    expect(screen.queryByRole("button", { name: /view all/i })).not.toBeInTheDocument();
+  });
+
+  it('clicking "View All" shows all projects and hides button', async () => {
+    for (let i = 1; i <= 6; i++) {
+      await createProject(`Project ${i}`);
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    render(<ProjectList />);
+    await screen.findAllByRole("article");
+
+    const viewAllButton = screen.getByRole("button", { name: /view all/i });
+    act(() => {
+      viewAllButton.click();
+    });
+
+    const cards = await screen.findAllByRole("article");
+    expect(cards).toHaveLength(6);
+    expect(screen.queryByRole("button", { name: /view all/i })).not.toBeInTheDocument();
   });
 });
