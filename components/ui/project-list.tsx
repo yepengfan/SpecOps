@@ -157,8 +157,12 @@ export function ProjectList() {
             initial={reducedMotion ? false : "initial"}
             animate="animate"
           >
-            {visible.map((project) => (
-              <motion.div key={project.id} variants={staggerItemVariants}>
+            {visible.map((project, index) => (
+              <motion.div
+                key={project.id}
+                variants={staggerItemVariants}
+                {...(showAll && index >= PAGE_SIZE ? { initial: "animate" } : {})}
+              >
                 <ProjectCard project={project} />
               </motion.div>
             ))}
