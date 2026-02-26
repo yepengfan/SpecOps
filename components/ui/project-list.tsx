@@ -34,6 +34,7 @@ export function ProjectList() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("updated-desc");
   const [showArchived, setShowArchived] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const reducedMotion = useReducedMotion();
 
   const projects = useLiveQuery(async () => {
@@ -49,10 +50,15 @@ export function ProjectList() {
     }
   });
 
+  const PAGE_SIZE = 4;
+
   const filtered = useMemo(
     () => sortProjects(filterProjects(projects ?? [], search, showArchived), sort),
     [projects, search, sort, showArchived],
   );
+
+  const visible = showAll ? filtered : filtered.slice(0, PAGE_SIZE);
+  const hasMore = filtered.length > PAGE_SIZE;
 
   if (error) {
     return (
@@ -75,8 +81,8 @@ export function ProjectList() {
   if (projects === undefined) {
     return (
       <div className="py-8">
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }, (_, i) => (
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          {Array.from({ length: 4 }, (_, i) => (
             <div key={i} className="rounded-lg border p-4 space-y-3">
               <Skeleton className="h-5 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
@@ -144,18 +150,27 @@ export function ProjectList() {
           No projects match your search.
         </p>
       ) : (
-        <motion.div
-          className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          variants={staggerContainerVariants}
-          initial={reducedMotion ? false : "initial"}
-          animate="animate"
-        >
-          {filtered.map((project) => (
-            <motion.div key={project.id} variants={staggerItemVariants}>
-              <ProjectCard project={project} />
-            </motion.div>
-          ))}
-        </motion.div>
+        <>
+          <motion.div
+            className="mt-6 grid gap-4 sm:grid-cols-2"
+            variants={staggerContainerVariants}
+            initial={reducedMotion ? false : "initial"}
+            animate="animate"
+          >
+            {visible.map((project) => (
+              <motion.div key={project.id} variants={staggerItemVariants}>
+                <ProjectCard project={project} />
+              </motion.div>
+            ))}
+          </motion.div>
+          {!showAll && hasMore && (
+            <div className="mt-4 flex justify-center">
+              <Button variant="outline" onClick={() => setShowAll(true)}>
+                View all ({filtered.length} projects)
+              </Button>
+            </div>
+          )}
+        </>
       )}
       <NewProjectDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
