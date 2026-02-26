@@ -28,6 +28,8 @@ import {
   staggerItemVariants,
 } from "@/lib/motion";
 
+const PAGE_SIZE = 4;
+
 export function ProjectList() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,8 +51,6 @@ export function ProjectList() {
       return [];
     }
   });
-
-  const PAGE_SIZE = 4;
 
   const filtered = useMemo(
     () => sortProjects(filterProjects(projects ?? [], search, showArchived), sort),

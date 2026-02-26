@@ -113,13 +113,24 @@ describe("ProjectList", () => {
     expect(screen.getByRole("button", { name: /view all/i })).toBeInTheDocument();
   });
 
-  it('hides "View All" button when 4 or fewer projects exist', async () => {
+  it('hides "View All" button when fewer than 4 projects exist', async () => {
     for (let i = 1; i <= 3; i++) {
       await createProject(`Project ${i}`);
     }
 
     render(<ProjectList />);
     await screen.findAllByRole("article");
+    expect(screen.queryByRole("button", { name: /view all/i })).not.toBeInTheDocument();
+  });
+
+  it('hides "View All" button when exactly 4 projects exist', async () => {
+    for (let i = 1; i <= 4; i++) {
+      await createProject(`Project ${i}`);
+    }
+
+    render(<ProjectList />);
+    const cards = await screen.findAllByRole("article");
+    expect(cards).toHaveLength(4);
     expect(screen.queryByRole("button", { name: /view all/i })).not.toBeInTheDocument();
   });
 
